@@ -27,7 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field,FieldOption } from "@/app/interface"
 
 export default function CrudForm(props: {
-  operation: "add" | "edit" | "review" | "update";
+  operation: "add" | "edit" | "review" ;
   fields: Field[];
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
