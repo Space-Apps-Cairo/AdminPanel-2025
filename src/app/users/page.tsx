@@ -142,23 +142,26 @@ export default function Users() {
         }
     }
 
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center h-32">
+          <div className="text-muted-foreground">Loading Users...</div>
+        </div>
+      )
+    }
+
     return (
         <div className="container mx-auto py-6">
 
-        <h1 className="text-2xl font-bold mb-6">Users</h1>
+          <h1 className="text-2xl font-bold mb-6">Users</h1>
 
-        <DataTable data={users}
+          <DataTable data={users}
             columns={userColumns}
             searchConfig={searchConfig}
             statusConfig={statusConfig}
             actionConfig={actionConfig}
             onDataChange={setUsers}
-            loading={loading}
-            enableSelection={true}
-            enableColumnVisibility={true}
-            enableSorting={true}
-            pageSize={10}
-        />
+          />
 
         </div>
     )
