@@ -44,6 +44,9 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
+
+// import { Badge } from "@/components/ui/badge"
+
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -80,7 +83,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+
 import Loading from "@/components/loading/loading"
+
 
 // Generic type for table data
 export type DataTableRow = {
@@ -120,7 +125,9 @@ export interface DataTableProps<TData extends DataTableRow> {
     statusConfig?: StatusConfig
     actionConfig?: ActionConfig
     onDataChange?: (data: TData[]) => void
-    loading?: boolean
+
+    // loading?: boolean
+
     error?: string
     pageSize?: number
     enableColumnVisibility?: boolean
@@ -157,12 +164,12 @@ export default function DataTable<TData extends DataTableRow>({
     statusConfig = { enabled: false, columnKey: '' },
     actionConfig = { enabled: false },
     onDataChange,
-    loading = false,
+    // loading = false,
     error,
     pageSize = 10,
     enableColumnVisibility = true,
     enableSorting = true,
-    enableSelection = false,
+    enableSelection = true,
     className
 }: DataTableProps<TData>) {
     const id = useId()
@@ -529,63 +536,68 @@ export default function DataTable<TData extends DataTableRow>({
                 <Table className="table-fixed">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                            {headerGroup.headers.map((header) => {
-                            return (
-                                <TableHead
-                                key={header.id}
-                                style={{ width: header.getSize() ? `${header.getSize()}px` : undefined }}
-                                className="h-11"
-                                >
-                                {header.isPlaceholder ? null : header.column.getCanSort() ? (
-                                    <div
-                                    className={cn(
-                                        header.column.getCanSort() &&
-                                        "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
-                                    )}
-                                    onClick={header.column.getToggleSortingHandler()}
-                                    onKeyDown={(e) => {
-                                        if (
-                                        header.column.getCanSort() &&
-                                        (e.key === "Enter" || e.key === " ")
-                                        ) {
-                                        e.preventDefault()
-                                        header.column.getToggleSortingHandler()?.(e)
-                                        }
-                                    }}
-                                    tabIndex={header.column.getCanSort() ? 0 : undefined}
+                            <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                                {headerGroup.headers.map((header) => {
+                                return (
+                                    <TableHead
+                                        key={header.id}
+                                        style={{ width: header.getSize() ? `${header.getSize()}px` : undefined }}
+                                        className="h-11"
                                     >
-                                    {flexRender(
+                                    {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                                        <div
+                                            className={cn(
+                                                header.column.getCanSort() &&
+                                                "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+                                            )}
+                                            onClick={header.column.getToggleSortingHandler()}
+                                            onKeyDown={(e) => {
+                                                if (
+                                                header.column.getCanSort() &&
+                                                (e.key === "Enter" || e.key === " ")
+                                                ) {
+                                                e.preventDefault()
+                                                    header.column.getToggleSortingHandler()?.(e)
+                                                }
+                                            }}
+                                            tabIndex={header.column.getCanSort() ? 0 : undefined}
+                                        >
+                                            {flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+
+                                            <div className="flex flex-col">
+                                                <ChevronUpIcon
+                                                    className={cn(
+                                                        "shrink-0 transition-opacity",
+                                                        header.column.getIsSorted() === "asc" 
+                                                            ? "opacity-100" 
+                                                            : "opacity-30"
+                                                    )}
+                                                    size={12}
+                                                />
+                                                <ChevronDownIcon
+                                                    className={cn(
+                                                        "shrink-0 transition-opacity -mt-1",
+                                                        header.column.getIsSorted() === "desc" 
+                                                            ? "opacity-100" 
+                                                            : "opacity-30"
+                                                    )}
+                                                    size={12}
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        flexRender(
                                         header.column.columnDef.header,
                                         header.getContext()
+                                        )
                                     )}
-                                    {{
-                                        asc: (
-                                        <ChevronUpIcon
-                                            className="shrink-0 opacity-60"
-                                            size={16}
-                                            aria-hidden="true"
-                                        />
-                                        ),
-                                        desc: (
-                                        <ChevronDownIcon
-                                            className="shrink-0 opacity-60"
-                                            size={16}
-                                            aria-hidden="true"
-                                        />
-                                        ),
-                                    }[header.column.getIsSorted() as string] ?? null}
-                                    </div>
-                                ) : (
-                                    flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                    )
-                                )}
-                                </TableHead>
-                            )
-                            })}
-                        </TableRow>
+                                    </TableHead>
+                                )
+                                })}
+                            </TableRow>
                         ))}
                     </TableHeader>
                     <TableBody>
