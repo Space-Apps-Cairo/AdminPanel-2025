@@ -9,8 +9,7 @@ import DataTable, {
   ActionConfig 
 } from "@/components/table/data-table"
 import { Officer } from "@/types/officer"
-import { OfficersColumns } from "@/columns/officer-columns"
-
+import { OfficersColumns } from "./_components/columns/columns"
 export default function Products() {
 
     const [products, setProducts] = useState<Officer[]>([])

@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import {userColumns} from "@/columns/user-columns"
-import {User} from "@/types/user"
+import { User } from "@/types/user"
+import { userColumns } from "./_components/columns/columns"
 import DataTable, { 
   DataTableRow, 
   SearchConfig, 
