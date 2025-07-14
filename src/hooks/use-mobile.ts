@@ -1,8 +1,4 @@
 import * as React from "react"
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/dev/ali/omar
 const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {

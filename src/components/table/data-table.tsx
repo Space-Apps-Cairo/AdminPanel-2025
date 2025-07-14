@@ -84,7 +84,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-import Loading from "@/components/loading/loading"
+// import Loading from "@/components/loading/loading"
 
 
 // Generic type for table data
@@ -318,11 +318,6 @@ export default function DataTable<TData extends DataTableRow>({
         ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined)
     }
 
-    if (loading) {
-        return (
-          <Loading/>
-        )
-    }
 
     if (error) {
         return (

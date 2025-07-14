@@ -66,7 +66,7 @@ export default function Products() {
             statusConfig={statusConfig}
             actionConfig={actionConfig}
             onDataChange={setProducts}
-            loading={loading}
+            // loading={loading}
             // enableSelection={true}
             // enableColumnVisibility={false}
             enableSorting={true}
