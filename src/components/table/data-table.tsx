@@ -43,10 +43,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-
-
-// import { Badge } from "@/components/ui/badge"
-
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -84,57 +80,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-// import Loading from "@/components/loading/loading"
+import {DataTableRow, DataTableProps} from '@/types/table';
 
-
-// Generic type for table data
-export type DataTableRow = {
-    id: string
-    [key: string]: unknown
-}
-
-// Configuration for search filters
-export interface SearchConfig {
-    enabled: boolean
-    placeholder?: string
-    searchKeys: string[]
-}
-
-// Configuration for status filters
-export interface StatusConfig {
-    enabled: boolean
-    columnKey: string
-    title?: string
-}
-
-// Configuration for actions
-export interface ActionConfig {
-    enabled: boolean
-    showAdd?: boolean
-    showDelete?: boolean
-    addButtonText?: string
-    onAdd?: () => void
-    customActions?: React.ReactNode
-}
-
-// Props for the DataTable component
-export interface DataTableProps<TData extends DataTableRow> {
-    columns: ColumnDef<TData>[]
-    data: TData[]
-    searchConfig?: SearchConfig
-    statusConfig?: StatusConfig
-    actionConfig?: ActionConfig
-    onDataChange?: (data: TData[]) => void
-
-    // loading?: boolean
-
-    error?: string
-    pageSize?: number
-    enableColumnVisibility?: boolean
-    enableSorting?: boolean
-    enableSelection?: boolean
-    className?: string
-}
 
 // Create a global filter function for multi-column search
 const createGlobalFilterFn = <TData extends DataTableRow>(searchKeys: string[]): FilterFn<TData> => {

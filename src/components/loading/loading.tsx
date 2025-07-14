@@ -7,9 +7,8 @@ interface LoadingProps {
 
 export default function Loading({className }: LoadingProps) {
   return (
-    <div className={cn("flex flex-col items-center justify-center gap-2 py-10 text-muted-foreground", className)}>
+    <div className={cn("flex items-center justify-center h-60 text-muted-foreground", className)}>
       <Loader className="animate-spin" size={32} />
-   
-    </div>
-  )
+    </div>
+  )
 }
