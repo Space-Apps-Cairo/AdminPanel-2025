@@ -1,15 +1,12 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-
-import DataTable, { 
-  DataTableRow, 
-  SearchConfig, 
-  StatusConfig, 
-  ActionConfig 
-} from "@/components/table/data-table"
+import DataTable from "@/components/table/data-table"
+import {SearchConfig, StatusConfig, ActionConfig } from '@/types/table';
 import { Officer } from "@/types/officer"
 import { OfficersColumns } from "./_components/columns/columns"
+import Loading from "@/components/loading/loading"
+
 export default function Products() {
 
     const [products, setProducts] = useState<Officer[]>([])
@@ -54,24 +51,21 @@ export default function Products() {
         }
     }
 
+    if(loading) return <Loading />
+
     return (
         <div className="container mx-auto py-6">
 
-        <h1 className="text-2xl font-bold mb-6">Officer</h1>
+            <h1 className="text-2xl font-bold mb-6">Officer</h1>
 
-        <DataTable<Officer>
-         data={products}
-            columns={OfficersColumns}
-            searchConfig={searchConfig}
-            statusConfig={statusConfig}
-            actionConfig={actionConfig}
-            onDataChange={setProducts}
-            // loading={loading}
-            // enableSelection={true}
-            // enableColumnVisibility={false}
-            enableSorting={true}
-            pageSize={10}
-        />
+            <DataTable<Officer>
+                data={products}
+                columns={OfficersColumns}
+                searchConfig={searchConfig}
+                statusConfig={statusConfig}
+                actionConfig={actionConfig}
+                onDataChange={setProducts}
+            />
 
         </div>
     )

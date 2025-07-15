@@ -3,12 +3,9 @@
 import React, { useState, useEffect } from "react"
 import { User } from "@/types/user"
 import { userColumns } from "./_components/columns/columns"
-import DataTable, { 
-  DataTableRow, 
-  SearchConfig, 
-  StatusConfig, 
-  ActionConfig 
-} from "@/components/table/data-table"
+import DataTable from "@/components/table/data-table"
+import {SearchConfig, StatusConfig, ActionConfig } from '@/types/table';
+import Loading from "@/components/loading/loading"
 
 
 export default function Users() {
@@ -55,19 +52,21 @@ export default function Users() {
         }
     }
 
+    if(loading) return <Loading />
+
     return (
         <div className="container mx-auto py-6">
 
-        <h1 className="text-2xl font-bold mb-6">Users</h1>
+            <h1 className="text-2xl font-bold mb-6">Users</h1>
 
-        <DataTable<User>
-             data={users}
-            columns={userColumns}
-            searchConfig={searchConfig}
-            statusConfig={statusConfig}
-            actionConfig={actionConfig}
-            onDataChange={setUsers}
-          />
+            <DataTable<User>
+                data={users}
+                columns={userColumns}
+                searchConfig={searchConfig}
+                statusConfig={statusConfig}
+                actionConfig={actionConfig}
+                onDataChange={setUsers}
+            />
 
         </div>
     )
