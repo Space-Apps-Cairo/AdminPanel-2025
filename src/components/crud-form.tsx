@@ -65,7 +65,7 @@ export default function CrudForm(props: {
 
   const isDisabled = operation === "preview";
 
-  const defaultValues: Record<string, any> = {};
+//   const defaultValues: Record<string, any> = {};
 
   fields.forEach((field: Field) => {
     defaultValues[field.name] =

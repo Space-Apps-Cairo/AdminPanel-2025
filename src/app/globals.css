@@ -77,6 +77,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --color-chrome: #f97316;
+  --color-safari: #10b981;
+  --color-firefox: #f59e0b;
+  --color-edge: #3b82f6;
+  --color-other: #9ca3af;
 }
 
 .dark {
