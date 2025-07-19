@@ -8,6 +8,9 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useLoginMutation } from "@/service/Api/login";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useDispatch } from "react-redux";
+import { setCredentials } from '@/service/store/features/authSlice';
+import cookieService from "@/service/cookies/cookieService";
 
 export default function Home() {
   const fields: Field[] = [
@@ -42,6 +45,7 @@ export default function Home() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [operation, setOperation] = useState<"add" | "edit" | "preview" >("add");
+  const dispatch = useDispatch();
   const [login,{isError,error,data,isSuccess,isLoading}]= useLoginMutation()
 
    const {
@@ -54,7 +58,9 @@ export default function Home() {
     const onSubmit= async (e: FieldValues) => {
 
         console.log("Data before login request:", e);
-        const result = await login(e);
+        const result = await login(e).unwrap();
+        dispatch(setCredentials(result));
+        console.log("Token:", cookieService.get("token"));
         console.log("Result:", result);
         
         isError&&console.log(error);
@@ -87,16 +93,16 @@ export default function Home() {
           setIsOpen(true);
         }}>Review</Button>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Label htmlFor={"email"}>Email</Label>
-          <Input {...register(`email`)} type="email" name="email" id="email" />
-
-          <Label htmlFor={"password"}>Password</Label>
-          <Input {...register(`password`)} type="password" name="password" id="password" />
-          <Button type="submit">Login</Button>
-        </form>
-
       </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className=" mt-6">
+        <Label htmlFor={"email"}>Email</Label>
+        <Input {...register(`email`)} type="email" name="email" id="email" className="w-[400px]" />
+
+        <Label htmlFor={"password"}>Password</Label>
+        <Input {...register(`password`)} type="password" name="password" id="password" className="w-[400px] mb-2" />
+        <Button type="submit">Login</Button>
+      </form>
 
       {isOpen && (
         <CrudForm
@@ -104,7 +110,7 @@ export default function Home() {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           operation={operation}
-          asDialog={true}
+          asDialog={false}
           validationSchema={validationSchema}
           steps={steps}
         />

@@ -3,8 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     token: cookieService.get('token'),
-    role: cookieService.get('role')
+    role: cookieService.get('role'),
+    user: cookieService.get('user')
 };
+
 
 
 export const authSlice = createSlice({
@@ -17,13 +19,15 @@ export const authSlice = createSlice({
         ) => {
             const { user, token } = action.payload;
 
-            const role = user?.roles;
-            cookieService.set('role', user.role, { path: "/" });
+            const role = user.role;
+            cookieService.set('role', role, { path: "/" });
             cookieService.set('token', token, { path: "/" });
+            cookieService.set('user', user, { path: "/" });
 
 
             state.token = token;
             state.role = role;
+            state.user = user;
         },
         logout: (state) => {
 
@@ -33,9 +37,13 @@ export const authSlice = createSlice({
 
             state.token = null;
             state.role = null;
+            state.user = null;
         },
         getToken: (state) => {
             return state.token;
+        },
+        getUser: (state) =>{
+            return state.user
         }
     },
 });

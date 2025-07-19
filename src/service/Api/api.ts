@@ -6,7 +6,7 @@ export const api = createApi({
   reducerPath: "api",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: `https://ecommerce.routemisr.com`,
+    baseUrl: `https://ecommerce.routemisr.com/api/v1`,
     prepareHeaders: (headers) => {
 
       headers.set("Accept", "application/json");

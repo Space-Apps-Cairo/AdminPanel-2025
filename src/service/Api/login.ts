@@ -9,14 +9,14 @@ export const authApi = api.injectEndpoints({
         login: builder.mutation({
             query: (data) => {
                 return {
-                    url: '/api/v1/auth/signin',
+                    url: '/auth/signin',
                     method: 'POST',
                     body: {
                         ...data
                     }
                 }
             },
-            // invalidatesTags: [{ type: 'Login', id: 'LIST' }],
+            invalidatesTags: [{ type: 'Login', id: 'LIST' }],
         }),
     }),
     overrideExisting: false,
