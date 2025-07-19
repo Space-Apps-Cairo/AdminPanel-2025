@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ThemeProvider } from "@/providers/theme-provider"
 import ModeToggle from "@/components/ui/theme-toggle"
+import { StoreProvider } from "@/service/store/StoreProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <StoreProvider>
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -89,5 +91,6 @@ export default function RootLayout({
       </ThemeProvider>
       </body>
     </html>
+    </StoreProvider>
   );
 }

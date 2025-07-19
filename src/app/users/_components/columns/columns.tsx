@@ -3,7 +3,27 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { User } from "@/types/user"
 import RowsActions from "@/components/table/rows-actions"
+import { Field } from "@/app/interface"
+import { userValidationSchema } from "@/validations/user"
 
+const getUsersFields = (userData?: User): Field[] => [
+  { name: "name", type: "text", label: "Name", defaultValue: userData.name || false },
+  { name: "email", type: "email", label: "Email", defaultValue:userData.email || false },
+  { name: "password", type: "password", label: "Password",defaultValue: userData.phone || "01127769663",},
+  {
+    name: "gender",
+    type: "select",
+    placeholder: "Select Gender",
+    defaultValue:"female",
+    options: [
+      { value: "male", placeholder: "Male" },
+      { value: "female", placeholder: "Female" },
+    ]
+  },
+  { name: "dob", type: "date", placeholder: "Choose birth date", defaultValue:"2000-01-01"},
+  { name: "file", type: "file", placeholder: "Choose file date"},
+  { name: "terms", type: "checkbox", label: "Accept Terms", defaultValue: true},
+];
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -63,9 +83,12 @@ export const userColumns: ColumnDef<User>[] = [
     id: "actions",
     header: () => <span>Actions</span>,
     cell: ({ row }) => (
-      <RowsActions rowData={row} />
+      <RowsActions 
+        fields={getUsersFields(row.original)} 
+        validationSchema={userValidationSchema} 
+      />
     ),
-    size: 150,
+    size: 90,
     enableHiding: false,
   },
 ]

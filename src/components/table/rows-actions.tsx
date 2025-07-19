@@ -1,26 +1,57 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '../ui/button'
 import { Eye, SquarePen, Trash } from 'lucide-react'
+import { OperationType, RowsActionsProps } from '@/types/rows-actions';
+import CrudForm from '../crud-form';
 
-export default function RowsActions({rowData}) {
+export default function RowsActions({
+    steps,
+    fields,
+    // rowData,
+    isDelete = false,
+    isUpdate = true,
+    asDialog = true,
+    isPreview = true,
+    validationSchema,
+}: RowsActionsProps) {
 
-    console.log(rowData);
+    const [isOpen, setIsOpen] = useState(false);
+    const [operation, setOperation] = useState<OperationType>("edit");
+
+    // console.log(rowData);
+
+    const handleButtonClick = (operation: OperationType) => {
+        setOperation(operation);
+        setIsOpen(true);
+    }
 
     return <React.Fragment>
 
+        {isOpen && (
+            <CrudForm
+                fields={fields}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                operation={operation}
+                asDialog={asDialog}
+                validationSchema={validationSchema}
+                steps={steps}
+            />
+        )}
+
         <div className="py-2.5 flex items-center gap-2.5">
 
-            <Button variant="outline" size="sm">
+            {isPreview && <Button onClick={() => handleButtonClick('preview')} variant="outline" size="sm">
                 <Eye size={16} />
-            </Button>
+            </Button>}
 
-            <Button variant="outline" size="sm">
+            {isUpdate && <Button onClick={() => handleButtonClick('edit')} variant="outline" size="sm">
                 <SquarePen size={16} />
-            </Button>
+            </Button>}
 
-            <Button variant="outline" size="sm">
+            {isDelete && <Button variant="outline" size="sm">
                 <Trash size={16} />
-            </Button>
+            </Button>}
 
         </div>
 
