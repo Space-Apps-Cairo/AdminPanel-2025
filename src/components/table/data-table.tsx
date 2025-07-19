@@ -131,8 +131,8 @@ export default function DataTable<TData extends DataTableRow>({
     const inputRef = useRef<HTMLInputElement>(null)
 
     // Create columns with optional selection column
-    const columns : ColumnDef<TData, any>[] = useMemo(() => {
-        const cols: ColumnDef<TData,any>[] = []
+    const columns : ColumnDef<TData>[] = useMemo(() => {
+        const cols: ColumnDef<TData>[] = []
 
         // Add selection column if enabled
         if (enableSelection) {

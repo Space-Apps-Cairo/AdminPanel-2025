@@ -1,10 +1,8 @@
- import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Eye, SquarePen, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { User
- } from "@/types/user"
+import { User } from "@/types/user"
+import RowsActions from "@/components/table/rows-actions"
 
 
 export const userColumns: ColumnDef<User>[] = [
@@ -65,17 +63,7 @@ export const userColumns: ColumnDef<User>[] = [
     id: "actions",
     header: () => <span>Actions</span>,
     cell: ({ row }) => (
-      <div className="py-2.5 flex items-center gap-2.5">
-        <Button variant="outline" size="sm">
-          <Eye size={16} />
-        </Button>
-        <Button variant="outline" size="sm">
-          <SquarePen size={16} />
-        </Button>
-        <Button variant="outline" size="sm">
-          <Trash size={16} />
-        </Button>
-      </div>
+      <RowsActions rowData={row} />
     ),
     size: 150,
     enableHiding: false,
