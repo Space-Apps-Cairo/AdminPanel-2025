@@ -2,16 +2,19 @@
 
 import React, { useState, useEffect } from "react"
 import { User } from "@/types/user"
-import { userColumns } from "./_components/columns/columns"
+import { getUsersFields, userColumns } from "./_components/columns/columns"
 import DataTable from "@/components/table/data-table"
 import {SearchConfig, StatusConfig, ActionConfig } from '@/types/table';
 import Loading from "@/components/loading/loading"
+import CrudForm from "@/components/crud-form"
+import { userValidationSchema } from "@/validations/user"
 
 
 export default function Users() {
 
-    const [users, setUsers] = useState<User[]>([])
-    const [loading, setLoading] = useState(true)
+    const [users, setUsers] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         async function fetchUsers() {
@@ -48,14 +51,27 @@ export default function Users() {
         showDelete: true,
         addButtonText: "Add user",
         onAdd: () => {
-        console.log("Open add form")
+            setIsOpen(true);
         }
     }
 
     if(loading) return <Loading />
 
     return (
+
         <div className="container mx-auto py-6">
+
+            {isOpen && (
+                <CrudForm
+                    fields={getUsersFields()}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    operation={'add'}
+                    asDialog={true}
+                    validationSchema={userValidationSchema}
+                    steps={[1, 2]}
+                />
+            )}
 
             <h1 className="text-2xl font-bold mb-6">Users</h1>
 

@@ -6,23 +6,24 @@ import RowsActions from "@/components/table/rows-actions"
 import { Field } from "@/app/interface"
 import { userValidationSchema } from "@/validations/user"
 
-const getUsersFields = (userData?: User): Field[] => [
-  { name: "name", type: "text", label: "Name", defaultValue: userData.name || false },
-  { name: "email", type: "email", label: "Email", defaultValue:userData.email || false },
-  { name: "password", type: "password", label: "Password",defaultValue: userData.phone || "01127769663",},
+export const getUsersFields = (userData?: User): Field[] => [
+  { name: "name", type: "text", label: "Name", ...(userData?.name && { defaultValue: userData.name }), step: 1},
+  { name: "email", type: "email", label: "Email", ...(userData?.email && { defaultValue: userData.email }), step: 1},
   {
-    name: "gender",
+    name: "status",
     type: "select",
-    placeholder: "Select Gender",
-    defaultValue:"female",
+    placeholder: "Select Status",
+    defaultValue: userData?.status || "Inactive",
     options: [
-      { value: "male", placeholder: "Male" },
-      { value: "female", placeholder: "Female" },
-    ]
+      { value: "Active", placeholder: "Active" },
+      { value: "Inactive", placeholder: "Inactive" },
+    ],
+    step: 1
   },
-  { name: "dob", type: "date", placeholder: "Choose birth date", defaultValue:"2000-01-01"},
-  { name: "file", type: "file", placeholder: "Choose file date"},
-  { name: "terms", type: "checkbox", label: "Accept Terms", defaultValue: true},
+  { name: "balance", type: "number", label: "Balance", ...(userData?.balance && { defaultValue: userData.balance }), step: 2},
+  { name: "location", type: "text", label: "Location", ...(userData?.location && { defaultValue: userData.location }), step: 2},
+  { name: "password", type: "password", label: "Password", step: 2},
+  { name: "terms", type: "checkbox", label: "Accept Terms", defaultValue: true, step: 2},
 ];
 
 export const userColumns: ColumnDef<User>[] = [
@@ -84,11 +85,13 @@ export const userColumns: ColumnDef<User>[] = [
     header: () => <span>Actions</span>,
     cell: ({ row }) => (
       <RowsActions 
+        rowData={row.original}
+        steps={[1, 2]} isDelete={true} 
         fields={getUsersFields(row.original)} 
         validationSchema={userValidationSchema} 
       />
     ),
-    size: 90,
+    size: 130,
     enableHiding: false,
   },
-]
+];
