@@ -25,8 +25,10 @@ export interface ActionConfig {
     enabled: boolean
     showAdd?: boolean
     showDelete?: boolean
+    showExport?: boolean
     addButtonText?: string
     onAdd?: () => void
+    // onExport?:(type:"pdf"|"excel"|"csv")=> void
     customActions?: React.ReactNode
 }
 

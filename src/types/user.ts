@@ -1,4 +1,4 @@
-import { DataTableRow } from "@/components/table/data-table"
+import { DataTableRow } from "@/types/table"
 
 export type User = {
   id: string
@@ -8,4 +8,6 @@ export type User = {
   flag: string
   status: "Active" | "Inactive" | "Pending"
   balance: number
+  bonusPoints?: number
+  remarks?: string
 } & DataTableRow
