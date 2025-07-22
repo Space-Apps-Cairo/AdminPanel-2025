@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 import { User
  } from "@/types/user"
 
-
 export const userColumns: ColumnDef<User>[] = [
   {
     header: "Name",
@@ -48,6 +47,12 @@ export const userColumns: ColumnDef<User>[] = [
     ),
     size: 100,
   },
+{
+  accessorKey: "bonusPoints",
+  header: "Bonus Points",
+  cell: ({ row }) => <div>{row.original.bonusPoints}</div>
+}
+,
   {
     header: "Balance",
     accessorKey: "balance",

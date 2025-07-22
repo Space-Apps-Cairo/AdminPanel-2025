@@ -6,7 +6,7 @@ import {SearchConfig, StatusConfig, ActionConfig } from '@/types/table';
 import { Officer } from "@/types/officer"
 import { OfficersColumns } from "./_components/columns/columns"
 import Loading from "@/components/loading/loading"
-
+import { officersExtra } from "@/data/officer-extra"
 export default function Products() {
 
     const [products, setProducts] = useState<Officer[]>([])
@@ -18,8 +18,19 @@ export default function Products() {
             const res = await fetch(
             "https://traffic-fake-data.vercel.app/officers"
         )
-            const data = await res.json()
-            setProducts(data)
+            const data = await res.json();
+            // console.log(data)
+     const enrichedData = data.map((officer: Officer) => {
+       const extra = officersExtra.find((ex) => ex.id === Number(officer.id));
+
+        return {
+          ...officer,
+          evaluation: extra?.evaluation || "N/A",
+          awards: extra?.awards ?? 0,
+          remarks: extra?.remarks || "No remarks"
+        };
+      });
+            setProducts(enrichedData)
         } catch (error) {
             console.error("Error fetching products:", error)
         } finally {
@@ -41,16 +52,19 @@ export default function Products() {
         title: "Status"
     }
 
-    const actionConfig: ActionConfig = {
-        enabled: true,
-        showAdd: true,
-        showDelete:true,
-        addButtonText: "Add product",
-        onAdd: () => {
-        console.log("Open add form")
+      const actionConfig: ActionConfig = {
+            enabled: true,
+            showAdd: true,
+            showExport: true,
+            showDelete: true,
+            addButtonText: "Add user",
+            onAdd: () => {
+            console.log("Open add form")
+            },
+        //    onExport:(type)=>{}
+        //     , 
         }
-    }
-
+        
     if(loading) return <Loading />
 
     return (

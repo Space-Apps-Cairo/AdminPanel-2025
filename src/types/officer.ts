@@ -1,4 +1,5 @@
-import { DataTableRow } from "@/components/table/data-table"
+import { DataTableRow } from 
+"@/types/table"
 
 export type Officer = {
     id: string
@@ -7,4 +8,7 @@ export type Officer = {
     location: string
     status: "Online" | "Offline"
     badgeNum: string
+evaluation?: string
+  awards?: number
+  remarks?: string
 } & DataTableRow
