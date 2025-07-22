@@ -102,7 +102,7 @@ export default function CrudForm(props: {
 
     console.log([...formData.entries()]);
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
+    
     reset();
   };
 
