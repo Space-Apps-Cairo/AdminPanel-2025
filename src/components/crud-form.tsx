@@ -93,6 +93,7 @@ export default function CrudForm(props: {
     const formData = new FormData();
 
         Object.entries(data).forEach(([key, value]) => {
+        Object.entries(data).forEach(([key, value]) => {
             if (value instanceof FileList) {
             formData.append(key, value[0]);
             } else {
@@ -113,6 +114,8 @@ export default function CrudForm(props: {
                 <DialogTitle>{operation.toUpperCase()} Form</DialogTitle>
                 <DialogDescription>Fill out the fields and click save.</DialogDescription>
             </DialogHeader>
+
+
 
 
             

@@ -1,10 +1,30 @@
- import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Eye, SquarePen, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { User
- } from "@/types/user"
+import { User } from "@/types/user"
+import RowsActions from "@/components/table/rows-actions"
+import { Field } from "@/app/interface"
+import { userValidationSchema } from "@/validations/user"
+
+export const getUsersFields = (userData?: User): Field[] => [
+  { name: "name", type: "text", label: "Name", ...(userData?.name && { defaultValue: userData.name }), step: 1},
+  { name: "email", type: "email", label: "Email", ...(userData?.email && { defaultValue: userData.email }), step: 1},
+  {
+    name: "status",
+    type: "select",
+    placeholder: "Select Status",
+    defaultValue: userData?.status || "Inactive",
+    options: [
+      { value: "Active", placeholder: "Active" },
+      { value: "Inactive", placeholder: "Inactive" },
+    ],
+    step: 1
+  },
+  { name: "balance", type: "number", label: "Balance", ...(userData?.balance && { defaultValue: userData.balance }), step: 2},
+  { name: "location", type: "text", label: "Location", ...(userData?.location && { defaultValue: userData.location }), step: 2},
+  { name: "password", type: "password", label: "Password", step: 2},
+  { name: "terms", type: "checkbox", label: "Accept Terms", defaultValue: true, step: 2},
+];
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -70,19 +90,14 @@ export const userColumns: ColumnDef<User>[] = [
     id: "actions",
     header: () => <span>Actions</span>,
     cell: ({ row }) => (
-      <div className="py-2.5 flex items-center gap-2.5">
-        <Button variant="outline" size="sm">
-          <Eye size={16} />
-        </Button>
-        <Button variant="outline" size="sm">
-          <SquarePen size={16} />
-        </Button>
-        <Button variant="outline" size="sm">
-          <Trash size={16} />
-        </Button>
-      </div>
+      <RowsActions 
+        rowData={row.original}
+        steps={[1, 2]} isDelete={true} 
+        fields={getUsersFields(row.original)} 
+        validationSchema={userValidationSchema} 
+      />
     ),
-    size: 150,
+    size: 130,
     enableHiding: false,
   },
-]
+];
