@@ -35,6 +35,15 @@ export const OfficersColumns: ColumnDef<Officer>[] = [
     size: 180,
   },
   {
+  header: "Evaluation",
+  accessorKey: "evaluation",
+  cell: ({ row }) => (
+    <div className="font-medium">{row.getValue("evaluation")}</div>
+  ),
+  size: 180,
+},
+
+  {
     header: "Status",
     accessorKey: "status",
     cell: ({ row }) => (
