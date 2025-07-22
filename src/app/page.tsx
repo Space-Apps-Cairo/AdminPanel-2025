@@ -4,6 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { Field } from "../app/interface";
 import CrudForm from "@/components/crud-form";
+import { FieldValues, useForm } from "react-hook-form";
+import { useLoginMutation } from "@/service/Api/login";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useDispatch } from "react-redux";
+import { setCredentials } from '@/service/store/features/authSlice';
+import cookieService from "@/service/cookies/cookieService";
 
 export default function Home() {
   const fields: Field[] = [
@@ -61,7 +68,35 @@ export default function Home() {
   });
 
   const [isOpen, setIsOpen] = useState(false);
-  const [operation, setOperation] = useState<"add" | "edit" | "preview">("add");
+  const [operation, setOperation] = useState<"add" | "edit" | "preview" >("add");
+  const dispatch = useDispatch();
+  const [login,{isError,error,data,isSuccess,isLoading}]= useLoginMutation()
+
+   const {
+      register,
+      handleSubmit,
+      formState: { errors, isSubmitting },
+      getValues,
+    } = useForm();
+            
+    const onSubmit= async (e: FieldValues) => {
+
+        console.log("Data before login request:", e);
+        const result = await login(e).unwrap();
+        dispatch(setCredentials(result));
+        console.log("Token:", cookieService.get("token"));
+        console.log("Result:", result);
+        
+        isError&&console.log(error);
+        isLoading&&console.log("loading");
+        isSuccess&&console.log(data);
+        
+        // console.log(e);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    };
+
+
+
 
   return (
     <div className="p-6 space-y-4">
@@ -94,13 +129,22 @@ export default function Home() {
         </Button>
       </div>
 
+      <form onSubmit={handleSubmit(onSubmit)} className=" mt-6">
+        <Label htmlFor={"email"}>Email</Label>
+        <Input {...register(`email`)} type="email" name="email" id="email" className="w-[400px]" />
+
+        <Label htmlFor={"password"}>Password</Label>
+        <Input {...register(`password`)} type="password" name="password" id="password" className="w-[400px] mb-2" />
+        <Button type="submit">Login</Button>
+      </form>
+
       {isOpen && (
         <CrudForm
           fields={fields}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           operation={operation}
-          asDialog={true}
+          asDialog={false}
           validationSchema={validationSchema}
           steps={steps}
         />
