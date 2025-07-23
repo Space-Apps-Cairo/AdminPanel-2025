@@ -1,9 +1,16 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+// import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+// export const api = createApi({
+//   reducerPath: "api",
+//   baseQuery: fetchBaseQuery({ baseUrl: "/" }),
+//   endpoints: () => ({}),
+// });
+
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
-  reducerPath: 'api', 
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://your-api-url.com/', 
-  }),
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({ baseUrl: "/" }),
   endpoints: () => ({}),
 });

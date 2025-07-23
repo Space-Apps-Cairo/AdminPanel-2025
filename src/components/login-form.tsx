@@ -1,121 +1,92 @@
 
+  "use client";
 
 
 
- "use client";
+"use client";
 
-import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginMutation } from "@/features/auth/authApi";
-import { useDispatch } from "react-redux";
-import { setToken } from "@/features/auth/authSlice";
-import { useRouter } from "next/navigation";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useLoginMutation } from "@/features/auth/authApi";
+import { setToken } from "@/features/auth/authSlice";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+const formSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
-
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function LoginForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm({
+    resolver: zodResolver(formSchema),
   });
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { data, error, isSuccess }] = useLoginMutation();
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (values: any) => {
     try {
-      const result = await login(data).unwrap();
-      dispatch(setToken(result.token));
-      router.push("/dashboard");
+      const res = await login(values).unwrap();
+      dispatch(setToken(res.token));
+      router.push("/");
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("Login failed", err);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0 shadow-lg">
-        <CardContent className="grid p-0 md:grid-cols-2 max-w-4xl mx-auto">
-          {/* LEFT: Form */}
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="p-6 md:p-10 flex flex-col gap-4"
-          >
-            <div className="flex flex-col items-center text-center mb-2">
-              <h1 className="text-2xl font-bold">Welcome back</h1>
-              <p className="text-muted-foreground text-sm">
-                Login to your Acme Inc account
-              </p>
-            </div>
+    <div className="bg-white rounded-xl shadow-md overflow-hidden flex w-[700px] h-[400px]">
+      {/* Left side - Form */}
+      <div className="w-1/2 p-6 flex flex-col justify-center">
+        <h2 className="text-2xl font-bold mb-2">Welcome back</h2>
+        <p className="text-gray-500 mb-4">Login to your Acme Inc account</p>
 
-            {/* Email */}
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                {...register("email")}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
-              )}
-            </div>
-
-            {/* Password */}
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password")}
-              />
-              {errors.password && (
-                <p className="text-red-500 text-sm">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-
-            {}
-            <Button
-              type="submit"
-              className="w-full mt-4" 
-              disabled={isLoading}
-            >
-              {isLoading ? "Logging in..." : "Login"}
-            </Button>
-          </form>
-
-          {/* RIGHT: NASA Image */}
-          <div className="relative hidden md:block bg-black max-h-[400px] overflow-hidden">
-            <img
-              src="/images/login-photo.jpeg"
-              alt="NASA Visual"
-              className="w-full h-full object-cover object-top brightness-[0.85]"
-            />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label>Email</label>
+            <Input placeholder="m@example.com" {...register("email")} />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
           </div>
-        </CardContent>
-      </Card>
+
+          <div>
+            <label>Password</label>
+            <Input type="password" {...register("password")} />
+            {errors.password && (
+              <p className="text-red-500 text-sm">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <Button type="submit" className="w-full">
+            Login
+          </Button>
+        </form>
+      </div>
+
+      {/* Right side - NASA image */}
+      <div className="w-1/2 relative">
+        <img
+          src="/images/login-photo.jpeg"
+          alt="NASA"
+          className="w-full h-full object-cover"
+        />
+      </div>
     </div>
   );
-}
+}//cityslicka
+
