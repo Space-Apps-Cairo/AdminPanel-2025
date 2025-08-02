@@ -1,13 +1,16 @@
 "use client";
-import { api } from '@/services/api';
 
-import { LoginRequest, LoginResponse } from "@/types/auth.types";
 
-export const authApi = api.injectEndpoints({
+// src/features/auth/authApi.ts
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const authApi = createApi({
+  reducerPath: "authApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://reqres.in/api" }),
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginRequest>({
+    login: builder.mutation({
       query: (credentials) => ({
-        url: "auth/login",
+        url: "/login",
         method: "POST",
         body: credentials,
       }),
