@@ -1,8 +1,11 @@
 "use client";
 
-import { Provider } from "react-redux";
-import { store } from "@/app/store";
+import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  return <Provider store={store}>{children}</Provider>;
+export function ThemeProvider({
+  children,
+  ...props
+}: React.ComponentProps<typeof NextThemesProvider>) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
