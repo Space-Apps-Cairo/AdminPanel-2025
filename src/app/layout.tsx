@@ -11,7 +11,7 @@ import {
     BreadcrumbList, BreadcrumbPage,
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import { ThemeProvider } from "@/providers/theme-provider"
+import { ThemeProvider } from ""
 import ModeToggle from "@/components/ui/theme-toggle"
 import { StoreProvider } from "@/service/store/StoreProvider";
 
