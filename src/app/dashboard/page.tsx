@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import CardsGrid from "@/components/cards/CardsGrid";
+import { AppSidebar } from "@/components/app-sidebar"; 
 
 export type CardData = {
   title?: string;
@@ -32,6 +33,7 @@ export type CardData = {
 export default function Dashboard() {
   const [cardsData, setCardsData] = useState<CardData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -49,15 +51,24 @@ export default function Dashboard() {
     fetchCards();
   }, []);
 
+  const filteredCards = cardsData.filter((card) =>
+    card.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return <div className="p-4">Loading dashboard...</div>;
   }
 
   return (
-    <div className="p-4">
-      <CardsGrid data={cardsData} />
-    </div>
+     
+  
+   <div>
+     <AppSidebar onSearch={setSearchQuery} />
+
+      <main className="flex-1 p-4">
+        <CardsGrid data={filteredCards} />
+      </main>
+   </div>
+     
   );
 }
-
- 

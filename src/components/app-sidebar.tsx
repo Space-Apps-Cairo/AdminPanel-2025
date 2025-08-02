@@ -25,6 +25,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import SearchBar from "@/components/search-bar"; 
 
 // This is sample data.
 const data = {
@@ -156,11 +157,15 @@ const data = {
   ],
 }
 
+
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+          <SearchBar />
+          <TeamSwitcher teams={data.teams} />
+      
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
