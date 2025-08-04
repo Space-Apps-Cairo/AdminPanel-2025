@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,7 +8,7 @@ import FormPreview from './FormPreview';
 import FormTemplates from './FormTemplates';
 import FormSettings from './FormSettings';
 import StepsManager from './StepsManager';
-import { FormSchema, FormField, FormStep } from '@/types/formBuilder';
+import { FormSchema, FormField, FormStep } from '@/types/form';
 import { Button } from '@/components/ui/button';
 import { Save, Download, Upload, Eye, Settings, Palette } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -24,16 +24,16 @@ const FormBuilder = () => {
     createdAt: new Date(),
     updatedAt: new Date()
   });
-  
+
   const [currentStepId, setCurrentStepId] = useState<string | null>(null);
-  
+
   const [activeTab, setActiveTab] = useState('builder');
   const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
   const addField = (field: FormField) => {
     const newField = { ...field, id: Date.now().toString() };
-    
+
     setCurrentForm(prev => {
       if (prev.isMultiStep && currentStepId && prev.steps) {
         // Add to specific step
@@ -75,7 +75,7 @@ const FormBuilder = () => {
       } else {
         return {
           ...prev,
-          fields: prev.fields.map(field => 
+          fields: prev.fields.map(field =>
             field.id === fieldId ? { ...field, ...updates } : field
           ),
           updatedAt: new Date()
@@ -111,16 +111,16 @@ const FormBuilder = () => {
       if (prev.isMultiStep && currentStepId && prev.steps) {
         const currentStep = prev.steps.find(step => step.id === currentStepId);
         if (!currentStep) return prev;
-        
+
         const fields = [...currentStep.fields];
         const draggedField = fields[dragIndex];
         fields.splice(dragIndex, 1);
         fields.splice(hoverIndex, 0, draggedField);
-        
+
         const updatedSteps = prev.steps.map(step =>
           step.id === currentStepId ? { ...step, fields } : step
         );
-        
+
         return {
           ...prev,
           steps: updatedSteps,
@@ -131,7 +131,7 @@ const FormBuilder = () => {
         const draggedField = fields[dragIndex];
         fields.splice(dragIndex, 1);
         fields.splice(hoverIndex, 0, draggedField);
-        
+
         return {
           ...prev,
           fields,
@@ -144,65 +144,71 @@ const FormBuilder = () => {
   const exportForm = () => {
     // Convert to the new format
     const exportData: any = {
-      form: {
-        title: currentForm.name,
-        description: currentForm.description || ''
-      }
+      title: currentForm.name,
+      description: currentForm.description || '',
+      steps: []
     };
-    
+
     if (currentForm.isMultiStep && currentForm.steps) {
       // Multi-step form
-      currentForm.steps.forEach((step, index) => {
-        const stepFields = [
-          {
-            title: step.name,
-            description: step.description || ''
-          },
-          ...step.fields.map(field => ({
-            label: field.label,
-            type: field.type,
-            placeholder: field.placeholder || '',
-            validation: field.validation || {},
-            dependsOn: field.dependencies ? {
-              field: field.dependencies[0]?.field || '',
-              value: field.dependencies[0]?.value || '',
-              action: field.dependencies[0]?.action || 'show'
-            } : {}
-          }))
-        ];
-        exportData[`step${index + 1}`] = stepFields;
-      });
-    } else {
-      // Single step form
-      exportData.step1 = [
-        {
-          title: currentForm.name,
-          description: currentForm.description || ''
-        },
-        ...currentForm.fields.map(field => ({
+      exportData.steps = currentForm.steps.map(step => ({
+        title: step.name,
+        description: step.description || '',
+        fields: step.fields.map(field => ({
           label: field.label,
+          name: field.name || field.label.toLowerCase().replace(/\s+/g, ''),
           type: field.type,
           placeholder: field.placeholder || '',
-          validation: field.validation || {},
-          dependsOn: field.dependencies ? {
-            field: field.dependencies[0]?.field || '',
-            value: field.dependencies[0]?.value || '',
-            action: field.dependencies[0]?.action || 'show'
-          } : {}
+          validation: {
+            required: field.required,
+            ...field.validation
+          },
+          dependsOn: field.dependsOn || (field.dependencies && field.dependencies[0] ? {
+            field: field.dependencies[0].field,
+            value: field.dependencies[0].value
+          } : {}),
+          isComeFromApi: field.isComeFromApi || false,
+          endpoint: field.endpoint || '',
+          body: field.body || '',
+          options: field.options || []
         }))
-      ];
+      }));
+    } else {
+      // Single step form
+      exportData.steps = [{
+        title: currentForm.name,
+        description: currentForm.description || '',
+        fields: currentForm.fields.map(field => ({
+          label: field.label,
+          name: field.name || field.label.toLowerCase().replace(/\s+/g, ''),
+          type: field.type,
+          placeholder: field.placeholder || '',
+          validation: {
+            required: field.required,
+            ...field.validation
+          },
+          dependsOn: field.dependsOn || (field.dependencies && field.dependencies[0] ? {
+            field: field.dependencies[0].field,
+            value: field.dependencies[0].value
+          } : {}),
+          isComeFromApi: field.isComeFromApi || false,
+          endpoint: field.endpoint || '',
+          body: field.body || '',
+          options: field.options || []
+        }))
+      }];
     }
-    
+
     const dataStr = JSON.stringify(exportData, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
     const exportFileDefaultName = `${currentForm.name.replace(/\s+/g, '_')}_form.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
-    
+
     toast({
       title: "Form Exported",
       description: "Your form has been exported successfully!",
@@ -292,10 +298,10 @@ const FormBuilder = () => {
       category: 'Custom',
       schema: currentForm
     };
-    
+
     templates.push(template);
     localStorage.setItem('formTemplates', JSON.stringify(templates));
-    
+
     toast({
       title: "Template Saved",
       description: "Your form has been saved as a template!",
@@ -339,7 +345,7 @@ const FormBuilder = () => {
             </Button>
           </div>
         </div>
-        
+
         <Button
           onClick={() => setShowPreview(!showPreview)}
           className={`transition-colors ${showPreview ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 hover:bg-gray-700'}`}
@@ -359,7 +365,7 @@ const FormBuilder = () => {
             currentStepId={currentStepId}
             onSelectStep={setCurrentStepId}
           />
-          
+
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="fields" className="text-xs">
@@ -374,15 +380,18 @@ const FormBuilder = () => {
                 Settings
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="fields" className="mt-4">
               <FormFieldsPanel onAddField={addField} />
             </TabsContent>
-            
+
             <TabsContent value="templates" className="mt-4">
-              <FormTemplates onSelectTemplate={setCurrentForm} />
+              <FormTemplates
+                onSelectTemplate={setCurrentForm}
+                preserveMultiStep={currentForm.isMultiStep}
+              />
             </TabsContent>
-            
+
             <TabsContent value="settings" className="mt-4">
               <FormSettings form={currentForm} onUpdateForm={setCurrentForm} />
             </TabsContent>
