@@ -1,11 +1,9 @@
- import { ColumnDef } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Eye, SquarePen, Trash } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { User
- } from "@/types/user"
-
+import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Eye, SquarePen, Trash } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { User } from "@/types/user";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -52,12 +50,12 @@ export const userColumns: ColumnDef<User>[] = [
     header: "Balance",
     accessorKey: "balance",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("balance"))
+      const amount = parseFloat(row.getValue("balance"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(amount)
-      return formatted
+      }).format(amount);
+      return formatted;
     },
     size: 120,
   },
@@ -80,4 +78,4 @@ export const userColumns: ColumnDef<User>[] = [
     size: 150,
     enableHiding: false,
   },
-]
+];
