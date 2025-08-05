@@ -2,13 +2,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import cookieService from "../cookies/cookieService";
 
 export const api = createApi({
-
   reducerPath: "api",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: `https://ecommerce.routemisr.com/api/v1`,
+    baseUrl: process.env.PUBLIC_API_ENDPOINT,
     prepareHeaders: (headers) => {
-
       headers.set("Accept", "application/json");
       const token = cookieService.get("token");
       if (token) {
@@ -16,11 +14,9 @@ export const api = createApi({
       }
       return headers;
     },
-  }), 
+  }),
 
-  tagTypes: [
-    "Login",
-  ],
+  tagTypes: ["Login"],
 
   endpoints: () => ({}), // start empty
 });

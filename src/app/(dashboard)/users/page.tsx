@@ -40,7 +40,7 @@ export default function Users() {
   }, []);
 
   const searchConfig: SearchConfig = {
-    enabled: true,
+    enabled: true, //
     placeholder: "Filter by name or email",
     searchKeys: ["name", "email"],
   };
