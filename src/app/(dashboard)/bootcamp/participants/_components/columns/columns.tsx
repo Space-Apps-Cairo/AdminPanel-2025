@@ -139,7 +139,7 @@ export const userColumns: ColumnDef<User>[] = [
         validationSchema={userValidationSchema}
       />
     ),
-    size: 130,
+    size: 150,
     enableHiding: false,
   },
 ];

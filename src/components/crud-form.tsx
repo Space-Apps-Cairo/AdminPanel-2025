@@ -220,7 +220,7 @@ export default function CrudForm(props: {
 
                 {field.type === "date" && (
                   <div className="grid gap-3">
-                    <Label>{field.placeholder}</Label>
+                    <Label>{field.label ?? field.placeholder}</Label>
                     <Controller
                       name={`${field.name}`}
                       control={control}
