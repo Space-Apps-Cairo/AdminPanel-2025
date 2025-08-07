@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 // Generic type for table data
 export type DataTableRow = {
-    id: string
+    id: number | string
     [key: string]: unknown
 }
 
@@ -16,7 +16,7 @@ export interface SearchConfig {
 // Configuration for status filters
 export interface StatusConfig {
     enabled: boolean
-    columnKey: string
+    columnKey?: string
     title?: string
 }
 
@@ -28,7 +28,7 @@ export interface ActionConfig {
     showExport?: boolean
     addButtonText?: string
     onAdd?: () => void
-    // onExport?:(type:"pdf"|"excel"|"csv")=> void
+    onExport?:(type:"pdf"|"excel"|"csv")=> void
     customActions?: React.ReactNode
 }
 
@@ -45,5 +45,6 @@ export interface DataTableProps<TData extends DataTableRow> {
     enableColumnVisibility?: boolean
     enableSorting?: boolean
     enableSelection?: boolean
-    className?: string
+    className?: string,
+    allowTrigger? : boolean
 }

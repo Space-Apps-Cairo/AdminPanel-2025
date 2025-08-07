@@ -9,7 +9,7 @@ export type Schedule = {
 }
 
 export type Workshop = {
-    id: number
+    id: number | string
     title: string
     description: string
     start_date: string

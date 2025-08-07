@@ -1,10 +1,11 @@
+import { api } from "@/service/Api/api";
 import { WorkshopRes } from "@/types/workshop";
-import { api } from "./api";
 
 const workshopsApi = api.injectEndpoints({
     endpoints: (build) => ({
         getAllWorkshops: build.query<WorkshopRes, void>({
-            query: () => '/secure-handle',
+            query: () => '/workshop-mangment',
+            providesTags: ['Workshop'],
         })
     })
 });

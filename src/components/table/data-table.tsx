@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useRef,useId, useMemo,  useState } from "react";
+import {useRef,useId, useMemo,  useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -80,10 +80,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { DataTableRow, DataTableProps } from "@/types/table";
 import { exportToExcel, exportToPDF, exportToCSV } from "@/lib/exporter";
-import { ActionConfig } from "@/types/table";
 // Create a global filter function for multi-column search
 const createGlobalFilterFn = <TData extends DataTableRow>(
   searchKeys: string[]
@@ -116,14 +126,15 @@ export default function DataTable<TData extends DataTableRow>({
   statusConfig = { enabled: false, columnKey: "" },
   actionConfig = { enabled: false },
   onDataChange,
-  // loading = false,
   error,
   pageSize = 10,
   enableColumnVisibility = true,
   enableSorting = true,
   enableSelection = true,
+  allowTrigger = false,
   className,
 }: DataTableProps<TData>) {
+
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -185,7 +196,7 @@ export default function DataTable<TData extends DataTableRow>({
 
     cols.push(...updatedBaseColumns);
     return cols;
-  }, [baseColumns, enableSelection, searchConfig, statusConfig]);
+  }, [baseColumns, enableSelection, statusConfig]);
 
   const handleDeleteRows = () => {
     if (!onDataChange) return;
@@ -230,52 +241,51 @@ export default function DataTable<TData extends DataTableRow>({
 
   //handle Export
 
-const handleExport = (type: string) => {
-  const exportData = table.getFilteredRowModel().rows.map((r) => r.original)
-  if  (type === "excel") exportToExcel(exportData)
-  else if (type === "pdf") exportToPDF(exportData)
-  else if (type === "csv") exportToCSV(exportData)
+  const handleExport = (type: string) => {
+    const exportData = table.getFilteredRowModel().rows.map((r) => r.original)
+    if  (type === "excel") exportToExcel(exportData)
+    else if (type === "pdf") exportToPDF(exportData)
+    else if (type === "csv") exportToCSV(exportData)
 
-}
-
+  }
 
   // Get unique status values for status filter
   const uniqueStatusValues = useMemo(() => {
-    if (!statusConfig.enabled) return [];
+    if (!statusConfig.enabled || !statusConfig.columnKey) return [];
     const statusColumn = table.getColumn(statusConfig.columnKey);
     if (!statusColumn) return [];
     const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
     return values.sort();
   }, [
-    table.getColumn(statusConfig.columnKey)?.getFacetedUniqueValues(),
     statusConfig.enabled,
+    statusConfig.columnKey, table
   ]);
 
   const statusCounts = useMemo(() => {
-    if (!statusConfig.enabled) return new Map();
+    if (!statusConfig.enabled || !statusConfig.columnKey) return new Map();
 
     const statusColumn = table.getColumn(statusConfig.columnKey);
     if (!statusColumn) return new Map();
     return statusColumn.getFacetedUniqueValues();
   }, [
-    table.getColumn(statusConfig.columnKey)?.getFacetedUniqueValues(),
     statusConfig.enabled,
+    statusConfig.columnKey, table
   ]);
 
   const selectedStatuses = useMemo(() => {
-    if (!statusConfig.enabled) return [];
+    if (!statusConfig.enabled || !statusConfig.columnKey) return [];
 
     const filterValue = table
       .getColumn(statusConfig.columnKey)
       ?.getFilterValue() as string[];
     return filterValue ?? [];
   }, [
-    table.getColumn(statusConfig.columnKey)?.getFilterValue(),
     statusConfig.enabled,
+    statusConfig.columnKey, table
   ]);
 
   const handleStatusChange = (checked: boolean, value: string) => {
-    if (!statusConfig.enabled) return;
+    if (!statusConfig.enabled || !statusConfig.columnKey) return;
 
     const filterValue = table
       .getColumn(statusConfig.columnKey)
@@ -537,108 +547,178 @@ const handleExport = (type: string) => {
       </div>
 
       {/* Table */}
-      <div className="bg-background overflow-hidden rounded-md border">
-        <Table className="table-fixed">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      style={{
-                        width: header.getSize()
-                          ? `${header.getSize()}px`
-                          : undefined,
-                      }}
-                      className="h-11"
-                    >
-                      {header.isPlaceholder ? null : header.column.getCanSort() ? (
-                        <div
-                          className={cn(
-                            header.column.getCanSort() &&
-                              "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
-                          )}
-                          onClick={header.column.getToggleSortingHandler()}
-                          onKeyDown={(e) => {
-                            if (
-                              header.column.getCanSort() &&
-                              (e.key === "Enter" || e.key === " ")
-                            ) {
-                              e.preventDefault();
-                              header.column.getToggleSortingHandler()?.(e);
-                            }
+      <Tabs defaultValue="table" className="w-full">
+        {allowTrigger && <TabsList>
+          <TabsTrigger className="p-2.5 cursor-pointer" value="table">Table</TabsTrigger>
+          <TabsTrigger className="p-2.5 cursor-pointer" value="cards">Cards</TabsTrigger>
+        </TabsList>}
+        <TabsContent value="table">
+          <div className="bg-background overflow-hidden rounded-md border">
+            <Table className="table-fixed">
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead
+                          key={header.id}
+                          style={{
+                            width: header.getSize()
+                              ? `${header.getSize()}px`
+                              : undefined,
                           }}
-                          tabIndex={header.column.getCanSort() ? 0 : undefined}
+                          className="h-11"
                         >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                            <div
+                              className={cn(
+                                header.column.getCanSort() &&
+                                  "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+                              )}
+                              onClick={header.column.getToggleSortingHandler()}
+                              onKeyDown={(e) => {
+                                if (
+                                  header.column.getCanSort() &&
+                                  (e.key === "Enter" || e.key === " ")
+                                ) {
+                                  e.preventDefault();
+                                  header.column.getToggleSortingHandler()?.(e);
+                                }
+                              }}
+                              tabIndex={header.column.getCanSort() ? 0 : undefined}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
 
-                          <div className="flex flex-col">
-                            <ChevronUpIcon
-                              className={cn(
-                                "shrink-0 transition-opacity",
-                                header.column.getIsSorted() === "asc"
-                                  ? "opacity-100"
-                                  : "opacity-30"
-                              )}
-                              size={12}
-                            />
-                            <ChevronDownIcon
-                              className={cn(
-                                "shrink-0 transition-opacity -mt-1",
-                                header.column.getIsSorted() === "desc"
-                                  ? "opacity-100"
-                                  : "opacity-30"
-                              )}
-                              size={12}
-                            />
-                          </div>
-                        </div>
-                      ) : (
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )
-                      )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
+                              <div className="flex flex-col">
+                                <ChevronUpIcon
+                                  className={cn(
+                                    "shrink-0 transition-opacity",
+                                    header.column.getIsSorted() === "asc"
+                                      ? "opacity-100"
+                                      : "opacity-30"
+                                  )}
+                                  size={12}
+                                />
+                                <ChevronDownIcon
+                                  className={cn(
+                                    "shrink-0 transition-opacity -mt-1",
+                                    header.column.getIsSorted() === "desc"
+                                      ? "opacity-100"
+                                      : "opacity-30"
+                                  )}
+                                  size={12}
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )
+                          )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="last:py-0">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
+        <TabsContent value="cards">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="last:py-0">
+                <Card key={row.id}>
+                  <CardHeader>
+                    <CardTitle>
                       {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                        row.getVisibleCells()[1]?.column.columnDef.cell,
+                        row.getVisibleCells()[1]?.getContext()
                       )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                    </CardTitle>
+                    {row.getVisibleCells()[2] && (
+                      <CardDescription>
+                        {flexRender(
+                          row.getVisibleCells()[2]?.column.columnDef.cell,
+                          row.getVisibleCells()[2]?.getContext()
+                        )}
+                      </CardDescription>
+                    )}
+                    <CardAction>
+                      {flexRender(
+                        row.getVisibleCells()[0]?.column.columnDef.cell,
+                        row.getVisibleCells()[0]?.getContext()
+                      )}
+                    </CardAction>
+                  </CardHeader>
+                  <div className="mx-5 border-t border-border/50"></div>
+                  <CardContent className="flex flex-col gap-2.5">
+                    {row.getVisibleCells().slice(1, -1).map(cell => (
+                      <div key={cell.id} className="flex items-center gap-2.5">
+                        <h3 className="text-sm font-medium">
+                          {cell.column.id} :
+                        </h3>
+                        <CardDescription>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </CardDescription>
+                      </div>
+                    ))}
+                  </CardContent>
+                  <div className="mx-5 border-t border-border/50"></div>
+                  <CardFooter className="flex justify-end">
+                    {(() => {
+                      const lastCell = row.getVisibleCells()[row.getVisibleCells().length - 1];
+                      return flexRender(
+                        lastCell?.column.columnDef.cell,
+                        lastCell?.getContext()
+                      );
+                    })()}
+                  </CardFooter>
+                </Card>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
+              <div className="col-span-full text-center py-8 text-muted-foreground">
+                No results.
+              </div>
             )}
-          </TableBody>
-        </Table>
-      </div>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Pagination */}
       <div className="flex flex-wrap items-center justify-center gap-8">
