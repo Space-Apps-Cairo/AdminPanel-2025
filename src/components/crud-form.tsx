@@ -29,9 +29,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import type { Field, FieldOption } from "@/app/interface";
-import { Controller, useForm, type FieldValues } from "react-hook-form";
+import {
+  Controller,
+  FormProvider,
+  useForm,
+  type FieldValues,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Stepper,
@@ -40,6 +44,7 @@ import {
   StepperSeparator,
   StepperTrigger,
 } from "@/components/ui/stepper";
+import DynamicArrayField from "./fields/DynamicArrayFields";
 
 export default function CrudForm(props: {
   operation: "add" | "edit" | "preview";
@@ -76,17 +81,19 @@ export default function CrudForm(props: {
         : "";
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-    getValues,
-    control,
-  } = useForm({
+  // Replace useForm with FormProvider
+  const methods = useForm({
     defaultValues,
     resolver: zodResolver(validationSchema),
   });
+
+  const {
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    control,
+    register,
+  } = methods; // Destructure from methods
 
   const onSubmit = async (data: FieldValues) => {
     console.log(data);
@@ -266,6 +273,22 @@ export default function CrudForm(props: {
                     <Label htmlFor={field.name}>{field.label}</Label>
                   </div>
                 )}
+                {field.type === "dynamicArrayField" && (
+                  <DynamicArrayField
+                    minItems={1}
+                    name={field.name}
+                    addButtonLabel={
+                      field.dynamicArrayFieldsConfig?.addButtonLabel ??
+                      field.label
+                    }
+                    simpleArray={field.dynamicArrayFieldsConfig?.isSimpleArray}
+                    fieldsConfig={field.dynamicArrayFieldsConfig?.fields}
+                    itemName={
+                      field.dynamicArrayFieldsConfig?.itemName ?? "item"
+                    }
+                    disabled={operation == "preview"}
+                  />
+                )}
               </Fragment>
             )
         )}
@@ -314,9 +337,11 @@ export default function CrudForm(props: {
       <DialogContent
         className={`sm:max-w-[425px] ${!asDialog ? fullPageStyle : ""}`}
       >
-        <form onSubmit={handleSubmit(onSubmit)} className={`space-y-6 `}>
-          {FormBody}
-        </form>
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className={`space-y-6 `}>
+            {FormBody}
+          </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

@@ -8,8 +8,14 @@ export interface Field {
   type: string;
   label?: string;
   placeholder?: string;
-  defaultValue?: string|boolean;
+  defaultValue?: string | boolean;
   value?: string;
   options?: FieldOption[];
-  step?:number
+  step?: number;
+  dynamicArrayFieldsConfig?: {
+    fields?: Field[];
+    isSimpleArray?: boolean; // [1,2,3] , [{},{}]
+    addButtonLabel?: string;
+    itemName?: string;
+  };
 }

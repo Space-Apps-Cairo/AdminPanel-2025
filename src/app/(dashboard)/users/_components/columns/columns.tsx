@@ -54,6 +54,18 @@ export const getUsersFields = (userData?: User): Field[] => [
     defaultValue: true,
     step: 2,
   },
+  {
+    name: "arrayFields",
+    type: "dynamicArrayField",
+    dynamicArrayFieldsConfig: {
+      fields: [
+        { name: "title", type: "text", label: "Title" },
+        { name: "content", type: "textArea", label: "Content" },
+      ],
+      itemName: "Topic",
+    },
+    step: 2,
+  },
 ];
 
 export const userColumns: ColumnDef<User>[] = [
