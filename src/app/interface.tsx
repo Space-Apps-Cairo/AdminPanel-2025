@@ -11,4 +11,5 @@ export interface Field {
   defaultValue?: string|boolean;
   value?: string;
   options?: FieldOption[];
+  step?:number
 }

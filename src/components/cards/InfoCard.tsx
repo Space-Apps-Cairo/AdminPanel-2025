@@ -4,7 +4,7 @@ import AppBarChart from "../charts/AppBarChart";
 import AppLineChart from "../charts/AppLineChart";
 import AppPieChart from "../charts/AppPieChart";
 import AppAreaChart from "../charts/AppAreaChart";
-import type { CardData } from "@/app/dashboard/page";
+import type { CardData } from "@/app/(dashboard)/dashboard/page";
 
 export default function InfoCard(props: CardData) {
   const {
@@ -49,7 +49,6 @@ export default function InfoCard(props: CardData) {
           config={chartConfig}
           lines={lines || []}
           xAxisKey={(xAxisKey ?? dataKey) as string}
-
         />
       );
       break;
@@ -60,7 +59,6 @@ export default function InfoCard(props: CardData) {
           config={chartConfig}
           areas={areas || []}
           xAxisKey={(xAxisKey ?? dataKey) as string}
-
         />
       );
       break;
@@ -81,8 +79,7 @@ export default function InfoCard(props: CardData) {
 
   return (
     <Card
-      className=
-      {`rounded-2xl transition ${
+      className={`rounded-2xl transition ${
         isArea
           ? "bg-transparent border-none shadow-none"
           : gradient
@@ -119,10 +116,3 @@ export default function InfoCard(props: CardData) {
     </Card>
   );
 }
-
-
-
-
-
-
- 
