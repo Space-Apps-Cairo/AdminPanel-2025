@@ -44,7 +44,7 @@ import {
   StepperSeparator,
   StepperTrigger,
 } from "@/components/ui/stepper";
-import DynamicArrayField from "./fields/DynamicArrayFields";
+import DynamicArrayField from "@/components/fields/DynamicArrayFields";
 
 export default function CrudForm(props: {
   operation: "add" | "edit" | "preview";
@@ -52,8 +52,10 @@ export default function CrudForm(props: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   asDialog?: boolean;
-  validationSchema: any;
+  validationSchema: any ;
   steps?: number[];
+  
+  onSubmit: (values: FieldValues) => Promise<void>;  
 }) {
   const {
     operation,
@@ -63,6 +65,7 @@ export default function CrudForm(props: {
     asDialog = true,
     validationSchema,
     steps,
+    onSubmit: onSubmitProp,
   } = props;
 
   const fullPageStyle = "!w-screen !h-screen !max-w-none !p-8";
@@ -71,7 +74,6 @@ export default function CrudForm(props: {
   const isDisabled = operation === "preview";
 
   const defaultValues: Record<string, any> = {};
-
   fields.forEach((field: Field) => {
     defaultValues[field.name] =
       field.defaultValue !== undefined
@@ -81,7 +83,6 @@ export default function CrudForm(props: {
         : "";
   });
 
-  // Replace useForm with FormProvider
   const methods = useForm({
     defaultValues,
     resolver: zodResolver(validationSchema),
@@ -93,24 +94,26 @@ export default function CrudForm(props: {
     reset,
     control,
     register,
-  } = methods; // Destructure from methods
+  } = methods;
 
-  const onSubmit = async (data: FieldValues) => {
-    console.log(data);
-    const formData = new FormData();
-
-    Object.entries(data).forEach(([key, value]) => {
-      if (value instanceof FileList) {
-        formData.append(key, value[0]);
-      } else {
-        formData.append(key, value);
-      }
-    });
-
-    console.log([...formData.entries()]);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    reset();
+ 
+  const handleFormSubmit = async (data: FieldValues) => {
+    if (onSubmitProp) {
+      await onSubmitProp(data);
+    } else {
+      console.log(data);
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value instanceof FileList) {
+          formData.append(key, value[0]);
+        } else {
+          formData.append(key, value);
+        }
+      });
+      console.log([...formData.entries()]);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      reset();
+    }
   };
 
   const FormBody = (
@@ -269,10 +272,10 @@ export default function CrudForm(props: {
                         />
                       )}
                     />
-
                     <Label htmlFor={field.name}>{field.label}</Label>
                   </div>
                 )}
+
                 {field.type === "dynamicArrayField" && (
                   <DynamicArrayField
                     minItems={1}
@@ -323,7 +326,7 @@ export default function CrudForm(props: {
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           {!isDisabled && (
-            <Button type="submit">
+            <Button type="submit" disabled={isSubmitting}>
               {operation === "edit" ? "Update" : "Submit"}
             </Button>
           )}
@@ -338,7 +341,7 @@ export default function CrudForm(props: {
         className={`sm:max-w-[425px] ${!asDialog ? fullPageStyle : ""}`}
       >
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className={`space-y-6 `}>
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
             {FormBody}
           </form>
         </FormProvider>

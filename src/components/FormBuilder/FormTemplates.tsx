@@ -8,6 +8,7 @@ import { FileText, Users, Building, Calendar, Phone, Mail } from 'lucide-react';
 
 interface FormTemplatesProps {
   onSelectTemplate: (form: FormSchema) => void;
+  preserveMultiStep?: boolean;
 }
 
 const defaultTemplates: FormTemplate[] = [
@@ -25,6 +26,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '1',
           type: 'text',
           label: 'Full Name',
+          name: 'fullName',
           placeholder: 'Enter your full name',
           required: true
         },
@@ -32,6 +34,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '2',
           type: 'email',
           label: 'Email Address',
+          name: 'email',
           placeholder: 'Enter your email',
           required: true
         },
@@ -39,6 +42,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '3',
           type: 'phone',
           label: 'Phone Number',
+          name: 'phone',
           placeholder: 'Enter your phone number',
           required: false
         },
@@ -46,6 +50,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '4',
           type: 'select',
           label: 'Subject',
+          name: 'subject',
           placeholder: 'Select a subject',
           required: true,
           options: [
@@ -59,6 +64,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '5',
           type: 'textarea',
           label: 'Message',
+          name: 'message',
           placeholder: 'Enter your message',
           required: true
         }
@@ -81,6 +87,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '1',
           type: 'text',
           label: 'Full Name',
+          name: 'fullName',
           placeholder: 'Enter your full name',
           required: true
         },
@@ -88,6 +95,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '2',
           type: 'email',
           label: 'Email Address',
+          name: 'email',
           placeholder: 'Enter your email',
           required: true
         },
@@ -95,6 +103,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '3',
           type: 'radio',
           label: 'Ticket Type',
+          name: 'ticketType',
           required: true,
           options: [
             { label: 'Standard Ticket - $50', value: 'standard' },
@@ -106,6 +115,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '4',
           type: 'checkbox',
           label: 'Dietary Restrictions',
+          name: 'dietaryRestrictions',
           required: false,
           options: [
             { label: 'Vegetarian', value: 'vegetarian' },
@@ -118,6 +128,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '5',
           type: 'textarea',
           label: 'Special Requirements',
+          name: 'specialRequirements',
           placeholder: 'Any special requirements or comments?',
           required: false
         }
@@ -140,6 +151,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '1',
           type: 'text',
           label: 'Full Name',
+          name: 'fullName',
           placeholder: 'Enter your full name',
           required: true
         },
@@ -147,6 +159,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '2',
           type: 'email',
           label: 'Email Address',
+          name: 'email',
           placeholder: 'Enter your email',
           required: true
         },
@@ -154,6 +167,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '3',
           type: 'phone',
           label: 'Phone Number',
+          name: 'phone',
           placeholder: 'Enter your phone number',
           required: true
         },
@@ -161,6 +175,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '4',
           type: 'select',
           label: 'Position Applied For',
+          name: 'position',
           placeholder: 'Select position',
           required: true,
           options: [
@@ -174,6 +189,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '5',
           type: 'number',
           label: 'Years of Experience',
+          name: 'experience',
           placeholder: 'Enter years of experience',
           required: true,
           validation: { min: 0, max: 50 }
@@ -182,12 +198,14 @@ const defaultTemplates: FormTemplate[] = [
           id: '6',
           type: 'file',
           label: 'Resume/CV',
+          name: 'resume',
           required: true
         },
         {
           id: '7',
           type: 'url',
           label: 'Portfolio/LinkedIn URL',
+          name: 'portfolio',
           placeholder: 'https://',
           required: false
         },
@@ -195,6 +213,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '8',
           type: 'textarea',
           label: 'Cover Letter',
+          name: 'coverLetter',
           placeholder: 'Tell us why you\'re perfect for this role...',
           required: true
         }
@@ -217,6 +236,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '1',
           type: 'radio',
           label: 'Overall Satisfaction',
+          name: 'satisfaction',
           required: true,
           options: [
             { label: 'Very Satisfied', value: 'very-satisfied' },
@@ -230,6 +250,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '2',
           type: 'textarea',
           label: 'What did we do well?',
+          name: 'whatWell',
           placeholder: 'Tell us what you liked...',
           required: false,
           dependencies: [
@@ -240,6 +261,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '3',
           type: 'textarea',
           label: 'How can we improve?',
+          name: 'howImprove',
           placeholder: 'Tell us how we can do better...',
           required: true,
           dependencies: [
@@ -250,6 +272,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '4',
           type: 'checkbox',
           label: 'Which features do you use most?',
+          name: 'features',
           required: false,
           options: [
             { label: 'Dashboard', value: 'dashboard' },
@@ -262,6 +285,7 @@ const defaultTemplates: FormTemplate[] = [
           id: '5',
           type: 'radio',
           label: 'Would you recommend us?',
+          name: 'recommend',
           required: true,
           options: [
             { label: 'Definitely', value: 'definitely' },
@@ -278,7 +302,7 @@ const defaultTemplates: FormTemplate[] = [
   }
 ];
 
-const FormTemplates = ({ onSelectTemplate }: FormTemplatesProps) => {
+const FormTemplates = ({ onSelectTemplate, preserveMultiStep = false }: FormTemplatesProps) => {
   const [customTemplates, setCustomTemplates] = useState<FormTemplate[]>([]);
 
   useEffect(() => {
@@ -333,7 +357,21 @@ const FormTemplates = ({ onSelectTemplate }: FormTemplatesProps) => {
             <Card 
               key={template.id} 
               className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-200"
-              onClick={() => onSelectTemplate(template.schema)}
+              onClick={() => {
+                const templateForm = { ...template.schema };
+                if (preserveMultiStep) {
+                  // Convert template fields to a single step if in multi-step mode
+                  templateForm.isMultiStep = true;
+                  templateForm.steps = [{
+                    id: Date.now().toString(),
+                    name: 'Step 1',
+                    description: 'Template fields',
+                    fields: templateForm.fields
+                  }];
+                  templateForm.fields = [];
+                }
+                onSelectTemplate(templateForm);
+              }}
             >
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3">
