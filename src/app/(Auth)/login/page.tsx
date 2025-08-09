@@ -1,7 +1,3 @@
-
-
-
-
 // "use client";
 
 // import { LoginForm } from "@/components/login-form";
@@ -15,8 +11,6 @@
 // }
 
 // "use client" ضروري
-"use client";
-
 "use client";
 
 import { LoginForm } from "@/components/login-form";

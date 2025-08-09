@@ -1,7 +1,4 @@
-
-  "use client";
-
-
+"use client";
 
 "use client";
 
@@ -10,11 +7,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLoginMutation } from "@/features/auth/authApi";
 import { setToken } from "@/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useLoginMutation } from "@/service/Api/login";
+import { setCredentials } from "@/service/store/features/authSlice";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email" }),
@@ -32,14 +30,19 @@ export function LoginForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const [login, { data, error, isSuccess }] = useLoginMutation();
+  const [login, { data, error, isSuccess, isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
   const router = useRouter();
 
   const onSubmit = async (values: any) => {
     try {
       const res = await login(values).unwrap();
-      dispatch(setToken(res.token));
+      dispatch(
+        setCredentials({
+          user: res.user,
+          access_token: res.access_token,
+        })
+      );
       router.push("/");
     } catch (err) {
       console.error("Login failed", err);
@@ -66,13 +69,16 @@ export function LoginForm() {
             <label>Password</label>
             <Input type="password" {...register("password")} />
             {errors.password && (
-              <p className="text-red-500 text-sm">
-                {errors.password.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button
+            type="submit"
+            className="w-full"
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
             Login
           </Button>
         </form>
@@ -88,5 +94,4 @@ export function LoginForm() {
       </div>
     </div>
   );
-}//cityslicka
-
+} //cityslicka
