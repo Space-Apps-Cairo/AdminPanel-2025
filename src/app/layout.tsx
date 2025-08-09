@@ -1,24 +1,29 @@
 
 
-import "./globals.css";
-import type { Metadata } from "next";
-import { Providers } from "@/providers/Providers";
+// src/app/layout.tsx
+import "./globals.css"
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import React from "react"
+
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Login NASA Panel",
-  description: "Login to your account",
-};
+  title: "NASA Admin Panel",
+  description: "Manage participants and more",
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
-      <body>
-        <Providers>{children}</Providers>
+      <body className={inter.className}>
+        {}
+        {children}
       </body>
     </html>
-  );
+  )
 }
