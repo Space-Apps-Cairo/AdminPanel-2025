@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import CardsGrid from "@/components/cards/CardsGrid";
+import { AppSidebar } from "@/components/app-sidebar";
+import { useSearch } from "@/components/ui/search-context";
+import Fuse from "fuse.js";
 
 export type CardData = {
   title?: string;
@@ -32,6 +35,7 @@ export type CardData = {
 export default function Dashboard() {
   const [cardsData, setCardsData] = useState<CardData[]>([]);
   const [loading, setLoading] = useState(true);
+  const { searchQuery } = useSearch();
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -49,15 +53,30 @@ export default function Dashboard() {
     fetchCards();
   }, []);
 
+  // Fuzzy search with fuse.js
+  const fuse = new Fuse(cardsData, {
+    keys: ["title", "description"],
+    threshold: 0.3,
+  });
+
+  const filteredCards = searchQuery
+    ? fuse.search(searchQuery).map((result) => result.item)
+    : cardsData;
+
   if (loading) {
     return <div className="p-4">Loading dashboard...</div>;
   }
 
   return (
-    <div className="p-4">
-      <CardsGrid data={cardsData} />
+    <div>
+      <AppSidebar />
+      <main className="flex-1 p-4">
+        {filteredCards.length === 0 ? (
+          <div className="text-center text-gray-500">No results found.</div>
+        ) : (
+          <CardsGrid data={filteredCards} />
+        )}
+      </main>
     </div>
   );
 }
-
- 

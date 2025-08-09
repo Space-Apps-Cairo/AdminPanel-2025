@@ -17,10 +17,10 @@ import {
 import CrudForm from "@/components/crud-form";
 import { Button } from "@/components/ui/button";
 import {
-  useDeleteUserMutation,
-  useUpdateUserMutation,
-  useGetUsersQuery,
-} from "@/service/Api/userApi";
+  useDeleteBootcampMutation,
+  useUpdateBootcampMutation,
+  useGetBootcampsQuery,
+} from "@/service/Api/bootcamp";
 
 export default function RowsActions({
   steps,
@@ -35,9 +35,9 @@ export default function RowsActions({
   const [isOpen, setIsOpen] = useState(false);
   const [operation, setOperation] = useState<OperationType>("edit");
 
-  const [deleteUser] = useDeleteUserMutation();
-  const [updateUser] = useUpdateUserMutation();
-  const { refetch } = useGetUsersQuery();
+  const [deleteBootcamp] = useDeleteBootcampMutation();
+  const [updateBootcamp] = useUpdateBootcampMutation();
+  const { refetch } = useGetBootcampsQuery();
 
   const handleButtonClick = (op: OperationType) => {
     setOperation(op);
@@ -47,7 +47,7 @@ export default function RowsActions({
   const handleDeleteRow = async () => {
     if (rowData?.id) {
       try {
-        await deleteUser({ id: rowData.id }).unwrap();
+        await deleteBootcamp(rowData.id).unwrap();
         await refetch();
       } catch (error) {
         console.error("Delete error:", error);
@@ -66,11 +66,10 @@ export default function RowsActions({
           asDialog={asDialog}
           validationSchema={validationSchema}
           steps={steps}
-          defaultValues={rowData}
           onSubmit={async (values) => {
             if (operation === "edit") {
               try {
-                await updateUser({ ...values, id: rowData?.id }).unwrap();
+                await updateBootcamp({ ...values, id: rowData?.id }).unwrap();
                 setIsOpen(false);
                 await refetch();
               } catch (error) {
@@ -121,7 +120,7 @@ export default function RowsActions({
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete
-                    this user.
+                    this bootcamp.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
               </div>

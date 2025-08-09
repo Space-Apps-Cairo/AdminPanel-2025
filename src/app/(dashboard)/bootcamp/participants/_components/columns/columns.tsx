@@ -1,131 +1,52 @@
+ 
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { User } from "@/types/user";
+import { BootcampType } from "@/types/bootcamp";
 import RowsActions from "@/components/table/rows-actions";
 import { Field } from "@/app/interface";
-import { userValidationSchema } from "@/validations/user";
+import { BootcampSchema } from "@/validations/bootcamp";
 
-export const getUsersFields = (userData?: User): Field[] => [
+export const getBootcampFields = (bootcampData?: BootcampType): Field[] => [
   {
     name: "name",
     type: "text",
     label: "Name",
-    ...(userData?.name && { defaultValue: userData.name }),
+    ...(bootcampData?.name && { defaultValue: bootcampData.name }),
     step: 1,
   },
   {
-    name: "email",
-    type: "email",
-    label: "Email",
-    ...(userData?.email && { defaultValue: userData.email }),
-    step: 1,
-  },
-  {
-    name: "status",
-    type: "select",
-    placeholder: "Select Status",
-    defaultValue: userData?.status || "Inactive",
-    options: [
-      { value: "Active", placeholder: "Active" },
-      { value: "Inactive", placeholder: "Inactive" },
-    ],
-    step: 1,
-  },
-  // {
-  //   name: "balance",
-  //   type: "number",
-  //   label: "Balance",
-  //   ...(userData?.balance && { defaultValue: userData.balance }),
-  //   step: 2,
-  // },
-  {
-    name: "location",
+    name: "date",
     type: "text",
-    label: "Location",
-    ...(userData?.location && { defaultValue: userData.location }),
-    step: 2,
-  },
-  { name: "password", type: "password", label: "Password", step: 2 },
-  {
-    name: "terms",
-    type: "checkbox",
-    label: "Accept Terms",
-    defaultValue: true,
-    step: 2,
+    label: "Date",
+    ...(bootcampData?.date && { defaultValue: bootcampData.date }),
+    step: 1,
   },
   {
-    name: "arrayFields",
-    type: "dynamicArrayField",
-    dynamicArrayFieldsConfig: {
-      fields: [
-        { name: "title", type: "text", label: "Title" },
-        { name: "content", type: "textArea", label: "Content" },
-      ],
-      itemName: "Topic",
-    },
+    name: "total_capacity",
+    type: "number",
+    label: "Total Capacity",
+    ...(bootcampData?.total_capacity && {
+      defaultValue: String(bootcampData.total_capacity),   }),
     step: 2,
   },
 ];
 
-export const userColumns: ColumnDef<User>[] = [
+export const bootcampColumns: ColumnDef<BootcampType>[] = [
   {
     header: "Name",
     accessorKey: "name",
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("name")}</div>
     ),
-    size: 180,
-    enableHiding: false,
   },
   {
-    header: "Email",
-    accessorKey: "email",
-    size: 220,
+    header: "Date",
+    accessorKey: "date",
+    cell: ({ row }) => <div>{row.getValue("date")}</div>,
   },
   {
-    header: "Location",
-    accessorKey: "location",
-    cell: ({ row }) => (
-      <div>
-        <span className="text-lg leading-none">{row.original.flag}</span>{" "}
-        {row.getValue("location")}
-      </div>
-    ),
-    size: 180,
-  },
-  {
-    header: "Status",
-    accessorKey: "status",
-    cell: ({ row }) => (
-      <Badge
-        className={cn(
-          row.getValue("status") === "Inactive" &&
-            "bg-muted-foreground/60 text-primary-foreground"
-        )}
-      >
-        {row.getValue("status")}
-      </Badge>
-    ),
-    size: 100,
-  },
-  {
-    accessorKey: "bonusPoints",
-    header: "Bonus Points",
-    cell: ({ row }) => <div>{row.original.bonusPoints}</div>,
-  },
-  {
-    header: "Balance",
-    accessorKey: "balance",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("balance"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-      return formatted;
-    },
-    size: 120,
+    header: "Capacity",
+    accessorKey: "total_capacity",
+    cell: ({ row }) => <div>{row.getValue("total_capacity")}</div>,
   },
   {
     id: "actions",
@@ -135,11 +56,9 @@ export const userColumns: ColumnDef<User>[] = [
         rowData={row.original}
         steps={[1, 2]}
         isDelete={true}
-        fields={getUsersFields(row.original)}
-        validationSchema={userValidationSchema}
+        fields={getBootcampFields(row.original)}
+        validationSchema={BootcampSchema}
       />
     ),
-    size: 150,
-    enableHiding: false,
   },
 ];
