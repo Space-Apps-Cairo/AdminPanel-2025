@@ -31,7 +31,7 @@ const DynamicArrayField = ({
   defaultItemValue,
   disabled = false,
   addButtonLabel = "Add Item",
-  minItems = 0,
+  minItems = 1,
   maxItems = Infinity,
   simpleArray = false,
   itemName,
@@ -166,7 +166,7 @@ const DynamicArrayField = ({
             ) : (
               <div className="grid grid-cols-1  gap-4">
                 {fieldsConfig.map((config) => (
-                  <div key={`${field.id}-${config.name}`} className="space-y-2">
+                  <div key={`${field.id}-${config.name}`} className="space-y-2 ">
                     <label className="text-sm font-medium">
                       {config.label}
                     </label>
@@ -228,8 +228,9 @@ const DynamicArrayField = ({
                           <>
                             <Input
                               type={config.type}
-                              placeholder={config.label}
+                              placeholder={config.placeholder}
                               {...controllerField}
+                              className="mt-1.5"
                             />
                             {fieldError && (
                               <p className="text-sm text-destructive">

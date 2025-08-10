@@ -211,7 +211,7 @@ export default function DataTable<TData extends DataTableRow>({
   // Create global filter function
   const globalFilterFn = useMemo<FilterFn<TData> | undefined>(() => {
     if (!searchConfig.enabled) return undefined;
-    return createGlobalFilterFn(searchConfig.searchKeys);
+    return createGlobalFilterFn(searchConfig.searchKeys ?? []);
   }, [searchConfig.enabled, searchConfig.searchKeys]);
 
   const table = useReactTable<TData>({

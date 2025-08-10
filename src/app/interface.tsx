@@ -8,7 +8,7 @@ export interface Field {
   type: string;
   label?: string;
   placeholder?: string;
-  defaultValue?: string | boolean;
+  defaultValue?: string | number | boolean;
   value?: string;
   options?: FieldOption[];
   step?: number;

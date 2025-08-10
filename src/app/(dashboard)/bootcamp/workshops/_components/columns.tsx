@@ -1,8 +1,12 @@
 import { Field } from "@/app/interface";
 import RowsActions from "@/components/table/rows-actions";
+import { Button } from "@/components/ui/button";
+import { useDeleteWorkshopMutation, useUpdateWorkshopMutation } from "@/service/Api/workshops";
 import { Workshop } from "@/types/workshop";
 import { workshopValidationSchema } from "@/validations/workshop";
 import { ColumnDef } from "@tanstack/react-table";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export const getWorkshopsFields = (userData?: Workshop): Field[] => [
     {
@@ -63,18 +67,51 @@ export const workshopColumns: ColumnDef<Workshop>[] = [
         size: 180,
     },
     {
+        header: "Schedules",
+        cell: ({ row }) => (
+            <Button variant="outline" size="sm">
+                <Link href={`workshops/${row.original.id}`}>Schedules</Link>
+                <ChevronRight />
+            </Button>
+        ),
+        size: 180,
+        enableHiding: false,
+    },
+    {
         id: "actions",
         header: () => <span>Actions</span>,
         cell: ({ row }) => (
-            <RowsActions
-                rowData={row.original}
-                // steps={[1]}
-                isDelete={true}
-                fields={getWorkshopsFields(row.original)}
-                validationSchema={workshopValidationSchema}
-            />
+            <WorkshopRowActions rowData={row.original} />
         ),
         size: 150,
         enableHiding: false,
     },
 ];
+
+function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
+    const [updateWorkshop] = useUpdateWorkshopMutation();
+    const [deleteWorkshop] = useDeleteWorkshopMutation();
+    
+    return (
+        <RowsActions
+            rowData={rowData}
+            isDelete={true}
+            fields={getWorkshopsFields(rowData)}
+            validationSchema={workshopValidationSchema}
+            updateMutation={updateWorkshop}
+            deleteMutation={deleteWorkshop}
+            onUpdateSuccess={(result) => {
+                console.log('Workshop updated successfully:', result);
+            }}
+            onUpdateError={(error) => {
+                console.error('Error updating workshop:', error);
+            }}
+            onDeleteSuccess={(result) => {
+                console.log('Workshop deleted successfully:', result);
+            }}
+            onDeleteError={(error) => {
+                console.error('Error deleting workshop:', error);
+            }}
+        />
+    );
+}

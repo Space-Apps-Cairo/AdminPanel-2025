@@ -24,18 +24,52 @@ export default function RowsActions({
     asDialog = true,
     isPreview = true,
     validationSchema,
+    updateMutation,
+    deleteMutation,
+    onUpdateSuccess,
+    onUpdateError,
+    onDeleteSuccess,
+    onDeleteError, 
 }: RowsActionsProps) {
 
     const [isOpen, setIsOpen] = useState(false)
-    const [operation, setOperation] = useState<OperationType>("edit")
+    const [operation, setOperation] = useState<OperationType>("edit");
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const handleButtonClick = (operation: OperationType) => {
         setOperation(operation)
         setIsOpen(true)
     }
 
-    const handleDeleteRow = () => {
-        if (rowData?.id) {
+    const handleUpdateRow = async (formData: any) => {
+        if (updateMutation && rowData?.id) {
+            try {
+                const result = await updateMutation({
+                    id: rowData.id,
+                    data: formData
+                })
+
+                const unwrappedResult = await result.unwrap()
+                onUpdateSuccess?.(unwrappedResult)
+                setIsOpen(false)
+            } catch (error) {
+                onUpdateError?.(error)
+            }
+        }
+    }
+
+    const handleDeleteRow = async () => {
+        if (deleteMutation && rowData?.id) {
+            try {
+                setIsDeleting(true)
+                const result = await deleteMutation(rowData.id).unwrap()
+                onDeleteSuccess?.(result)
+            } catch (error) {
+                onDeleteError?.(error)
+            } finally {
+                setIsDeleting(false)
+            }
+        } else if (rowData?.id) {
             console.log(`Delete row with ID: ${rowData.id}`, rowData)
         }
     }
@@ -51,6 +85,7 @@ export default function RowsActions({
                 asDialog={asDialog}
                 validationSchema={validationSchema}
                 steps={steps}
+                onSubmit={handleUpdateRow}
             />
         )}
 
@@ -94,8 +129,12 @@ export default function RowsActions({
                         </div>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDeleteRow}>
-                                Delete
+                            <AlertDialogAction 
+                                onClick={handleDeleteRow}
+                                disabled={isDeleting}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                                {isDeleting ? "Deleting..." : "Delete"}
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>

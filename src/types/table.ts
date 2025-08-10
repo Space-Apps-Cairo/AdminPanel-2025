@@ -10,7 +10,7 @@ export type DataTableRow = {
 export interface SearchConfig {
     enabled: boolean
     placeholder?: string
-    searchKeys: string[]
+    searchKeys?: string[]
 }
 
 // Configuration for status filters

@@ -1,36 +1,30 @@
-import z from "zod";
+import { z } from 'zod';
 
 export const workshopValidationSchema = z.object({
-    title: z
-        .string()
-        .min(3, "Title must be at least 3 characters")
-        .max(100, "Title must be at most 100 characters")
+    title: z.string()
+        .min(1, 'Title is required')
+        .min(3, 'Title must be at least 3 characters')
+        .max(100, 'Title must not exceed 100 characters')
         .trim(),
-    
-    description: z
-        .string()
-        .min(10, "Description must be at least 10 characters")
-        .max(500, "Description must be at most 500 characters")
+
+    description: z.string()
+        .min(1, 'Description is required')
+        .min(10, 'Description must be at least 10 characters')
+        .max(500, 'Description must not exceed 500 characters')
         .trim(),
-    
-    start_date: z
-        .string()
-        .min(1, "Start date is required")
+
+    start_date: z.coerce.date()
         .refine((date) => {
-            const selectedDate = new Date(date);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            return selectedDate >= today;
+            return date >= today;
         }, "Start date must be today or in the future"),
-    
-    end_date: z
-        .string()
-        .min(1, "End date is required")
+
+    end_date: z.coerce.date(),
+
 }).refine((data) => {
-    const startDate = new Date(data.start_date);
-    const endDate = new Date(data.end_date);
-    return endDate >= startDate;
+    return data.end_date >= data.start_date;
 }, {
     message: "End date must be after or equal to start date",
-    path: ["end_date"]
+    path: ["end_date"],
 });
