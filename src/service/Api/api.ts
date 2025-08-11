@@ -12,7 +12,10 @@ export const api = createApi({
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       } else {
-        headers.set("Authorization", `Bearer 31|ciq0oKo2TGgYhzKvlTRV6eQpt7SfZO65uHXZukgOf9b27183`);
+        headers.set(
+          "Authorization",
+          `Bearer 24|0bGX5a9HINheSMD6uQ9Xv2K0VoV4LJVP6BEtprK26f4849d3`
+        );
       }
       return headers;
     },
