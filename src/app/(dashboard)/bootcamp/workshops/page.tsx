@@ -8,19 +8,32 @@ import { getWorkshopsFields, workshopColumns } from "./_components/columns";
 import Loading from "@/components/loading/loading";
 import CrudForm from "@/components/crud-form";
 import { workshopValidationSchema } from "@/validations/workshop";
-import { useGetBootcampsQuery } from "@/service/Api/bootcamp";
-
-// import { useGetAllWorkshopsQuery } from '@/services/workshops';
+import {
+  useAddNewWorkshopMutation,
+  useGetAllWorkshopsQuery,
+} from "@/service/Api/workshops";
+import { FieldValues } from "react-hook-form";
 
 export default function Workshops() {
-  const { data, isLoading, error } = useGetBootcampsQuery();
-
-  console.log("loading: ", isLoading);
-  console.log("data: ", data);
-  console.log("error: ", error);
+  const {
+    data: workshopsData,
+    isLoading: isLoadingWorkshops,
+    error: workshopsError,
+  } = useGetAllWorkshopsQuery();
 
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (
+      workshopsData &&
+      workshopsData.data &&
+      !isLoadingWorkshops &&
+      !workshopsError
+    ) {
+      setWorkshops(workshopsData.data);
+    }
+  }, [workshopsData, isLoadingWorkshops, workshopsError]);
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -42,7 +55,62 @@ export default function Workshops() {
     },
   };
 
-  if (isLoading) return <Loading />;
+  // ====== add-new-workshop ====== //
+
+  const [addWorkshop, { isLoading: isAddingWorkshop }] =
+    useAddNewWorkshopMutation();
+
+  const handleAddWorkshopSubmit = async (
+    data: FieldValues,
+    formData?: FormData
+  ) => {
+    try {
+      console.log("Submitting workshop data:", data);
+      console.log(
+        "Form data:",
+        formData ? [...formData.entries()] : "No form data"
+      );
+
+      // Transform the data if needed (e.g., format dates)
+      const workshopData: Omit<Workshop, "id" | "created_at" | "schedules"> = {
+        title: data.title,
+        description: data.description,
+        start_date:
+          data.start_date instanceof Date
+            ? data.start_date.toISOString().split("T")[0]
+            : data.start_date,
+        end_date:
+          data.end_date instanceof Date
+            ? data.end_date.toISOString().split("T")[0]
+            : data.end_date,
+      };
+
+      const result = await addWorkshop(workshopData as Workshop).unwrap();
+
+      console.log("Workshop added successfully:", result);
+
+      // Update local state with new workshop
+      if (result.data) {
+        setWorkshops((prev) => [...prev, result.data]);
+      }
+    } catch (error) {
+      console.error("Error adding workshop:", error);
+      // Don't close the form if there's an error so user can see what happened
+      throw error;
+    }
+  };
+
+  if (isLoadingWorkshops) return <Loading />;
+
+  if (workshopsError) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="text-red-500">
+          Error loading workshops: {JSON.stringify(workshopsError)}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <React.Fragment>
@@ -67,7 +135,7 @@ export default function Workshops() {
             operation={"add"}
             asDialog={true}
             validationSchema={workshopValidationSchema}
-            // steps={[1]}
+            onSubmit={handleAddWorkshopSubmit}
           />
         )}
       </div>

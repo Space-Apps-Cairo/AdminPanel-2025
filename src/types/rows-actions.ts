@@ -9,6 +9,12 @@ export type RowsActionsProps = {
     asDialog?: boolean;
     isPreview?: boolean;
     validationSchema: any;
+    updateMutation?: any
+    deleteMutation?: any
+    onUpdateSuccess?: (result: any) => void
+    onUpdateError?: (error: any) => void
+    onDeleteSuccess?: (result: any) => void
+    onDeleteError?: (error: any) => void
 }
 
 export type OperationType = "edit" | "preview";

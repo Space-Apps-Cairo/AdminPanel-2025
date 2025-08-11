@@ -23,63 +23,78 @@ import {
 } from "@/service/Api/userApi";
 
 export default function RowsActions({
-  steps,
-  fields,
-  rowData,
-  isDelete = false,
-  isUpdate = true,
-  asDialog = true,
-  isPreview = true,
-  validationSchema,
+    steps,
+    fields,
+    rowData,
+    isDelete = false,
+    isUpdate = true,
+    asDialog = true,
+    isPreview = true,
+    validationSchema,
+    updateMutation,
+    deleteMutation,
+    onUpdateSuccess,
+    onUpdateError,
+    onDeleteSuccess,
+    onDeleteError, 
 }: RowsActionsProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [operation, setOperation] = useState<OperationType>("edit");
 
-  const [deleteUser] = useDeleteUserMutation();
-  const [updateUser] = useUpdateUserMutation();
-  const { refetch } = useGetUsersQuery();
+    const [isOpen, setIsOpen] = useState(false)
+    const [operation, setOperation] = useState<OperationType>("edit");
+    const [isDeleting, setIsDeleting] = useState(false)
 
-  const handleButtonClick = (op: OperationType) => {
-    setOperation(op);
-    setIsOpen(true);
-  };
-
-  const handleDeleteRow = async () => {
-    if (rowData?.id) {
-      try {
-        await deleteUser({ id: rowData.id }).unwrap();
-        await refetch();
-      } catch (error) {
-        console.error("Delete error:", error);
-      }
+    const handleButtonClick = (operation: OperationType) => {
+        setOperation(operation)
+        setIsOpen(true)
     }
-  };
 
-  return (
-    <>
-      {isOpen && (
-        <CrudForm
-          fields={fields}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          operation={operation}
-          asDialog={asDialog}
-          validationSchema={validationSchema}
-          steps={steps}
-          defaultValues={rowData}
-          onSubmit={async (values) => {
-            if (operation === "edit") {
-              try {
-                await updateUser({ ...values, id: rowData?.id }).unwrap();
-                setIsOpen(false);
-                await refetch();
-              } catch (error) {
-                console.error("Update error:", error);
-              }
+    const handleUpdateRow = async (formData: any) => {
+        if (updateMutation && rowData?.id) {
+            try {
+                const result = await updateMutation({
+                    id: rowData.id,
+                    data: formData
+                })
+
+                const unwrappedResult = await result.unwrap()
+                onUpdateSuccess?.(unwrappedResult)
+                setIsOpen(false)
+            } catch (error) {
+                onUpdateError?.(error)
             }
-          }}
-        />
-      )}
+        }
+    }
+
+    const handleDeleteRow = async () => {
+        if (deleteMutation && rowData?.id) {
+            try {
+                setIsDeleting(true)
+                const result = await deleteMutation(rowData.id).unwrap()
+                onDeleteSuccess?.(result)
+            } catch (error) {
+                onDeleteError?.(error)
+            } finally {
+                setIsDeleting(false)
+            }
+        } else if (rowData?.id) {
+            console.log(`Delete row with ID: ${rowData.id}`, rowData)
+        }
+    }
+
+    return <React.Fragment>
+
+        {isOpen && (
+            <CrudForm
+                fields={fields}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                operation={operation}
+                asDialog={asDialog}
+                validationSchema={validationSchema}
+                steps={steps}
+                onSubmit={handleUpdateRow}
+            />
+        )}
 
       <div className="py-2.5 flex items-center gap-2.5">
         {isPreview && (
@@ -102,39 +117,46 @@ export default function RowsActions({
           </Button>
         )}
 
-        {isDelete && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Trash size={16} />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
-                <div
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border"
-                  aria-hidden="true"
-                >
-                  <CircleAlertIcon className="opacity-80" size={16} />
-                </div>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    this user.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-              </div>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteRow}>
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
-      </div>
-    </>
-  );
+            {isDelete && (
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                            <Trash size={16} />
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+                            <div
+                                className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+                                aria-hidden="true"
+                            >
+                                <CircleAlertIcon className="opacity-80" size={16} />
+                            </div>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Are you absolutely sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete this row.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                        </div>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction 
+                                onClick={handleDeleteRow}
+                                disabled={isDeleting}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                                {isDeleting ? "Deleting..." : "Delete"}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
+
+        </div>
+
+    </React.Fragment>
+
 }

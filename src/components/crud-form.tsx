@@ -54,6 +54,7 @@ export default function CrudForm(props: {
   asDialog?: boolean;
   validationSchema: any;
   steps?: number[];
+  onSubmit: (data: FieldValues, formData?: FormData) => Promise<void> | void;
 }) {
   const {
     operation,
@@ -63,10 +64,12 @@ export default function CrudForm(props: {
     asDialog = true,
     validationSchema,
     steps,
+    onSubmit: handleFormSubmit,
   } = props;
 
   const fullPageStyle = "!w-screen !h-screen !max-w-none !p-8";
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   const isDisabled = operation === "preview";
 
@@ -89,33 +92,49 @@ export default function CrudForm(props: {
 
   const {
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
     control,
     register,
-  } = methods; // Destructure from methods
+  } = methods;
 
   const onSubmit = async (data: FieldValues) => {
-    console.log(data);
-    const formData = new FormData();
+    setIsSubmittingForm(true);
+    try {
+      console.log("Form data being submitted:", data);
+      
+      const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
-      if (value instanceof FileList) {
-        formData.append(key, value[0]);
-      } else {
-        formData.append(key, value);
-      }
-    });
+      Object.entries(data).forEach(([key, value]) => {
+        if (value instanceof FileList) {
+          formData.append(key, value[0]);
+        } else if (value instanceof Date) {
+          formData.append(key, value.toISOString());
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, String(value));
+        }
+      });
 
-    console.log([...formData.entries()]);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    reset();
+      console.log("FormData entries:", [...formData.entries()]);
+      
+      await handleFormSubmit(data, formData);
+      
+      // Only reset and close if successful
+      reset();
+      setIsOpen(false);
+      setCurrentStep(1); // Reset step if using steps
+      
+    } catch (error) {
+      console.error('Form submission error:', error);
+      // Don't close the form on error, let user see what happened
+    } finally {
+      setIsSubmittingForm(false);
+    }
   };
 
   const FormBody = (
     <>
-      <div id="hello" className="mx-auto max-w-xl space-y-8 ">
+      <div id="hello" className="mx-auto max-w-xl space-y-8">
         <DialogHeader className={`${!asDialog ? "!text-center" : ""}`}>
           <DialogTitle>{operation.toUpperCase()} Form</DialogTitle>
           <DialogDescription>
@@ -155,9 +174,10 @@ export default function CrudForm(props: {
                       name={field.name}
                       type={field.type}
                       disabled={isDisabled}
+                      placeholder={field.placeholder}
                     />
                     {errors[field.name] && (
-                      <p className="text-red-500">
+                      <p className="text-red-500 text-sm">
                         {errors[field.name]?.message as string}
                       </p>
                     )}
@@ -185,12 +205,17 @@ export default function CrudForm(props: {
                         />
                       )}
                     />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
                   </div>
                 )}
 
                 {field.type === "select" && (
                   <div className="grid gap-3">
-                    <Label>{field.placeholder}</Label>
+                    <Label>{field.label || field.placeholder}</Label>
                     <Controller
                       name={`${field.name}`}
                       control={control}
@@ -215,6 +240,11 @@ export default function CrudForm(props: {
                         </Select>
                       )}
                     />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
                   </div>
                 )}
 
@@ -241,17 +271,22 @@ export default function CrudForm(props: {
                               )}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent>
+                          <PopoverContent className="w-auto p-0">
                             <Calendar
                               mode="single"
                               selected={fld.value}
                               onSelect={(date) => fld.onChange(date)}
-                              className="w-full"
+                              initialFocus
                             />
                           </PopoverContent>
                         </Popover>
                       )}
                     />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
                   </div>
                 )}
 
@@ -269,10 +304,15 @@ export default function CrudForm(props: {
                         />
                       )}
                     />
-
                     <Label htmlFor={field.name}>{field.label}</Label>
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm ml-2">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
                   </div>
                 )}
+                
                 {field.type === "dynamicArrayField" && (
                   <DynamicArrayField
                     minItems={1}
@@ -300,7 +340,7 @@ export default function CrudForm(props: {
               className="w-32"
               type="button"
               onClick={() => setCurrentStep((prev) => prev - 1)}
-              disabled={currentStep === 1}
+              disabled={currentStep === 1 || isSubmittingForm}
             >
               Prev step
             </Button>
@@ -309,7 +349,7 @@ export default function CrudForm(props: {
               className="w-32"
               type="button"
               onClick={() => setCurrentStep((prev) => prev + 1)}
-              disabled={currentStep >= steps.length}
+              disabled={currentStep >= steps.length || isSubmittingForm}
             >
               Next step
             </Button>
@@ -320,11 +360,18 @@ export default function CrudForm(props: {
           className={`mt-6 ${!asDialog ? "!flex-col-reverse " : ""}`}
         >
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" disabled={isSubmittingForm}>
+              Cancel
+            </Button>
           </DialogClose>
           {!isDisabled && (
-            <Button type="submit">
-              {operation === "edit" ? "Update" : "Submit"}
+            <Button type="submit" disabled={isSubmittingForm}>
+              {isSubmittingForm 
+                ? "Submitting..." 
+                : operation === "edit" 
+                  ? "Update" 
+                  : "Submit"
+              }
             </Button>
           )}
         </DialogFooter>
