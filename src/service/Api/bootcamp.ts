@@ -1,16 +1,20 @@
-import { api } from "./api";  
-import { BootcampType, BootcampRequest } from "@/types/bootcamp";
+import { api } from "./api";
+import {
+  BootcampType,
+  BootcampRequest,
+  BootcampResponse,
+} from "@/types/bootcamp";
 
 export const bootcampApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getBootcamps: builder.query<BootcampType[], void>({
-      query: () => "/Bootcamps",
+    getBootcamps: builder.query<BootcampResponse, void>({
+      query: () => "/BootcampDetails",
       providesTags: ["Bootcamps"],
     }),
 
-    addBootcamp: builder.mutation<BootcampType, BootcampRequest>({
+    addBootcamp: builder.mutation<BootcampResponse, BootcampRequest>({
       query: (newBootcamp) => ({
-        url: "/Bootcamps",
+        url: "/BootcampDetails",
         method: "POST",
         body: newBootcamp,
       }),
@@ -19,15 +23,15 @@ export const bootcampApi = api.injectEndpoints({
 
     deleteBootcamp: builder.mutation<void, string | number>({
       query: (id) => ({
-        url: `/Bootcamps/${id}`,
+        url: `/BootcampDetails/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Bootcamps"],
     }),
 
-    updateBootcamp: builder.mutation<BootcampType, BootcampType>({
+    updateBootcamp: builder.mutation<BootcampResponse, BootcampType>({
       query: ({ id, ...rest }) => ({
-        url: `/Bootcamps/${id}`,
+        url: `/BootcampDetails/${id}`,
         method: "PUT",
         body: rest,
       }),

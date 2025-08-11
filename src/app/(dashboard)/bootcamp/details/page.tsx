@@ -1,20 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useGetBootcampsQuery, useAddBootcampMutation } from "@/service/Api/bootcamp";
+import {
+  useGetBootcampsQuery,
+  useAddBootcampMutation,
+} from "@/service/Api/bootcamp";
 
 import { BootcampType, BootcampRequest } from "@/types/bootcamp";
-import { bootcampColumns, getBootcampFields } from "./_components/columns/columns";
+import {
+  bootcampColumns,
+  getBootcampFields,
+} from "./_components/columns/columns";
 import DataTable from "@/components/table/data-table";
 import CrudForm from "@/components/bootcamp/bootcamp-crud-form";
 import Loading from "@/components/loading/loading";
 import { BootcampSchema } from "@/validations/bootcamp";
 
 export default function BootcampPage() {
- 
-  const { data = [], isLoading, error } = useGetBootcampsQuery();
-
-   
+  // const { data = [], isLoading, error } = useGetBootcampsQuery(); // The Error ❌
+  const { data, isLoading, error } = useGetBootcampsQuery(); // The Error ❌
+  const bootcamps = data?.data ?? []; // The right one 
   const [addBootcamp] = useAddBootcampMutation();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +35,8 @@ export default function BootcampPage() {
   };
 
   if (isLoading) return <Loading />;
-  if (error) return <div className="text-red-500 p-4">Error fetching bootcamps</div>;
+  if (error)
+    return <div className="text-red-500 p-4">Error fetching bootcamps</div>;
 
   return (
     <div className="container mx-auto py-6">
@@ -50,7 +56,7 @@ export default function BootcampPage() {
       <h1 className="text-2xl font-bold mb-6">Bootcamps</h1>
 
       <DataTable<BootcampType>
-        data={data}
+        data={bootcamps}
         columns={bootcampColumns}
         searchConfig={{
           enabled: true,

@@ -43,8 +43,8 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "Analytics",
-          url: "/bootcamp/analytics",
+          title: "Details",
+          url: "/bootcamp/details",
         },
         {
           title: "Workshops",

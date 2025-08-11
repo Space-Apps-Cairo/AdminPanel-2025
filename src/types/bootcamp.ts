@@ -5,7 +5,7 @@ export interface BootcampType {
   total_capacity: number;
   //   bootcamp_details_bootcamp_attendees?: ;
   forms: [];
-  [key: string]:  unknown;
+  [key: string]: unknown;
 }
 export interface BootcampResponse {
   success: boolean;
@@ -14,7 +14,4 @@ export interface BootcampResponse {
   data: BootcampType[];
 }
 
-
-
-
- export type BootcampRequest = Omit<BootcampType, "id">;
+export type BootcampRequest = Omit<BootcampType, "id">;

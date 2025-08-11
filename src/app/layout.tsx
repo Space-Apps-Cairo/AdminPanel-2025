@@ -20,7 +20,7 @@ import {
 import ModeToggle from "@/components/ui/theme-toggle";
 import { StoreProvider } from "@/service/store/StoreProvider";
 import { ThemeProvider } from "@/providers/Providers";
-import { SearchProvider } from "@/components/ui/search-context";  
+import { SearchProvider } from "@/components/ui/search-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +45,9 @@ export default function RootLayout({
   return (
     <StoreProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
