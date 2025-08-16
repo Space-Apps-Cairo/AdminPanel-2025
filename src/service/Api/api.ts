@@ -9,8 +9,9 @@ export const api = createApi({
     prepareHeaders: (headers) => {
       headers.set("Accept", "application/json");
       const token = cookieService.get("token");
-
-      headers.set("Authorization", `Bearer ${token}`);
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
 
       return headers;
     },

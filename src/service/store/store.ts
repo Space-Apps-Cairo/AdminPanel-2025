@@ -1,23 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { authApi } from "@/features/auth/authApi";
-import authReducer from "@/features/auth/authSlice";
-import { userApi } from "@/service/Api/userApi";
-import { bootcampApi } from "@/service/Api/bootcamp";  
+
+import { authApi } from "../Api/login";
+import authSlice from "./features/authSlice";
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth: authSlice,
     [authApi.reducerPath]: authApi.reducer,
-    [userApi.reducerPath]: userApi.reducer,
-    [bootcampApi.reducerPath]: bootcampApi.reducer,  
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      authApi.middleware,
-      userApi.middleware,
-      bootcampApi.middleware  
-    ),
+    getDefaultMiddleware().concat(authApi.middleware),
 });
 
 setupListeners(store.dispatch);

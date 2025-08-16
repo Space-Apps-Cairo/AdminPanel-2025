@@ -9,9 +9,7 @@ export const authApi = api.injectEndpoints({
         return {
           url: "/login",
           method: "POST",
-          body: {
-            ...data,
-          },
+          body: data,
         };
       },
       invalidatesTags: [{ type: "Login", id: "LIST" }],
