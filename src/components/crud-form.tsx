@@ -173,7 +173,7 @@ export default function CrudForm(props: {
                       id={field.name}
                       name={field.name}
                       type={field.type}
-                      disabled={isDisabled}
+                      disabled={isDisabled || field.disabled}
                       placeholder={field.placeholder}
                     />
                     {errors[field.name] && (
