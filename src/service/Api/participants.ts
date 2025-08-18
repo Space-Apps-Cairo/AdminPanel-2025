@@ -1,50 +1,64 @@
-import { api } from "@/service/Api/api";
-import { ParticipantFormValues } from "@/validations/participantSchema";
+import { api } from "./api";
+import {
+  Participant,
+  ParticipantRequest,
+  ParticipantResponse,
+  ParticipantsResponse,
+} from "@/types/participants";
 
 export const participantsApi = api.injectEndpoints({
-  endpoints: (builder) => ({
-    getParticipants: builder.query<any[], void>({
-      query: () => ({
-        url: "/secure-handle",
-        method: "POST",
-        body: { route: "participants.index" },
-      }),
-      transformResponse: (response: any) => response?.data ?? [],
+  endpoints: (build) => ({
+    getAllParticipants: build.query<ParticipantsResponse, void>({
+      query: () => "/bootcamp-participants",
+      providesTags: ["Participant"],
     }),
-
-    addParticipant: builder.mutation<any, ParticipantFormValues>({
-      query: (data) => ({
-        url: "/secure-handle",
-        method: "POST",
-        body: { route: "participants.store", ...data },
-      }),
+    getParticipantDetails: build.query<Participant, number>({
+      query: (id: number) => `/bootcamp-participants/${id}`,
+      transformResponse: (response: any) => response.data ?? {},
+      providesTags: ["Participant"],
     }),
-
-    updateParticipant: builder.mutation<
-      any,
-      { id: number | string } & ParticipantFormValues
+    addNewParticipant: build.mutation<ParticipantResponse, ParticipantRequest>({
+      query: (participantData) => ({
+        url: "/bootcamp-participants",
+        method: "POST",
+        body: participantData,
+      }),
+      invalidatesTags: ["Participant"],
+    }),
+    updateParticipant: build.mutation<
+      ParticipantResponse,
+      { id: string; data: Partial<ParticipantRequest> }
     >({
-      query: ({ id, ...rest }) => ({
-        url: "/secure-handle",
-        method: "POST",
-        body: { route: "participants.update", id, ...rest },
+      query: ({ id, data }) => ({
+        url: `/bootcamp-participants/${id}`,
+        method: "PUT",
+        body: data,
       }),
+      invalidatesTags: (result, error, arg) => [
+        "Participant",
+        { type: "Participant", id: arg.id },
+      ],
     }),
-
-    deleteParticipant: builder.mutation<any, number | string>({
+    deleteParticipant: build.mutation<
+      { success: boolean; message: string },
+      string
+    >({
       query: (id) => ({
-        url: "/secure-handle",
-        method: "POST",
-        body: { route: "participants.destroy", id },
+        url: `/bootcamp-participants/${id}`,
+        method: "DELETE",
       }),
+      invalidatesTags: (result, error, id) => [
+        "Participant",
+        { type: "Participant", id },
+      ],
     }),
   }),
-  overrideExisting: false,
 });
 
 export const {
-  useGetParticipantsQuery,
-  useAddParticipantMutation,
+  useGetAllParticipantsQuery,
+  useAddNewParticipantMutation,
   useUpdateParticipantMutation,
   useDeleteParticipantMutation,
+  useGetParticipantDetailsQuery,
 } = participantsApi;

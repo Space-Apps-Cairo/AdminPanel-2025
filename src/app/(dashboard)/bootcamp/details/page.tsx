@@ -19,7 +19,7 @@ import { BootcampSchema } from "@/validations/bootcamp";
 export default function BootcampPage() {
   // const { data = [], isLoading, error } = useGetBootcampsQuery(); // The Error ❌
   const { data, isLoading, error } = useGetBootcampsQuery(); // The Error ❌
-  const bootcamps = data?.data ?? []; // The right one 
+  const bootcamps = data?.data ?? []; // The right one
   const [addBootcamp] = useAddBootcampMutation();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +48,7 @@ export default function BootcampPage() {
           operation="add"
           asDialog
           validationSchema={BootcampSchema}
-          steps={[1, 2]}
+          // steps={[1, 2]}
           onSubmit={handleAddSubmit}
         />
       )}

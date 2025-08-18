@@ -1,32 +1,35 @@
-import { Field, FieldOption } from "@/app/interface";
+import { Field } from "@/app/interface";
 import { ParticipantPreference } from "@/types/preference";
 import { ColumnDef } from "@tanstack/react-table";
 import RowsActions from "@/components/table/rows-actions";
-import { useUpdatePreferenceMutation, useDeletePreferenceMutation } from "@/service/Api/preferences";
-import {ParticipantPreferenceSchema} from "@/validations/preference";
-
+import {
+  useUpdatePreferenceMutation,
+  useDeletePreferenceMutation,
+} from "@/service/Api/preferences";
+import { ParticipantPreferenceSchema } from "@/validations/preference";
 
 export const getPreferenceFields = (
- prefData?: ParticipantPreference,
+  prefData?: ParticipantPreference
 ): Field[] => [
   {
     name: "preference_order",
     type: "number",
     label: "Preference Order",
-     placeholder: "Enter preference order",
-  defaultValue: prefData?.preference_order != null ? Number(prefData.preference_order) : undefined,
-
-},
-{
+    placeholder: "Enter preference order",
+    defaultValue:
+      prefData?.preference_order != null
+        ? Number(prefData.preference_order)
+        : undefined,
+  },
+  {
     name: "workshop_id",
-    type: "number", 
+    type: "number",
     label: "Workshop ID",
     placeholder: "Enter workshop ID",
-   defaultValue: prefData?.workshop?.id ?? undefined,
+    defaultValue: prefData?.workshop?.id ?? undefined,
   },
-
 ];
- 
+
 export const preferenceColumns: ColumnDef<ParticipantPreference>[] = [
   {
     header: "Preference Order",

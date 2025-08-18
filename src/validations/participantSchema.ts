@@ -1,19 +1,33 @@
-// src/validations/participantSchema.ts
 import { z } from "zod";
+import { isValidPhoneNumber } from "@/lib/utils";
 
-export const participantSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().min(1, "Email is required").email("Invalid email"),
-  phone: z
+export const participantValidationSchema = z.object({
+  name_ar: z.string().min(1, "Arabic name is required"),
+  name_en: z.string().min(1, "English name is required"),
+  email: z.string().email("Invalid email address"),
+  phone_number: z
     .string()
-    .min(1, "Phone is required")
-    .regex(/^01[0-2,5]{1}[0-9]{8}$/, "Invalid Egyptian phone number"),
-  status: z
-    .string()
-    .min(1, "Status is required")
-    .refine((val) => ["active", "inactive"].includes(val), {
-      message: "Invalid status",
+    .min(1, "Phone number is required")
+    .refine((val) => isValidPhoneNumber(val), {
+      message: "Invalid phone number format",
     }),
+  birth_date: z.string().min(1, "Birth date is required"),
+  nationality: z.string().min(1, "Nationality is required"),
+  governorate: z.string().min(1, "Governorate is required"),
+  educational_institute: z.string().min(1, "Educational institute is required"),
+  graduation_year: z.string().min(1, "Graduation year is required"),
+  current_occupation: z.string().min(1, "Current occupation is required"),
+  national_id: z.string().min(1, "National ID is required"),
+  educational_level_id: z.string().min(1, "Educational level is required"),
+  field_of_study_id: z.string().min(1, "Field of study is required"),
+  is_have_team: z.enum(["individual", "team"]),
+  participation_status: z.string().min(1, "Participation status is required"),
+  participated_years: z.string().optional(),
+  attend_workshop: z.number().int().min(0).max(1),
+  why_this_workshop: z.string().optional(),
+  comment: z.string().optional(),
+  year: z.string().optional(),
+  // File fields would be handled separately in FormData
 });
 
-export type ParticipantFormValues = z.infer<typeof participantSchema>;
+export type ParticipantFormValues = z.infer<typeof participantValidationSchema>;

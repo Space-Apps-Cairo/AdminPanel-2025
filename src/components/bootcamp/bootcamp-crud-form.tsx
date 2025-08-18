@@ -52,10 +52,9 @@ export default function CrudForm(props: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   asDialog?: boolean;
-  validationSchema: any ;
+  validationSchema: any;
   steps?: number[];
-  
-  onSubmit: (values: FieldValues) => Promise<void>;  
+  onSubmit: (values: FieldValues) => Promise<void>;
 }) {
   const {
     operation,
@@ -96,7 +95,6 @@ export default function CrudForm(props: {
     register,
   } = methods;
 
- 
   const handleFormSubmit = async (data: FieldValues) => {
     if (onSubmitProp) {
       await onSubmitProp(data);
@@ -158,6 +156,8 @@ export default function CrudForm(props: {
                       name={field.name}
                       type={field.type}
                       disabled={isDisabled}
+                      placeholder={field?.placeholder ?? field.label}
+                      min={field.type == "number" ? 1 : undefined}
                     />
                     {errors[field.name] && (
                       <p className="text-red-500">
