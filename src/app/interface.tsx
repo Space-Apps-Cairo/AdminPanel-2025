@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export interface FieldOption {
   value: string;
   placeholder: string;
@@ -18,4 +19,16 @@ export interface Field {
     addButtonLabel?: string;
     itemName?: string;
   };
+=======
+
+// src/app/interface.tsx
+
+export interface Field {
+  name: string;
+  label: string;
+  type: string;
+  placeholder?: string;
+  options?: { label: string; value: string }[]; // للـ select أو radio
+  required?: boolean;
+>>>>>>> 5b0490d00324e886d65979efd1577e3af36f4623
 }
