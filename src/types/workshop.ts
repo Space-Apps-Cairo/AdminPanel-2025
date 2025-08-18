@@ -1,4 +1,5 @@
 export type Schedule = {
+    workshop_title: string
     workshop_id?: number
     id: number
     date: string

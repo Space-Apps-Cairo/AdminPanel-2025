@@ -17,7 +17,7 @@ export const api = createApi({
     },
   }),
 
-  tagTypes: ["Login", "Workshop", "Bootcamps"],
+  tagTypes: ["Login", "Workshop", "Bootcamps","Preference","Assignment"],
 
   endpoints: () => ({}), // start empty
 });
