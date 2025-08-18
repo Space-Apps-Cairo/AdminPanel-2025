@@ -65,12 +65,12 @@ export default function ParticipantPreferencesPage() {
   const [addNewAssignment] = useAddNewAssignmentMutation();
 
   // // -------------------- Workshops Options --------------------
-  // const { data: workshopsData } = useGetAllWorkshopsQuery();
-  // const workshopOptions: FieldOption[] =
-  //   workshopsData?.data?.map((w: Workshop) => ({
-  //     value: w.id.toString(),
-  //     placeholder: w.id.toString(),
-  //   })) ?? [];
+  const { data: workshopsData } = useGetAllWorkshopsQuery();
+  const workshopOptions: FieldOption[] =
+    workshopsData?.data?.map((w: Workshop) => ({
+      value: w.id.toString(),
+      placeholder: w.title ?? "", 
+    })) ?? [];
 
   // -------------------- Effects --------------------
   useEffect(() => {
@@ -140,7 +140,7 @@ export default function ParticipantPreferencesPage() {
           <h1 className="text-2xl font-bold mb-6">Participant Preferences</h1>
           <DataTable
             data={preferences}
-            columns={preferenceColumns}
+           columns={preferenceColumns(workshopOptions)}
             searchConfig={{ enabled: false }}
             statusConfig={{ enabled: false }}
             actionConfig={{
@@ -155,7 +155,7 @@ export default function ParticipantPreferencesPage() {
 
           {isPrefFormOpen && (
             <CrudForm
-              fields={getPreferenceFields()}
+              fields={getPreferenceFields(undefined,workshopOptions)}
               isOpen={isPrefFormOpen}
               setIsOpen={setIsPrefFormOpen}
               operation="add"

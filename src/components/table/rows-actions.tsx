@@ -57,6 +57,7 @@ export default function RowsActions({
                 })
 
                 const unwrappedResult = await result.unwrap()
+                
                 onUpdateSuccess?.(unwrappedResult)
                 setIsOpen(false)
             } catch (error) {

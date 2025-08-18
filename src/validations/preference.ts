@@ -4,11 +4,12 @@ import {participantSchema } from "./participantSchema";
 import { workshopValidationSchema } from "./workshop";    
 
 export const ParticipantPreferenceSchema = z.object({
-  id: z.number(),
-  preference_order: z.coerce.number(), 
- bootcamp_participant_id:  z.coerce.number(), 
-  workshop_id:  z.coerce.number().nullable(),
+  id: z.any().optional(),
+  preference_order: z.any(),
+  bootcamp_participant_id: z.any(),
+  workshop_id: z.any(),
 });
+
 
 
 export type ParticipantPreferenceType = z.infer<typeof ParticipantPreferenceSchema>;
