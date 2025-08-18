@@ -1,0 +1,12 @@
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    serverActions: true,
+  },
+  
+  matcher: ["/dashboard/:path*"],
+};
+
+module.exports = nextConfig;
+
