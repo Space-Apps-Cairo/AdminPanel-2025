@@ -1,14 +1,16 @@
-import { Loader } from 'lucide-react';
-import { cn } from "@/lib/utils"
+import { Loader, LoaderCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface LoadingProps {
-  className?: string
+  className?: string;
 }
 
-export default function Loading({className }: LoadingProps) {
+export default function Loading({ className }: LoadingProps) {
   return (
-    <div className={cn("flex items-center justify-center h-screen   text-muted-foreground", className)}>
-      <Loader className="animate-spin" size={50} />
+    <div
+      className={cn(" absolute left-1/2 top-1/2 -translate-1/2 ", className)}
+    >
+      <LoaderCircle className="animate-spin" size={50} />
     </div>
-  )
+  );
 }

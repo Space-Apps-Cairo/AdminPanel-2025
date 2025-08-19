@@ -19,17 +19,27 @@ export const getAssignmentFields = (assignmentData?: Assignment): Field[] => [
     ],
     ...(assignmentData?.attendance_status && { defaultValue: assignmentData.attendance_status }),
   },
-  {
-    name: "check_in_time",
-    type: "text",
-    label: "Check In Time",
-    placeholder: "Enter check-in time",
-    ...(assignmentData?.check_in_time && { defaultValue: assignmentData.check_in_time }),
-  },
+ {
+  name: "check_in_time",
+  type: "text",
+  label: "Check In Time",
+defaultValue: assignmentData?.check_in_time 
+    ?? new Date().toLocaleString("en-CA", { 
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12:false
+      }).replace(",", ""), 
+  disabled: true,
+},
  {
   name: "workshop_schedule_id", 
   type: "number",
   label: "Schedule ID",
+  placeholder: "Enter schedule id ",
   defaultValue: assignmentData?.schedule?.id ?? undefined, 
 }
 ];

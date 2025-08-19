@@ -18,4 +18,5 @@ export interface Field {
     addButtonLabel?: string;
     itemName?: string;
   };
+  disabled?: boolean; 
 }

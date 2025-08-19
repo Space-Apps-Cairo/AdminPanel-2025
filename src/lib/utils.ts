@@ -26,3 +26,24 @@ export function formatDateTime(dateTimeString: string) {
     minute: "2-digit",
   });
 }
+
+export function convertTo24Hour(time12h?: string): string | null {
+  if (!time12h) return null; // nothing to convert
+
+  const [time, modifier] = time12h.split(" "); // e.g. ["02:30", "PM"]
+  if (!time || !modifier) return null;
+
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier.toUpperCase() === "PM" && hours !== 12) {
+    hours += 12;
+  }
+  if (modifier.toUpperCase() === "AM" && hours === 12) {
+    hours = 0;
+  }
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    2,
+    "0"
+  )}:00`;
+}

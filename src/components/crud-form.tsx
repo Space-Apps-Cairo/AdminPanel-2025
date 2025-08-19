@@ -102,7 +102,7 @@ export default function CrudForm(props: {
     setIsSubmittingForm(true);
     try {
       console.log("Form data being submitted:", data);
-      
+
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
@@ -116,16 +116,15 @@ export default function CrudForm(props: {
       });
 
       console.log("FormData entries:", [...formData.entries()]);
-      
+
       await handleFormSubmit(data, formData);
-      
+
       // Only reset and close if successful
       reset();
       setIsOpen(false);
       setCurrentStep(1); // Reset step if using steps
-      
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
       // Don't close the form on error, let user see what happened
     } finally {
       setIsSubmittingForm(false);
@@ -163,9 +162,14 @@ export default function CrudForm(props: {
           (field: Field, idx: number) =>
             (!steps || field.step === currentStep) && (
               <Fragment key={idx}>
-                {["text", "email", "password", "number", "tel"].includes(
-                  field.type
-                ) && (
+                {[
+                  "text",
+                  "email",
+                  "password",
+                  "number",
+                  "tel",
+                  "time",
+                ].includes(field.type) && (
                   <div className="grid gap-3">
                     <Label htmlFor={field.name}>{field.label}</Label>
                     <Input
@@ -173,8 +177,13 @@ export default function CrudForm(props: {
                       id={field.name}
                       name={field.name}
                       type={field.type}
-                      disabled={isDisabled}
+                      disabled={isDisabled || field.disabled}
                       placeholder={field.placeholder}
+                      className={
+                        field.type === "time"
+                          ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                          : ""
+                      }
                     />
                     {errors[field.name] && (
                       <p className="text-red-500 text-sm">
@@ -312,7 +321,7 @@ export default function CrudForm(props: {
                     )}
                   </div>
                 )}
-                
+
                 {field.type === "dynamicArrayField" && (
                   <DynamicArrayField
                     minItems={1}
@@ -366,12 +375,11 @@ export default function CrudForm(props: {
           </DialogClose>
           {!isDisabled && (
             <Button type="submit" disabled={isSubmittingForm}>
-              {isSubmittingForm 
-                ? "Submitting..." 
-                : operation === "edit" 
-                  ? "Update" 
-                  : "Submit"
-              }
+              {isSubmittingForm
+                ? "Submitting..."
+                : operation === "edit"
+                ? "Update"
+                : "Submit"}
             </Button>
           )}
         </DialogFooter>

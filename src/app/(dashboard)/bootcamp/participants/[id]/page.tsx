@@ -82,12 +82,12 @@ export default function ParticipantPreferencesPage() {
   } = useGetParticipantDetailsQuery(participantId);
 
   // // -------------------- Workshops Options --------------------
-  // const { data: workshopsData } = useGetAllWorkshopsQuery();
-  // const workshopOptions: FieldOption[] =
-  //   workshopsData?.data?.map((w: Workshop) => ({
-  //     value: w.id.toString(),
-  //     placeholder: w.id.toString(),
-  //   })) ?? [];
+  const { data: workshopsData } = useGetAllWorkshopsQuery();
+  const workshopOptions: FieldOption[] =
+    workshopsData?.data?.map((w: Workshop) => ({
+      value: w.id.toString(),
+      placeholder: w.title ?? "",
+    })) ?? [];
 
   // -------------------- Effects --------------------
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function ParticipantPreferencesPage() {
         <p>Go Back</p>
       </Button>
 
-      <Tabs defaultValue="preferences" className="w-full">
+      <Tabs defaultValue="details" className="w-full">
         <TabsList className="flex gap-5">
           <TabsTrigger value="details" className="px-5">
             Details
@@ -170,7 +170,7 @@ export default function ParticipantPreferencesPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="col-span-1">
                 <div className="flex flex-col items-center">
-                  <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden border-4 border-primary">
+                  <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden aspect-square">
                     {/* <Image
                       src={participantDetails?.personal_photo}
                       alt="Profile photo"
@@ -178,6 +178,13 @@ export default function ParticipantPreferencesPage() {
                       className="object-cover"
                       // Remove if you have proper image optimization setup
                     /> */}
+                    <Image
+                      src={"/images/ali.png"}
+                      alt="Profile photo"
+                      fill
+                      className="object-cover w-full  rounded-full h-full  "
+                      // Remove if you have proper image optimization setup
+                    />
                   </div>
                   <h2 className="text-xl font-semibold">
                     {participantDetails?.name_en}
@@ -228,11 +235,13 @@ export default function ParticipantPreferencesPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DocumentCard
                   title="National ID Front"
-                  url={participantDetails?.national_id_front}
+                  // url={participantDetails?.national_id_front}
+                  url={"/images/front.jpg"}
                 />
                 <DocumentCard
                   title="National ID Back"
-                  url={participantDetails?.national_id_back}
+                  // url={participantDetails?.national_id_back}
+                  url={"/images/back.jpg"}
                 />
               </div>
             </Section>
@@ -294,13 +303,7 @@ export default function ParticipantPreferencesPage() {
             <Section title="Skills">
               <div className="flex flex-wrap gap-2">
                 {participantDetails?.skills.map((skill) => (
-                  <Badge
-                    key={skill.id}
-                    variant={
-                      skill.type === "Technical" ? "default" : "secondary"
-                    }
-                    className="px-3 py-1 text-sm"
-                  >
+                  <Badge key={skill.id} className="px-3 py-1 text-sm">
                     {skill.name}
                   </Badge>
                 ))}
@@ -331,7 +334,7 @@ export default function ParticipantPreferencesPage() {
           <h1 className="text-2xl font-bold mb-6">Participant Preferences</h1>
           <DataTable
             data={preferences}
-            columns={preferenceColumns}
+            columns={preferenceColumns(workshopOptions)}
             searchConfig={{ enabled: false }}
             statusConfig={{ enabled: false }}
             actionConfig={{
@@ -346,7 +349,7 @@ export default function ParticipantPreferencesPage() {
 
           {isPrefFormOpen && (
             <CrudForm
-              fields={getPreferenceFields()}
+              fields={getPreferenceFields(undefined, workshopOptions)}
               isOpen={isPrefFormOpen}
               setIsOpen={setIsPrefFormOpen}
               operation="add"
