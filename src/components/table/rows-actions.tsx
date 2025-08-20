@@ -33,6 +33,7 @@ export default function RowsActions({
   onUpdateError,
   onDeleteSuccess,
   onDeleteError,
+  customPreviewHandler,
 }: RowsActionsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [operation, setOperation] = useState<OperationType>("edit");
@@ -94,7 +95,8 @@ export default function RowsActions({
       <div className="py-2.5 flex items-center gap-2.5">
         {isPreview && (
           <Button
-            onClick={() => handleButtonClick("preview")}
+            onClick={() =>customPreviewHandler
+        ? customPreviewHandler(rowData): handleButtonClick("preview")}
             variant="outline"
             size="sm"
           >
