@@ -47,3 +47,11 @@ export type WorkshopRes = {
     status: number
     data: Workshop
 }
+
+
+export type PriorityParticipant ={
+  id: string;
+  name_en: string;
+  name_ar: string;
+  email: string;
+}

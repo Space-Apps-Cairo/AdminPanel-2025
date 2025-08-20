@@ -14,6 +14,12 @@ export const workshopsApi = api.injectEndpoints({
       query: () => "/workshops",
       providesTags: ["Workshop"],
     }),
+    getWorkshopDetails: build.query<WorkshopRes, string>({
+      query: (id) => `/workshop-mangment/${id}`,
+      providesTags: (result, error, workshopId) => [
+        { type: "Workshop", id: workshopId.toString() },
+      ],
+    }),
     addNewWorkshop: build.mutation<
       WorkshopRes,
       Omit<Workshop, "id" | "created_at" | "schedules">
@@ -25,6 +31,7 @@ export const workshopsApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Workshop"],
     }),
+
     updateWorkshop: build.mutation<
       WorkshopRes,
       {
@@ -55,6 +62,7 @@ export const workshopsApi = api.injectEndpoints({
         { type: "Workshop", id },
       ],
     }),
+
     // ====== schedules ====== //
     getWorkshopSchedule: build.query<WorkshopRes, string>({
       query: (id) => `/workshop-schedules/${id}`,
@@ -102,6 +110,7 @@ export const workshopsApi = api.injectEndpoints({
 
 export const {
   useGetAllWorkshopsQuery,
+  useGetWorkshopDetailsQuery,
   useGetWorkshopScheduleQuery,
   useAddNewWorkshopMutation,
   useUpdateWorkshopMutation,

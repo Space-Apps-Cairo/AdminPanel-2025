@@ -18,7 +18,6 @@ export async function middleware(request: NextRequest) {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    console.log("authCheck:", authCheckResponse);
     if (!authCheckResponse.ok) {
       const res = NextResponse.redirect(new URL("/login", request.url));
       res.cookies.delete("token");

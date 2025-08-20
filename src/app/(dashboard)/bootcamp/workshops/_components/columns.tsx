@@ -1,3 +1,5 @@
+"use client";
+
 import { Field } from "@/app/interface";
 import RowsActions from "@/components/table/rows-actions";
 import { Button } from "@/components/ui/button";
@@ -10,6 +12,7 @@ import { workshopValidationSchema } from "@/validations/workshop";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import router, { useRouter } from "next/router";
 
 export const getWorkshopsFields = (userData?: Workshop): Field[] => [
   {
@@ -92,7 +95,11 @@ export const workshopColumns: ColumnDef<Workshop>[] = [
 function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
   const [updateWorkshop] = useUpdateWorkshopMutation();
   const [deleteWorkshop] = useDeleteWorkshopMutation();
-
+  const customPreviewHandler = () => {
+    if (typeof window !== "undefined") {
+      window.location.href = `/bootcamp/workshops/${rowData.id}/priorities`;
+    }
+  };
   return (
     <RowsActions
       rowData={rowData}
@@ -101,6 +108,7 @@ function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
       validationSchema={workshopValidationSchema}
       updateMutation={updateWorkshop}
       deleteMutation={deleteWorkshop}
+      customPreviewHandler={customPreviewHandler}
       onUpdateSuccess={(result) => {
         console.log("Workshop updated successfully:", result);
       }}

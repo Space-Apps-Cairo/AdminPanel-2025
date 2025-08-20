@@ -1,6 +1,4 @@
 import { z } from "zod";
-import { participantSchema } from "./participantSchema";
-import { workshopValidationSchema } from "./workshop";
 
 export const ParticipantPreferenceSchema = z.object({
   id: z.any().optional(),
