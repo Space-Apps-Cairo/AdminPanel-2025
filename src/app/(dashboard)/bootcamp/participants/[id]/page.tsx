@@ -70,8 +70,8 @@ export default function ParticipantPreferencesPage() {
   } = useGetAssignmentsByParticipantQuery(participantId, {
     skip: !participantId,
   });
-  const [assignments, setAssignments] = useState<any[]>([]);
-  const [isAssignFormOpen, setIsAssignFormOpen] = useState(false);
+  // const [assignments, setAssignments] = useState<any[]>([]);
+  // const [isAssignFormOpen, setIsAssignFormOpen] = useState(false);
   const [addNewAssignment] = useAddNewAssignmentMutation();
 
   // Details
@@ -408,3 +408,10 @@ function Section({
     </div>
   );
 }
+
+// Sepration
+// AssignmentTab
+// PreferneceTab
+// DetailTab
+
+//

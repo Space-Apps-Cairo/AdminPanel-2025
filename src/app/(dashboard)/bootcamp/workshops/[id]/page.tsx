@@ -16,7 +16,6 @@ import { scheduleValidationSchema } from "@/validations/schedule";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { FieldValues } from "react-hook-form";
-import { convertTo24Hour } from "@/lib/utils";
 
 export default function Schedules() {
   const { id } = useParams();

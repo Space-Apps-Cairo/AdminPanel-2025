@@ -14,8 +14,11 @@ export const authApi = api.injectEndpoints({
       },
       invalidatesTags: [{ type: "Login", id: "LIST" }],
     }),
+    authCheck: builder.query({
+      query: () => "/isTokenExpired",
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useAuthCheckQuery } = authApi;
