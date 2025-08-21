@@ -3,9 +3,22 @@ export interface FieldOption {
   placeholder: string;
 }
 
+export type FieldType =
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "tel"
+  | "time"
+  | "textArea"
+  | "file"
+  | "select"
+  | "date"
+  | "checkbox"
+  | "dynamicArrayField";
 export interface Field {
   name: string;
-  type: string;
+  type: FieldType;
   label?: string;
   placeholder?: string;
   defaultValue?: string | number | boolean;
@@ -18,5 +31,5 @@ export interface Field {
     addButtonLabel?: string;
     itemName?: string;
   };
-  disabled?: boolean; 
+  disabled?: boolean;
 }

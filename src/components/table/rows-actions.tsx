@@ -17,7 +17,6 @@ import {
 import CrudForm from "@/components/crud-form";
 import { Button } from "@/components/ui/button";
 
-
 export default function RowsActions({
   steps,
   fields,
@@ -44,20 +43,17 @@ export default function RowsActions({
     setIsOpen(true);
   };
 
-  const handleUpdateRow = async (formData: any) => {
-    if (updateMutation && rowData?.id) {
-      try {
-        const result = await updateMutation({
-          id: rowData.id,
-          data: formData,
-        });
+  const handleUpdateRow = async (jsonData: any, formData: FormData) => {
+    try {
+      const result = await updateMutation({
+        id: rowData.id,
+        data: jsonData,
+      }).unwrap();
 
-        const unwrappedResult = await result.unwrap();
-        onUpdateSuccess?.(unwrappedResult);
-        setIsOpen(false);
-      } catch (error) {
-        onUpdateError?.(error);
-      }
+      onUpdateSuccess?.(result);
+      setIsOpen(false);
+    } catch (error) {
+      onUpdateError?.(error);
     }
   };
 
@@ -95,8 +91,11 @@ export default function RowsActions({
       <div className="py-2.5 flex items-center gap-2.5">
         {isPreview && (
           <Button
-            onClick={() =>customPreviewHandler
-        ? customPreviewHandler(rowData): handleButtonClick("preview")}
+            onClick={() =>
+              customPreviewHandler
+                ? customPreviewHandler(rowData)
+                : handleButtonClick("preview")
+            }
             variant="outline"
             size="sm"
           >

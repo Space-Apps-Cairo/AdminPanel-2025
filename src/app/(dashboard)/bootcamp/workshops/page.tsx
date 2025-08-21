@@ -57,8 +57,7 @@ export default function Workshops() {
 
   // ====== add-new-workshop ====== //
 
-  const [addWorkshop, { isLoading: isAddingWorkshop }] =
-    useAddNewWorkshopMutation();
+  const [addWorkshop] = useAddNewWorkshopMutation();
 
   const handleAddWorkshopSubmit = async (
     data: FieldValues,
@@ -75,6 +74,7 @@ export default function Workshops() {
       const workshopData: Omit<Workshop, "id" | "created_at" | "schedules"> = {
         title: data.title,
         description: data.description,
+        workshop_details: data.workshop_details,
         start_date:
           data.start_date instanceof Date
             ? data.start_date.toISOString().split("T")[0]

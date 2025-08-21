@@ -12,29 +12,41 @@ import { workshopValidationSchema } from "@/validations/workshop";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import router, { useRouter } from "next/router";
 
-export const getWorkshopsFields = (userData?: Workshop): Field[] => [
+export const getWorkshopsFields = (workshop?: Workshop): Field[] => [
   {
-    name: "name",
+    name: "title",
     type: "text",
-    label: "Name",
-    ...(userData?.name && { defaultValue: userData.name }),
+    label: "Title",
+    ...(workshop?.title && { defaultValue: workshop.title }),
     step: 1,
+    placeholder: "Enter workshop name",
   },
   {
     name: "description",
     type: "text",
     label: "Description",
-    ...(userData?.description && { defaultValue: userData.description }),
+    ...(workshop?.description && { defaultValue: workshop.description }),
     step: 1,
+    placeholder: "Enter workshop description",
   },
+  {
+    name: "workshop_details",
+    type: "textArea",
+    label: "Workshop Instructions",
+    ...(workshop?.workshop_details && {
+      defaultValue: workshop.workshop_details,
+    }),
+    step: 1,
+    placeholder: "Enter Workshop Instructions",
+  },
+
   {
     name: "start_date",
     type: "date",
     label: "Start Date",
     placeholder: "Workshop start date",
-    ...(userData?.start_date && { defaultValue: userData.start_date }),
+    ...(workshop?.start_date && { defaultValue: workshop.start_date }),
     step: 1,
   },
   {
@@ -42,7 +54,7 @@ export const getWorkshopsFields = (userData?: Workshop): Field[] => [
     type: "date",
     label: "End Date",
     placeholder: "Workshop end date",
-    ...(userData?.end_date && { defaultValue: userData.end_date }),
+    ...(workshop?.end_date && { defaultValue: workshop.end_date }),
     step: 1,
   },
 ];
@@ -62,6 +74,12 @@ export const workshopColumns: ColumnDef<Workshop>[] = [
     accessorKey: "description",
     size: 220,
   },
+  {
+    header: "Instructions",
+    accessorKey: "workshop_details",
+    size: 220,
+  },
+
   {
     header: "Start Date",
     accessorKey: "start_date",

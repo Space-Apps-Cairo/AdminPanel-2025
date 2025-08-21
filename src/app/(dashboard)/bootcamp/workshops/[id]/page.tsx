@@ -39,6 +39,11 @@ export default function WorkshopPage() {
     error: workshopError,
   } = useGetWorkshopDetailsQuery(workshopId);
 
+  // -------------------- Loading States --------------------
+  if (isLoadingWorkshop) return <Loading />;
+  if (workshopError)
+    return <div className="text-red-500">Error loading workshop data</div>;
+
   // -------------------- Extract Priorities --------------------
   const getPriorityParticipants = (
     data: any,
@@ -65,6 +70,7 @@ export default function WorkshopPage() {
     "third_priority_bootcamp_participants"
   );
 
+  console.log("workshop-schudels:", workshopData?.data?.schedules);
   const tabs = [
     {
       label: "Details",
@@ -77,7 +83,7 @@ export default function WorkshopPage() {
       component: (
         <SchedulesTab
           workshopId={workshopId}
-          schedules={workshopData?.data?.schedules}
+          schedules={workshopData?.data?.schedules ?? []}
         />
       ),
     },
@@ -112,11 +118,6 @@ export default function WorkshopPage() {
       count: thirdPriority.length,
     },
   ];
-
-  // -------------------- Loading States --------------------
-  if (isLoadingWorkshop) return <Loading />;
-  if (workshopError)
-    return <div className="text-red-500">Error loading workshop data</div>;
 
   // -------------------- Render --------------------
   return (

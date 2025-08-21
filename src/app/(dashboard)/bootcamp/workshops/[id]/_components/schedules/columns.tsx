@@ -47,25 +47,25 @@ export const getScheduleFields = (ScheduleData?: Schedule): Field[] => [
     ...(ScheduleData?.capacity && { defaultValue: ScheduleData.capacity }),
   },
 
-  {
-    name: "available_slots",
-    type: "number",
-    label: "Available Slots",
-    placeholder: "Enter available slots",
-    ...(ScheduleData?.available_slots && {
-      defaultValue: ScheduleData.available_slots,
-    }),
-  },
+  // {
+  //   name: "available_slots",
+  //   type: "number",
+  //   label: "Available Slots",
+  //   placeholder: "Enter available slots",
+  //   ...(ScheduleData?.available_slots && {
+  //     defaultValue: ScheduleData.available_slots,
+  //   }),
+  // },
 
-  {
-    name: "available_slots_on_site",
-    type: "number",
-    label: "Available Slots On Site",
-    placeholder: "Enter on-site available slots",
-    ...(ScheduleData?.available_slots_on_site && {
-      defaultValue: ScheduleData.available_slots_on_site,
-    }),
-  },
+  // {
+  //   name: "available_slots_on_site",
+  //   type: "number",
+  //   label: "Available Slots On Site",
+  //   placeholder: "Enter on-site available slots",
+  //   ...(ScheduleData?.available_slots_on_site && {
+  //     defaultValue: ScheduleData.available_slots_on_site,
+  //   }),
+  // },
 ];
 
 export const scheduleColumns: ColumnDef<Schedule>[] = [
