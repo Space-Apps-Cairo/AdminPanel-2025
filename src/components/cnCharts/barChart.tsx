@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -9,24 +9,24 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { JSX } from "react"
+} from "@/components/ui/chart";
+import { JSX } from "react";
 
 export interface ChartBarProps {
-  title: string
-  description?: string
-  data: any[]
-  config: ChartConfig
-  footerText?: string
-  footerSubText?: string
-  trendValue?: string
-  trendIcon?: JSX.Element
+  title: string;
+  description?: string;
+  data: any[];
+  config: ChartConfig;
+  footerText?: string;
+  footerSubText?: string;
+  trendValue?: string;
+  trendIcon?: JSX.Element;
 }
 
 export function ChartBar({
@@ -40,7 +40,7 @@ export function ChartBar({
   trendIcon,
 }: ChartBarProps) {
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full ">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
@@ -59,7 +59,10 @@ export function ChartBar({
                 typeof value === "string" ? value.slice(0, 8) : value
               }
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
             {Object.keys(config).map((key) => (
               <Bar
                 key={key}
@@ -80,9 +83,11 @@ export function ChartBar({
             </div>
           )}
           {footerText && <div className="font-medium">{footerText}</div>}
-          {footerSubText && <div className="text-muted-foreground">{footerSubText}</div>}
+          {footerSubText && (
+            <div className="text-muted-foreground">{footerSubText}</div>
+          )}
         </CardFooter>
       )}
     </Card>
-  )
+  );
 }

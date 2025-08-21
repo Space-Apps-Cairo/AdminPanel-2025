@@ -1,26 +1,46 @@
-"use client"
+"use client";
 
-import Loading from "../../../../components/loading/loading"
-import { 
-  useGetWorkshopAttendanceQuery, 
+import Loading from "../../../../components/loading/loading";
+import {
+  useGetWorkshopAttendanceQuery,
   useGetAttendeesNumbersQuery,
-  useGetWorkshopsAttendeesQuery 
-} from "@/service/Api/dashboard"
-import { TrendingUp, TrendingDown } from "lucide-react"
-import { MultiBarChart } from "../../../../components/cnCharts/multichart"
-import { ChartBar } from "../../../../components/cnCharts/barChart"
-import { SectionCardData, SectionCards } from "@/components/sectionCards/page"
+  useGetWorkshopsAttendeesQuery,
+} from "@/service/Api/dashboard";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { MultiBarChart } from "../../../../components/cnCharts/multichart";
+import { ChartBar } from "../../../../components/cnCharts/barChart";
+import { SectionCardData, SectionCards } from "@/components/sectionCards/page";
 
 export default function AttendanceDashboard() {
   // ---------- Hooks ----------
-  const { data: workshopData, isLoading: isLoadingWorkshop, error: workshopError } = useGetWorkshopAttendanceQuery()
-  const { data: attendeesData, isLoading: isLoadingAttendees, error: attendeesError } = useGetAttendeesNumbersQuery()
-  const { data: workshopsAttendeesData, isLoading: isLoadingWorkshopsAttendees, error: workshopsAttendeesError } = useGetWorkshopsAttendeesQuery()
+  const {
+    data: workshopData,
+    isLoading: isLoadingWorkshop,
+    error: workshopError,
+  } = useGetWorkshopAttendanceQuery();
+  const {
+    data: attendeesData,
+    isLoading: isLoadingAttendees,
+    error: attendeesError,
+  } = useGetAttendeesNumbersQuery();
+  const {
+    data: workshopsAttendeesData,
+    isLoading: isLoadingWorkshopsAttendees,
+    error: workshopsAttendeesError,
+  } = useGetWorkshopsAttendeesQuery();
 
   // ---------- Loading / Error ----------
-  if (isLoadingWorkshop || isLoadingAttendees || isLoadingWorkshopsAttendees) return <Loading />
-  if (workshopError || attendeesError || workshopsAttendeesError || !workshopData || !attendeesData || !workshopsAttendeesData) 
-    return <div>Error loading data</div>
+  if (isLoadingWorkshop || isLoadingAttendees || isLoadingWorkshopsAttendees)
+    return <Loading />;
+  if (
+    workshopError ||
+    attendeesError ||
+    workshopsAttendeesError ||
+    !workshopData ||
+    !attendeesData ||
+    !workshopsAttendeesData
+  )
+    return <div>Error loading data</div>; // Error Component
 
   // ---------------- MultiBarChart Data ----------------
   const chartData = workshopData.data.attendance.map((item: any) => ({
@@ -28,13 +48,21 @@ export default function AttendanceDashboard() {
     attended: item.attended_count,
     absent: item.absent_count,
     assigned: item.assigned_count,
-  }))
+  }));
 
   const chartKeys = [
-    { dataKey: "attended", label: "Attended", color: "var(--color-neutral-500)" },
+    {
+      dataKey: "attended",
+      label: "Attended",
+      color: "var(--color-neutral-500)",
+    },
     { dataKey: "absent", label: "Absent", color: "var(--color-neutral-700)" },
-    { dataKey: "assigned", label: "Assigned", color: "var(--color-neutral-800)" },
-  ]
+    {
+      dataKey: "assigned",
+      label: "Assigned",
+      color: "var(--color-neutral-800)",
+    },
+  ];
 
   // ---------------- Section Cards Data ----------------
   const cards: SectionCardData[] = [
@@ -62,46 +90,52 @@ export default function AttendanceDashboard() {
       trendValue: "-0%",
       footerMain: "Total attendees who were absent",
     },
-  ]
+  ];
 
   // ---------------- Bar Chart Data (Workshops) ----------------
-  const workshopsChartData = workshopsAttendeesData.data.workshops.map((w: any) => ({
-    month: w.workshop_title || "Unassigned",
-    participants: w.total_participants,
-  }))
+  const workshopsChartData = workshopsAttendeesData.data.workshops.map(
+    (w: any) => ({
+      month: w.workshop_title || "Unassigned",
+      participants: w.total_participants,
+    })
+  );
 
   const workshopsChartConfig = {
     participants: { label: "Participants", color: "var(--color-neutral-500)" },
-  }
+  };
 
   return (
-   <div className="space-y-6">
-  {/* ---------- Section Cards ---------- */}
-  <SectionCards data={cards} />
+    <div className="space-y-6">
+      {/* ---------- Section Cards ---------- */}
+      <SectionCards data={cards} />
 
-  {/* ---------- Charts Side by Side ---------- */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {/* Multi Bar Chart */}
-    <MultiBarChart
-      title="Workshop Attendance"
-      description="Attendance summary for all workshops"
-      data={chartData}
-      keys={chartKeys}
-      footerText="Attendance overview"
-      footerSubText="Showing workshop attendance details"
-      indicator={<TrendingUp className="h-4 w-4" />}
-    />
-
-    {/* Single Bar Chart */}
-    <ChartBar
-      title="Participants per Workshop"
-      description="Total participants for each workshop"
-      data={workshopsChartData}
-      config={workshopsChartConfig}
-      footerText="Workshop overview"
-      trendValue="Trending up"
-      trendIcon={<TrendingUp className="h-4 w-4" />}
-    />
-  </div>
-</div>)
+      {/* ---------- Charts Side by Side ---------- */}
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        {/* Multi Bar Chart */}
+        <div className="col-span-3">
+          <MultiBarChart
+            title="Workshop Attendance"
+            description="Attendance summary for all workshops"
+            data={chartData}
+            keys={chartKeys}
+            footerText="Attendance overview"
+            footerSubText="Showing workshop attendance details"
+            indicator={<TrendingUp className="h-4 w-4" />}
+          />
+        </div>
+        <div className="col-span-3">
+          <ChartBar
+            title="Participants per Workshop"
+            description="Total participants for each workshop"
+            data={workshopsChartData}
+            config={workshopsChartConfig}
+            footerText="Workshop overview"
+            trendValue="Trending up"
+            trendIcon={<TrendingUp className="h-4 w-4" />}
+          />
+        </div>
+        {/* Single Bar Chart */}
+      </div>
+    </div>
+  );
 }
