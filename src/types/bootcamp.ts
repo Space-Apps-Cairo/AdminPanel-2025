@@ -15,3 +15,5 @@ export interface BootcampResponse {
 }
 
 export type BootcampRequest = Omit<BootcampType, "id">;
+
+

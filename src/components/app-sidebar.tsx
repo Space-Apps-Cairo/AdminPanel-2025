@@ -6,10 +6,10 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
 
-import { TeamSwitcher } from "@/components/team-switcher";
-import SearchBar from "@/components/ui/search-bar";
+import { TeamSwitcher } from "./team-switcher";
+import SearchBar from "./ui/search-bar";
 
 import {
   HomeIcon,

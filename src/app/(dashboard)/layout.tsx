@@ -1,14 +1,14 @@
 import React from "react";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "../../components/app-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
+} from "../../components/ui/sidebar";
+import { Separator } from "../../components/ui/separator";
 
-import ModeToggle from "@/components/ui/theme-toggle";
-import { SearchProvider } from "@/components/ui/search-context";
+import ModeToggle from "../../components/ui/theme-toggle";
+import { SearchProvider } from "../../components/ui/search-context";
 export default function DashboardLayout({
   children,
 }: {

@@ -3,16 +3,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Loading from "@/components/loading/loading";
+import { Button } from "../../../../../components/ui/button";
+import { Card, CardTitle } from "../../../../../components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../../../components/ui/tabs";
+import Loading from "../../../../../components/loading/loading";
 
 // --- Priority imports ---
 import { useGetWorkshopDetailsQuery } from "@/service/Api/workshops";
 import { PriorityParticipant } from "@/types/workshop";
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../../../../../components/ui/badge";
 import PriorityTab from "./_components/priorites/tabs";
 import SchedulesTab from "./_components/schedules/page";
 import WorkshopDetailsTab from "./_components/details/page";

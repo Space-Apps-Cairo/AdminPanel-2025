@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card } from '../ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import FormFieldsPanel from './FormFieldsPanel';
 import FormCanvas from './FormCanvas';
 import FormPreview from './FormPreview';
@@ -9,7 +9,7 @@ import FormTemplates from './FormTemplates';
 import FormSettings from './FormSettings';
 import StepsManager from './StepsManager';
 import { FormSchema, FormField, FormStep } from '@/types/form';
-import { Button } from '@/components/ui/button';
+import { Button } from '../ui/button';
 import { Save, Download, Upload, Eye, Settings, Palette } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 

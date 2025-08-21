@@ -11,9 +11,9 @@ import {
   bootcampColumns,
   getBootcampFields,
 } from "./_components/columns/columns";
-import DataTable from "@/components/table/data-table";
-import CrudForm from "@/components/bootcamp/bootcamp-crud-form";
-import Loading from "@/components/loading/loading";
+import DataTable from "../../../../components/table/data-table";
+import CrudForm from "../../../../components/bootcamp/bootcamp-crud-form";
+import Loading from "../../../../components/loading/loading";
 import { BootcampSchema } from "@/validations/bootcamp";
 
 export default function BootcampPage() {

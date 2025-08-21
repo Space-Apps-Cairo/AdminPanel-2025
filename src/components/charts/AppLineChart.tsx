@@ -2,13 +2,6 @@
 
 
 
-
-
-
-
-
-
-
 "use client";
 
 import { CartesianGrid, Line, LineChart, XAxis, YAxis, ResponsiveContainer } from "recharts";
@@ -19,7 +12,7 @@ import {
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
-} from "@/components/ui/chart";
+} from "../ui/chart";
 
 type CurveType =
   | "basis"

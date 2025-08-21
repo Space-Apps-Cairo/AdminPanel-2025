@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CardsGrid from "@/components/cards/CardsGrid";
-import { AppSidebar } from "@/components/app-sidebar";
-import { useSearch } from "@/components/ui/search-context";
+import CardsGrid from "../../../components/cards/CardsGrid";
+import { AppSidebar } from "../../../components/app-sidebar";
+import { useSearch } from "../../../components/ui/search-context";
 import Fuse from "fuse.js";
 
 export type CardData = {

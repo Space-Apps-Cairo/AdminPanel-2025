@@ -1,5 +1,5 @@
 "use client";
-import FormBuilder from "@/components/FormBuilder/FormBuilder";
+import FormBuilder from "../../../components/FormBuilder/FormBuilder";
 
 const Index = () => {
   return (

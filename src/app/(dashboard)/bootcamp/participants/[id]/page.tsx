@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Loading from "@/components/loading/loading";
-import DataTable from "@/components/table/data-table";
-import CrudForm from "@/components/crud-form";
-import { Button } from "@/components/ui/button";
+import Loading from "../../../../../components/loading/loading";
+import DataTable from "../../../../../components/table/data-table";
+import CrudForm from "../../../../../components/crud-form";
+import { Button } from "../../../../../components/ui/button";
 import { Cake, ChevronLeft, IdCard, Mail, Phone } from "lucide-react";
 import { FieldValues } from "react-hook-form";
 
@@ -21,7 +21,7 @@ import {
 import { ParticipantPreferenceSchema } from "@/validations/preference";
 import { Workshop } from "@/types/workshop";
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../../../components/ui/tabs";
 import { useGetAllWorkshopsQuery } from "@/service/Api/workshops";
 import { FieldOption } from "@/app/interface";
 
@@ -41,8 +41,8 @@ import {
 import InfoCard from "./_components/InfoCard";
 import DocumentCard from "./_components/DocumentCard";
 import Image from "next/image";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "../../../../../components/ui/label";
+import { Badge } from "../../../../../components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import PreferencesTab from "./_components/tabs/preferences";
 import AssignmentsTab from "./_components/tabs/assignments";

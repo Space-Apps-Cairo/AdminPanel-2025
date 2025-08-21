@@ -1,8 +1,8 @@
 "use client";
 
 import { Field } from "@/app/interface";
-import RowsActions from "@/components/table/rows-actions";
-import { Button } from "@/components/ui/button";
+import RowsActions from "../../../../../components/table/rows-actions";
+import { Button } from "../../../../../components/ui/button";
 import {
   useDeleteWorkshopMutation,
   useUpdateWorkshopMutation,

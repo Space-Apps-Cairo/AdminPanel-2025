@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { BootcampType } from "@/types/bootcamp";
-import RowsActions from "@/components/table/rows-actions";
+import RowsActions from "../../../../../../components/table/rows-actions";
 import { Field } from "@/app/interface";
 import { BootcampSchema } from "@/validations/bootcamp";
 import {

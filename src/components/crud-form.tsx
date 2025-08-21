@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 import {
   Dialog,
   DialogClose,
@@ -10,24 +10,24 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
+} from "./ui/select";
+import { Calendar } from "./ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "./ui/checkbox";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "./ui/popover";
 import { format } from "date-fns";
 import type { Field, FieldOption } from "@/app/interface";
 import {
@@ -43,7 +43,7 @@ import {
   StepperItem,
   StepperSeparator,
   StepperTrigger,
-} from "@/components/ui/stepper";
+} from "./ui/stepper";
 import DynamicArrayField from "./fields/DynamicArrayFields";
 import { Textarea } from "./ui/textarea";
 

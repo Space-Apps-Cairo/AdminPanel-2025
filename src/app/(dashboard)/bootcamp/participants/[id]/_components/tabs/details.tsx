@@ -2,8 +2,8 @@ import Image from "next/image";
 import { Mail, Phone, Cake, IdCard } from "lucide-react";
 import InfoCard from "@/app/(dashboard)/bootcamp/participants/[id]/_components/InfoCard"; 
 import DocumentCard from "@/app/(dashboard)/bootcamp/participants/[id]/_components/DocumentCard"; 
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
+import { Badge } from "../../../../../../../components/ui/badge";
+import { Label } from "../../../../../../../components/ui/label";
 
 interface DetailsTabProps {
   participantDetails: any; 

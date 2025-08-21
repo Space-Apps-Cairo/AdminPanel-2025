@@ -1,9 +1,9 @@
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
 import { FormSchema, FormTemplate } from '@/types/form';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '../ui/badge';
 import { FileText, Users, Building, Calendar, Phone, Mail } from 'lucide-react';
 
 interface FormTemplatesProps {
