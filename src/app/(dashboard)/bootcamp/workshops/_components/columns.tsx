@@ -76,7 +76,7 @@ export const workshopColumns: ColumnDef<Workshop>[] = [
     header: "Schedules",
     cell: ({ row }) => (
       <Button variant="outline" size="sm">
-        <Link href={`workshops/${row.original.id}`}>Schedules</Link>
+        <Link href={`workshops/${row.original.id}#schedules`}>Schedules</Link>
         <ChevronRight />
       </Button>
     ),
@@ -97,7 +97,7 @@ function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
   const [deleteWorkshop] = useDeleteWorkshopMutation();
   const customPreviewHandler = () => {
     if (typeof window !== "undefined") {
-      window.location.href = `/bootcamp/workshops/${rowData.id}/priorities`;
+      window.location.href = `/bootcamp/workshops/${rowData.id}`;
     }
   };
   return (

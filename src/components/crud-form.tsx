@@ -133,7 +133,7 @@ export default function CrudForm(props: {
 
   const FormBody = (
     <>
-      <div id="hello" className="mx-auto max-w-xl space-y-8">
+      <div id="hello" className="mx-auto max-w-xl space-y-8 overflow-auto">
         <DialogHeader className={`${!asDialog ? "!text-center" : ""}`}>
           <DialogTitle>{operation.toUpperCase()} Form</DialogTitle>
           <DialogDescription>

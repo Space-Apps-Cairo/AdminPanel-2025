@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 
 import { TeamSwitcher } from "@/components/team-switcher";
-import { NavMain } from "@/components/nav-main";
 import SearchBar from "@/components/ui/search-bar";
 
 import {
@@ -20,6 +19,7 @@ import {
   // PieChart,
   // Map,
 } from "lucide-react";
+import { NavMain } from "./nav-main";
 
 const data = {
   teams: [

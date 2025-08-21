@@ -15,7 +15,7 @@ export type RowsActionsProps = {
     onUpdateError?: (error: any) => void
     onDeleteSuccess?: (result: any) => void
     onDeleteError?: (error: any) => void
-     customPreviewHandler?: (rowData: any) => void;
+    customPreviewHandler?: (rowData: any) => void;
 }
 
 export type OperationType = "edit" | "preview";

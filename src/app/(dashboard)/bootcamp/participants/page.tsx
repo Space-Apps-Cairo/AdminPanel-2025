@@ -38,8 +38,8 @@ export default function ParticipantsPage() {
 
   const searchConfig: SearchConfig = {
     enabled: true,
-    placeholder: "Filter by name or email",
-    searchKeys: ["name_en", "name_ar", "email"],
+    placeholder: "Filter by ID, National ID, Email or Phone",
+    searchKeys: ["id", "national", "email", "phone_number"],
   };
 
   const actionConfig: ActionConfig = {
@@ -99,6 +99,7 @@ export default function ParticipantsPage() {
           asDialog={true}
           validationSchema={participantValidationSchema}
           onSubmit={handleAddParticipant}
+          steps={[1, 2, 3]}
         />
       )}
     </div>
