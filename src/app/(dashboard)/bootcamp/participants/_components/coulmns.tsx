@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../../../components/ui/button";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import RowsActions from "@/components/table/rows-actions";
+import RowsActions from "../../../../../components/table/rows-actions";
 import {
   useDeleteParticipantMutation,
   useUpdateParticipantMutation,

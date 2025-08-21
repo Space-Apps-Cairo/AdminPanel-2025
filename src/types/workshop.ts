@@ -55,3 +55,32 @@ export type PriorityParticipant ={
   name_ar: string;
   email: string;
 }
+//Dashboard data 
+export type WorkshopAttendance ={
+ workshop_id: number | string
+  workshop_title: string | null
+  assigned_count: number
+  attended_count: number
+  absent_count: number
+}
+
+export type WorkshopAttendanceResponse= {
+  status: number;
+  success: boolean;
+  message: string;
+  data: {
+    attendance: WorkshopAttendance[];
+  };
+}
+export type AttendeesData ={
+  registered_attendees: number
+  enrolled_attendees: number
+  not_enrolled_attendees: number
+}
+
+export type AttendeesResponse= {
+  status: number
+  success: boolean
+  message: string
+  data: AttendeesData
+}

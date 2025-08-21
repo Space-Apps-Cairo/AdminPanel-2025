@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card } from '../ui/card';
+import { Button } from '../ui/button';
 import { FormSchema, FormField } from '@/types/form';
 import FormFieldEditor from './FormFieldEditor';
 import { Trash2, Settings, GripVertical } from 'lucide-react';

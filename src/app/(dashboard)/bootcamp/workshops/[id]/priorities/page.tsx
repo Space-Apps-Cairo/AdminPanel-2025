@@ -2,14 +2,14 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useGetWorkshopDetailsQuery } from "@/service/Api/workshops";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../../../../components/ui/button";
 import { ChevronLeft } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Loading from "@/components/loading/loading";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../../../../components/ui/tabs";
+import Loading from "../../../../../../components/loading/loading";
 import PriorityTab from "./_components/tabs";
 import { PriorityParticipant } from "@/types/workshop";
-import CardsGrid from "@/components/cards/CardsGrid";
-import { Card, CardTitle } from "@/components/ui/card";
+import CardsGrid from "../../../../../../components/cards/CardsGrid";
+import { Card, CardTitle } from "../../../../../../components/ui/card";
 import { ServerInsertedMetadataContext } from "next/dist/shared/lib/server-inserted-metadata.shared-runtime";
 
 export default function WorkshopPriorityPage() {

@@ -1,5 +1,5 @@
-import Loading from "@/components/loading/loading";
-import DataTable from "@/components/table/data-table";
+import Loading from "../../../../../../../components/loading/loading";
+import DataTable from "../../../../../../../components/table/data-table";
 import {
   useAddNewScheduleMutation,
   useGetWorkshopScheduleQuery,
@@ -9,7 +9,7 @@ import { Schedule } from "@/types/workshop";
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { getScheduleFields, scheduleColumns } from "../columns";
-import CrudForm from "@/components/crud-form";
+import CrudForm from "../../../../../../../components/crud-form";
 import { scheduleValidationSchema } from "@/validations/schedule";
 
 // Schedules Tab Component

@@ -2,14 +2,14 @@
 
 import { useState } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "./ui/button"
 import {
   Stepper,
   StepperIndicator,
   StepperItem,
   StepperSeparator,
   StepperTrigger,
-} from "@/components/ui/stepper"
+} from "./ui/stepper"
 
 const steps = [1, 2, 3, 4]
 

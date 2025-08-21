@@ -8,7 +8,7 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "../ui/chart";
 
 type AppBarChartProps = {
   data: Record<string, string | number>[];

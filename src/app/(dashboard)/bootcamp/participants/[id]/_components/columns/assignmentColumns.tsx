@@ -2,7 +2,7 @@
 import { Assignment } from "@/types/preference";
 import { ColumnDef } from "@tanstack/react-table";
 import { Field } from "@/app/interface";
-import RowsActions from "@/components/table/rows-actions";
+import RowsActions from "../../../../../../../components/table/rows-actions";
 import { AssignmentSchema } from "@/validations/assignment";
 import { useDeleteAssignmentMutation, useUpdateAssignmentMutation } from "@/service/Api/assignment";
 

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import DataTable from "@/components/table/data-table";
+import DataTable from "../../../../../../../components/table/data-table";
 import { PriorityParticipant } from "@/types/workshop";
 import { priorityColumns } from "./columns";
 import { SearchConfig } from "@/types/table";

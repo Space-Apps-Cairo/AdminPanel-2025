@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { ActionConfig, SearchConfig } from "@/types/table";
-import DataTable from "@/components/table/data-table";
+import DataTable from "../../../../components/table/data-table";
 import {
   getParticipantsFields,
   participantColumns,
 } from "./_components/coulmns";
-import Loading from "@/components/loading/loading";
-import CrudForm from "@/components/crud-form";
+import Loading from "../../../../components/loading/loading";
+import CrudForm from "../../../../components/crud-form";
 import {
   ParticipantFormValues,
   participantValidationSchema,

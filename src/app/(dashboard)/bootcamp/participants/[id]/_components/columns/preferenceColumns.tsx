@@ -1,7 +1,7 @@
 import { Field, FieldOption } from "@/app/interface";
 import { ParticipantPreference } from "@/types/preference";
 import { ColumnDef } from "@tanstack/react-table";
-import RowsActions from "@/components/table/rows-actions";
+import RowsActions from "../../../../../../../components/table/rows-actions";
 import {
   useUpdatePreferenceMutation,
   useDeletePreferenceMutation,

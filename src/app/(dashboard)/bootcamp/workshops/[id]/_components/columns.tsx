@@ -1,5 +1,5 @@
 import { Field } from "@/app/interface";
-import RowsActions from "@/components/table/rows-actions";
+import RowsActions from "../../../../../../components/table/rows-actions";
 import {
   useDeleteScheduleMutation,
   useUpdateScheduleMutation,

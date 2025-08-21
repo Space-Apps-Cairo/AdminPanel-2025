@@ -24,6 +24,7 @@ export const api = createApi({
     "Preference",
     "Assignment",
     "Participant",
+    "BootcampDashboard",
   ],
 
   endpoints: () => ({}), // start empty

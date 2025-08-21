@@ -3,10 +3,10 @@
 import { Workshop } from "@/types/workshop";
 import React, { useEffect, useState } from "react";
 import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
-import DataTable from "@/components/table/data-table";
+import DataTable from "../../../../components/table/data-table";
 import { getWorkshopsFields, workshopColumns } from "./_components/columns";
-import Loading from "@/components/loading/loading";
-import CrudForm from "@/components/crud-form";
+import Loading from "../../../../components/loading/loading";
+import CrudForm from "../../../../components/crud-form";
 import { workshopValidationSchema } from "@/validations/workshop";
 import {
   useAddNewWorkshopMutation,

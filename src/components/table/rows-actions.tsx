@@ -13,9 +13,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import CrudForm from "@/components/crud-form";
-import { Button } from "@/components/ui/button";
+} from "../ui/alert-dialog";
+import CrudForm from "../crud-form";
+import { Button } from "../ui/button";
 
 
 export default function RowsActions({

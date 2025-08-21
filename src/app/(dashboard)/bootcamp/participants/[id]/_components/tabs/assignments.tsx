@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import DataTable from "@/components/table/data-table";
-import CrudForm from "@/components/crud-form";
+import DataTable from "../../../../../../../components/table/data-table";
+import CrudForm from "../../../../../../../components/crud-form";
 import { AssignmentSchema } from "@/validations/assignment";
 import {
   assignmentColumns,

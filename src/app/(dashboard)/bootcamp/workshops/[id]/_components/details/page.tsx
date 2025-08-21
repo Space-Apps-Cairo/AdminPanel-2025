@@ -1,12 +1,12 @@
 // Workshop Details Tab Component
 "use client";
 
-import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardTitle, CardContent, CardHeader } from "../../../../../../../components/ui/card";
 
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import GreenBagde from "@/components/badges/greenBadge";
-import RedBadge from "@/components/badges/redBadge";
+import { Badge } from "../../../../../../../components/ui/badge";
+import GreenBagde from "../../../../../../../components/badges/greenBadge";
+import RedBadge from "../../../../../../../components/badges/redBadge";
 
 export default function WorkshopDetailsTab({ workshop }: { workshop: any }) {
   if (!workshop) return <div>No workshop data available</div>;
