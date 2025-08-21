@@ -32,16 +32,13 @@ export function MultiBarChart({
   description,
   data,
   keys,
-  footerText,
-  footerSubText,
-  indicator,
 }: MultiBarChartProps) {
   return (
     <Card className="w-full ">
       <CardHeader>
-        <CardTitle className="text-sm">{title}</CardTitle>
+        <CardTitle className="text-lg">{title}</CardTitle>
         {description && (
-          <CardDescription className="text-xs">{description}</CardDescription>
+          <CardDescription className="text-sm">{description}</CardDescription>
         )}
       </CardHeader>
       <CardContent className="p-2">
@@ -75,20 +72,6 @@ export function MultiBarChart({
           </BarChart>
         </ChartContainer>
       </CardContent>
-      {(footerText || footerSubText) && (
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-          {footerText && (
-            <div className="flex gap-2 leading-none font-medium">
-              {footerText} {indicator}
-            </div>
-          )}
-          {footerSubText && (
-            <div className="text-muted-foreground leading-none">
-              {footerSubText}
-            </div>
-          )}
-        </CardFooter>
-      )}
     </Card>
   );
 }

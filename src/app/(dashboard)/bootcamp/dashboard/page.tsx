@@ -5,12 +5,23 @@ import {
   useGetWorkshopAttendanceQuery,
   useGetAttendeesNumbersQuery,
   useGetWorkshopsAttendeesQuery,
+  useGetAgeDistributionQuery,
+  useGetGovernorateDistributionQuery,
 } from "@/service/Api/dashboard";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, UserCheck, Users, UserX } from "lucide-react";
 import { MultiBarChart } from "../../../../components/cnCharts/multichart";
 import { ChartBar } from "../../../../components/cnCharts/barChart";
 import { SectionCardData, SectionCards } from "@/components/sectionCards/page";
+import { ReusablePieChart } from "@/components/charts/ReusablePieChart";
 
+const colors = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-6)",
+];
 export default function AttendanceDashboard() {
   // ---------- Hooks ----------
   const {
@@ -29,8 +40,18 @@ export default function AttendanceDashboard() {
     error: workshopsAttendeesError,
   } = useGetWorkshopsAttendeesQuery();
 
+  const { data: ageRes, isLoading: ageLoading } = useGetAgeDistributionQuery();
+  const { data: govRes, isLoading: govLoading } =
+    useGetGovernorateDistributionQuery();
+
   // ---------- Loading / Error ----------
-  if (isLoadingWorkshop || isLoadingAttendees || isLoadingWorkshopsAttendees)
+  if (
+    isLoadingWorkshop ||
+    isLoadingAttendees ||
+    isLoadingWorkshopsAttendees ||
+    ageLoading ||
+    govLoading
+  )
     return <Loading />;
   if (
     workshopError ||
@@ -42,6 +63,20 @@ export default function AttendanceDashboard() {
   )
     return <div>Error loading data</div>; // Error Component
 
+  // --------------- PieCharts Data -------------
+  const ageData =
+    ageRes?.data?.map((item: any, i: number) => ({
+      age: item.age,
+      count: item.count,
+      fill: colors[i % colors.length],
+    })) ?? [];
+
+  const govData =
+    govRes?.data?.map((item: any, i: number) => ({
+      governorate: item.governorate,
+      count: item.count,
+      fill: colors[i % colors.length],
+    })) ?? [];
   // ---------------- MultiBarChart Data ----------------
   const chartData = workshopData.data.attendance.map((item: any) => ({
     month: item.workshop_title || "Unassigned",
@@ -54,13 +89,17 @@ export default function AttendanceDashboard() {
     {
       dataKey: "attended",
       label: "Attended",
-      color: "var(--color-neutral-500)",
+      color: "#4CAF50",
     },
-    { dataKey: "absent", label: "Absent", color: "var(--color-neutral-700)" },
+    {
+      dataKey: "absent",
+      label: "Absent",
+      color: "#F44336",
+    },
     {
       dataKey: "assigned",
       label: "Assigned",
-      color: "var(--color-neutral-800)",
+      color: "#2196F3",
     },
   ];
 
@@ -70,25 +109,22 @@ export default function AttendanceDashboard() {
       title: "Registered Attendees",
       value: attendeesData.data.registered_attendees.toString(),
       description: "Registered Attendees",
-      trend: "up",
-      trendValue: "+0%",
-      footerMain: "Total registered attendees",
+      icon: <Users />,
+      color: "text-blue-500 bg-blue-100",
     },
     {
       title: "Enrolled Attendees",
       value: attendeesData.data.enrolled_attendees.toString(),
       description: "Enrolled Attendees",
-      trend: "up",
-      trendValue: "+0%",
-      footerMain: "Total attendees who attended workshops",
+      icon: <UserCheck />,
+      color: "text-green-500 bg-green-100",
     },
     {
       title: "Absent Attendees",
       value: attendeesData.data.not_enrolled_attendees.toString(),
       description: "Absent Attendees",
-      trend: "down",
-      trendValue: "-0%",
-      footerMain: "Total attendees who were absent",
+      icon: <UserX />,
+      color: "text-red-500 bg-red-100",
     },
   ];
 
@@ -101,7 +137,7 @@ export default function AttendanceDashboard() {
   );
 
   const workshopsChartConfig = {
-    participants: { label: "Participants", color: "var(--color-neutral-500)" },
+    participants: { label: "Participants", color: "var(--chart-1)" },
   };
 
   return (
@@ -118,9 +154,6 @@ export default function AttendanceDashboard() {
             description="Attendance summary for all workshops"
             data={chartData}
             keys={chartKeys}
-            footerText="Attendance overview"
-            footerSubText="Showing workshop attendance details"
-            indicator={<TrendingUp className="h-4 w-4" />}
           />
         </div>
         <div className="col-span-3">
@@ -129,12 +162,30 @@ export default function AttendanceDashboard() {
             description="Total participants for each workshop"
             data={workshopsChartData}
             config={workshopsChartConfig}
-            footerText="Workshop overview"
-            trendValue="Trending up"
-            trendIcon={<TrendingUp className="h-4 w-4" />}
           />
         </div>
         {/* Single Bar Chart */}
+      </div>
+
+      {/* Pie Charts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ReusablePieChart
+          title="Age Distribution"
+          description="Participants by age groups"
+          data={ageData}
+          dataKey="count"
+          nameKey="age"
+          // config={{ count: { label: "Participants" } }}
+        />
+
+        <ReusablePieChart
+          title="Governorate Distribution"
+          description="Participants by governorates"
+          data={govData}
+          dataKey="count"
+          nameKey="governorate"
+          // config={{ count: { label: "Participants" } }}
+        />
       </div>
     </div>
   );

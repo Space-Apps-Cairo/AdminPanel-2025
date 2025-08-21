@@ -29,21 +29,14 @@ export interface ChartBarProps {
   trendIcon?: JSX.Element;
 }
 
-export function ChartBar({
-  title,
-  description,
-  data,
-  config,
-  footerText,
-  footerSubText,
-  trendValue,
-  trendIcon,
-}: ChartBarProps) {
+export function ChartBar({ title, description, data, config }: ChartBarProps) {
   return (
     <Card className="w-full ">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
+        <CardTitle className="text-lg">{title}</CardTitle>
+        {description && (
+          <CardDescription className="text-sm">{description}</CardDescription>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -74,20 +67,6 @@ export function ChartBar({
           </BarChart>
         </ChartContainer>
       </CardContent>
-
-      {(footerText || footerSubText || trendValue) && (
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-          {trendValue && trendIcon && (
-            <div className="flex gap-2 leading-none font-medium">
-              {trendValue} {trendIcon}
-            </div>
-          )}
-          {footerText && <div className="font-medium">{footerText}</div>}
-          {footerSubText && (
-            <div className="text-muted-foreground">{footerSubText}</div>
-          )}
-        </CardFooter>
-      )}
     </Card>
   );
 }
