@@ -43,6 +43,10 @@ const data = {
       isActive: true,
       items: [
         {
+          title: "Dashboard",
+          url: "/bootcamp/dashboard",
+        },
+        {
           title: "Details",
           url: "/bootcamp/details",
         },
