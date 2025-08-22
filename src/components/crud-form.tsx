@@ -23,11 +23,7 @@ import {
 import { Calendar } from "./ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
 import type { Field, FieldOption } from "@/app/interface";
 import {
@@ -254,7 +250,7 @@ export default function CrudForm(props: {
                         <SelectContent>
                           {field.options?.map((option: FieldOption, index) => (
                             <SelectItem key={index} value={option.value}>
-                              {option.placeholder}
+                              {option.label}
                             </SelectItem>
                           ))}
                         </SelectContent>

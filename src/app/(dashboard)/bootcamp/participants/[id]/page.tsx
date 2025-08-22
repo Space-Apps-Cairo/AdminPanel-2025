@@ -21,7 +21,12 @@ import {
 import { ParticipantPreferenceSchema } from "@/validations/preference";
 import { Workshop } from "@/types/workshop";
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../../../components/ui/tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../../../../../components/ui/tabs";
 import { useGetAllWorkshopsQuery } from "@/service/Api/workshops";
 import { FieldOption } from "@/app/interface";
 
@@ -71,8 +76,11 @@ export default function ParticipantPreferencesPage() {
   } = useGetAssignmentsByParticipantQuery(participantId, {
     skip: !participantId,
   });
+
   const [isAssignFormOpen, setIsAssignFormOpen] = useState(false);
   const [addNewAssignment] = useAddNewAssignmentMutation();
+  const { data: workshopsData, isLoading: isLoadingWorkshopData } =
+    useGetAllWorkshopsQuery();
 
   // -------------------- Details --------------------
   const {
@@ -81,14 +89,25 @@ export default function ParticipantPreferencesPage() {
     isError: isErrorParticipantDetails,
   } = useGetParticipantDetailsQuery(participantId);
 
+  if (
+    prefLoading ||
+    assignLoading ||
+    isLoadingParticipantDetails ||
+    isLoadingWorkshopData
+  )
+    return <Loading />;
+  if (prefError)
+    return <div className="text-red-500">Error loading preferences</div>;
+  if (assignError)
+    return <div className="text-red-500">Error loading assignments</div>;
   // -------------------- Workshops Options --------------------
-  const { data: workshopsData } = useGetAllWorkshopsQuery();
   const workshopOptions: FieldOption[] =
     workshopsData?.data?.map((w: Workshop) => ({
       value: w.id.toString(),
-      placeholder: w.title ?? "",
+      label: w.name ?? "",
     })) ?? [];
 
+    
   // -------------------- Handlers --------------------
   const handleAddPreference = async (formData: FieldValues) => {
     try {
@@ -156,13 +175,6 @@ export default function ParticipantPreferencesPage() {
       ),
     },
   ];
-
-  if (prefLoading || assignLoading || isLoadingParticipantDetails)
-    return <Loading />;
-  if (prefError)
-    return <div className="text-red-500">Error loading preferences</div>;
-  if (assignError)
-    return <div className="text-red-500">Error loading assignments</div>;
 
   console.log(participantDetails);
   // -------------------- Render --------------------

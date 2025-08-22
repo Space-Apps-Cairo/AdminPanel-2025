@@ -15,6 +15,7 @@ import DataTable from "../../../../components/table/data-table";
 import CrudForm from "../../../../components/bootcamp/bootcamp-crud-form";
 import Loading from "../../../../components/loading/loading";
 import { BootcampSchema } from "@/validations/bootcamp";
+import { toast } from "sonner";
 
 export default function BootcampPage() {
   // const { data = [], isLoading, error } = useGetBootcampsQuery(); // The Error ❌
@@ -28,8 +29,12 @@ export default function BootcampPage() {
     try {
       await addBootcamp(values).unwrap();
       setIsOpen(false);
+      toast.success("Bootcamp created successfully");
       console.log("Bootcamp created successfully");
     } catch (err) {
+      toast.error("Failed to add bootcamp", {
+        description: err.message,
+      });
       console.error("Failed to add bootcamp:", err);
     }
   };

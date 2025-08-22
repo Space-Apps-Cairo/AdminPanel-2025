@@ -61,7 +61,8 @@ export function ChartBar({ title, description, data, config }: ChartBarProps) {
                 key={key}
                 dataKey={key}
                 fill={config[key].color}
-                radius={4}
+                radius={2}
+                barSize={40}
               />
             ))}
           </BarChart>

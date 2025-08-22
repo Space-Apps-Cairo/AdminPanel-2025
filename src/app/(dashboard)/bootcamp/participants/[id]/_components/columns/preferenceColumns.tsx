@@ -9,29 +9,29 @@ import {
 import { ParticipantPreferenceSchema } from "@/validations/preference";
 
 export const getPreferenceFields = (
- prefData?: ParticipantPreference,
-workshopOptions?: FieldOption[]
+  prefData?: ParticipantPreference,
+  workshopOptions?: FieldOption[]
 ): Field[] => [
   {
     name: "preference_order",
     type: "number",
     label: "Preference Order",
-     placeholder: "Enter preference order",
-  defaultValue: prefData?.preference_order?? undefined,
-},
-{
+    placeholder: "Enter preference order",
+    defaultValue: prefData?.preference_order ?? undefined,
+  },
+  {
     name: "workshop_id",
-    type: "select", 
-    label: "Workshop ID",
+    type: "select",
+    label: "Workshop ",
     placeholder: "Enter workshop ID",
-   
+
     options: workshopOptions ?? [],
-  ...(prefData?.workshop && { defaultValue: prefData.workshop.id.toString() }),
-},
-
-
+    ...(prefData?.workshop && {
+      defaultValue: prefData.workshop.id.toString(),
+    }),
+  },
 ];
- 
+
 export const preferenceColumns = (
   workshopOptions: FieldOption[]
 ): ColumnDef<ParticipantPreference>[] => [
@@ -45,16 +45,16 @@ export const preferenceColumns = (
     accessorFn: (row) => row.workshop?.title ?? "Not assigned",
     size: 200,
   },
-{
-  id: "actions",
-  header: () => <span>Actions</span>,
-  cell: ({ row }) => (
-    <PreferenceRowActions
-      rowData={row.original}
-      workshopOptions={workshopOptions} 
-    />
-  ),
-}
+  {
+    id: "actions",
+    header: () => <span>Actions</span>,
+    cell: ({ row }) => (
+      <PreferenceRowActions
+        rowData={row.original}
+        workshopOptions={workshopOptions}
+      />
+    ),
+  },
 ];
 
 function PreferenceRowActions({
@@ -64,7 +64,6 @@ function PreferenceRowActions({
   rowData: ParticipantPreference;
   workshopOptions?: FieldOption[];
 }) {
-
   const [updatePreference] = useUpdatePreferenceMutation();
   const [deletePreference] = useDeletePreferenceMutation();
 
@@ -72,7 +71,7 @@ function PreferenceRowActions({
     <RowsActions
       rowData={rowData}
       isDelete={true}
-      fields={getPreferenceFields(rowData,workshopOptions)}
+      fields={getPreferenceFields(rowData, workshopOptions)}
       validationSchema={ParticipantPreferenceSchema}
       updateMutation={updatePreference}
       deleteMutation={deletePreference}

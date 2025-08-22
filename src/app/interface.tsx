@@ -1,6 +1,6 @@
 export interface FieldOption {
   value: string;
-  placeholder: string;
+  label: string;
 }
 
 export type FieldType =
