@@ -19,6 +19,7 @@ import {
 } from "@/service/Api/participants";
 import { Participant } from "@/types/participants";
 import { ParticipantRequest } from "@/types/participants";
+import Error from "@/components/Error/page";
 
 export default function ParticipantsPage() {
   const {
@@ -76,7 +77,7 @@ export default function ParticipantsPage() {
   };
 
   if (isLoading) return <Loading />;
-  if (error) return <div>Error loading participants</div>;
+  if (error) return <Error/>;
 
   return (
     <div className="container mx-auto py-6">

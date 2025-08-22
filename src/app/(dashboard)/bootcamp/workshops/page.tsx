@@ -13,6 +13,7 @@ import {
   useGetAllWorkshopsQuery,
 } from "@/service/Api/workshops";
 import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function Workshops() {
   const {
@@ -87,15 +88,17 @@ export default function Workshops() {
 
       const result = await addWorkshop(workshopData as Workshop).unwrap();
 
-      console.log("Workshop added successfully:", result);
+      toast.success("Workshop created successfully");
 
       // Update local state with new workshop
       if (result.data) {
         setWorkshops((prev) => [...prev, result.data]);
       }
     } catch (error) {
-      console.error("Error adding workshop:", error);
-      // Don't close the form if there's an error so user can see what happened
+      const err = error as any;
+        toast.error("Failed to add workshop. Please try again.", {
+          description: err?.message || err?.data?.message || "Unexpected error",
+        });
       throw error;
     }
   };
