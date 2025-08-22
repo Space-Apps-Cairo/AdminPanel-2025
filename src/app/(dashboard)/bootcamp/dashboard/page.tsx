@@ -31,9 +31,9 @@ export default function AttendanceDashboard() {
   }))
 
   const chartKeys = [
-    { dataKey: "attended", label: "Attended", color: "var(--color-neutral-500)" },
-    { dataKey: "absent", label: "Absent", color: "var(--color-neutral-700)" },
-    { dataKey: "assigned", label: "Assigned", color: "var(--color-neutral-800)" },
+    { dataKey: "attended", label: "Attended", color: "var(--color-slate-600)" },
+    { dataKey: "absent", label: "Absent", color: "var(--color-slate-400)" },
+    { dataKey: "assigned", label: "Assigned", color: "var(--color-slate-900)" },
   ]
 
   // ---------------- Section Cards Data ----------------
@@ -71,7 +71,7 @@ export default function AttendanceDashboard() {
   }))
 
   const workshopsChartConfig = {
-    participants: { label: "Participants", color: "var(--color-neutral-500)" },
+    participants: { label: "Participants", color: "var(--color-slate-800)" },
   }
 
   return (
