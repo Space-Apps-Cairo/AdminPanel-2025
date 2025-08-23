@@ -186,7 +186,7 @@ export default function Volunteers() {
 
                     setUploadProgress(100);
                     setUploadSuccess(true);
-                    toast.success("Volunteers imported successfully!");
+                    toast.success(result.msg || "Volunteers imported successfully!");
                     
                     setTimeout(() => {
                         setIsUploadDialogOpen(false);
@@ -196,7 +196,7 @@ export default function Volunteers() {
                 } catch (parseError) {
                     console.error("Parse Error:", parseError);
                     setUploadError('Error processing CSV data');
-                    toast.error('Error processing CSV data');
+                    toast.error((parseError as any).data.msg || 'Error processing CSV data');
                 }
             };
 
@@ -205,7 +205,7 @@ export default function Volunteers() {
         } catch (error) {
             console.error("Upload Error:", error);
             setUploadError('Error uploading file');
-            toast.error('Error uploading file');
+            toast.error((error as any).data.msg || 'Error uploading file');
         } finally {
             setIsUploading(false);
         }
@@ -263,11 +263,11 @@ export default function Volunteers() {
 
             const result = await addVolunteer(volunteerData as Volunteer).unwrap();
             console.log("Volunteer added successfully:", result);
-            toast.success("Volunteer added successfully!");
+            toast.success(result.msg || "Volunteer added successfully!");
 
         } catch (error) {
             console.error("Error adding volunteer:", error);
-            toast.error("Failed to add volunteer. Please try again.");
+            toast.error((error as any).data.message || "Failed to add volunteer. Please try again.");
             throw error;
         }
 
@@ -275,9 +275,7 @@ export default function Volunteers() {
 
     if(isLoadingVolunteers) return <Loading />
 
-    // Combine loading states
     const isProcessing = isUploading || isImportLoading;
-    // Combine error states
     const finalError = uploadError || getAPIErrorMessage();
 
     return (

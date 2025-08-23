@@ -126,19 +126,19 @@ function VolunteerRowActions({ rowData }: { rowData: Volunteer }) {
             }}
             onUpdateSuccess={(result) => {
                 console.log('Volunteer updated successfully:', result);
-                toast.success("Volunteer updated successfully!");
+                toast.success(result.msg || "Volunteer updated successfully!");
             }}
             onUpdateError={(error) => {
                 console.error('Error updating volunteer:', error);
-                toast.error("Failed to update volunteer. Please try again.");
+                toast.error(error.data.msg || "Failed to update volunteer. Please try again.");
             }}
             onDeleteSuccess={(result) => {
                 console.log('Volunteer deleted successfully:', result);
-                toast.success("Volunteer deleted successfully!");
+                toast.success(result.msg || "Volunteer deleted successfully!");
             }}
             onDeleteError={(error) => {
                 console.error('Error deleting volunteer:', error);
-                toast.error("Failed to delete volunteer. Please try again.");
+                toast.error(error.data.msg || "Failed to delete volunteer. Please try again.");
             }}
         />
     );

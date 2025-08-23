@@ -71,11 +71,11 @@ export default function Materials() {
             const result = await addMaterial(materialData as Material).unwrap();
 
             console.log("Material added successfully:", result);
-            toast.success("Material added successfully!");
+            toast.success(result.msg || "Material added successfully!");
 
         } catch (error) {
             console.error("Error adding material:", error);
-            toast.error("Failed to add material. Please try again.");
+            toast.error((error as any).data.msg || "Failed to add material. Please try again.");
             throw error;
         }
 

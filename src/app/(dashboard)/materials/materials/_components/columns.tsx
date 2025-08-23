@@ -110,19 +110,19 @@ function MaterialRowActions({ rowData }: { rowData: Material }) {
             }}
             onUpdateSuccess={(result) => {
                 console.log('Material updated successfully:', result);
-                toast.success("Material updated successfully!");
+                toast.success(result.msg || "Material updated successfully!");
             }}
             onUpdateError={(error) => {
                 console.error('Error updating material:', error);
-                toast.error("Failed to update material. Please try again.");
+                toast.error(error.data.msg || "Failed to update material. Please try again.");
             }}
             onDeleteSuccess={(result) => {
                 console.log('Material deleted successfully:', result);
-                toast.success("Material deleted successfully!");
+                toast.success(result.msg || "Material deleted successfully!");
             }}
             onDeleteError={(error) => {
                 console.error('Error deleting material:', error);
-                toast.error("Failed to delete material. Please try again.");
+                toast.error(error.data.msg || "Failed to delete material. Please try again.");
             }}
         />
     );

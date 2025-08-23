@@ -77,15 +77,15 @@ export default function Collections() {
                 }))
             };
 
-            const result = await addCollection(collectionData as Collection).unwrap();
+            const result = await addCollection(collectionData as CreateCollectionRequest).unwrap();
 
             console.log("Collection added successfully:", result);
-            toast.success("Collection added successfully!");
+            toast.success(result.msg || "Collection added successfully!");
             setIsOpen(false);
 
         } catch (error) {
             console.error("Error adding collection:", error);
-            toast.error("Failed to add collection. Please try again.");
+            toast.error((error as any).data.msg || "Failed to add collection. Please try again.");
             throw error;
         }
     };

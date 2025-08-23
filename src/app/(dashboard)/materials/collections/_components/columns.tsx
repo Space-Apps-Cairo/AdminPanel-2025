@@ -196,19 +196,19 @@ function CollectionRowActions({ rowData }: { rowData: Collection }) {
 					}}
 					onUpdateSuccess={(result) => {
 						console.log('Collection updated successfully:', result);
-						toast.success("Collection updated successfully!");
+						toast.success(result.msg || "Collection updated successfully!");
 					}}
 					onUpdateError={(error) => {
 						console.error('Error updating collection:', error);
-						toast.error("Failed to update collection. Please try again.");
+						toast.error(error.data.msg || "Failed to update collection. Please try again.");
 					}}
 					onDeleteSuccess={(result) => {
 						console.log('Collection deleted successfully:', result);
-						toast.success("Collection deleted successfully!");
+						toast.success(result.msg || "Collection deleted successfully!");
 					}}
 					onDeleteError={(error) => {
 						console.error('Error deleting collection:', error);
-						toast.error("Failed to delete collection. Please try again.");
+						toast.error(error.data.msg || "Failed to delete collection. Please try again.");
 					}}
 				/>
 			</div>
