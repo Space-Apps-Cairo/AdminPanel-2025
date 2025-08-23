@@ -4,23 +4,19 @@ import React, { useState } from "react";
 import { Eye, SquarePen, Trash, CircleAlertIcon } from "lucide-react";
 import { OperationType, RowsActionsProps } from "@/types/rows-actions";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import CrudForm from "@/components/crud-form";
 import { Button } from "@/components/ui/button";
-import {
-  useDeleteUserMutation,
-  useUpdateUserMutation,
-  useGetUsersQuery,
-} from "@/service/Api/userApi";
+
 
 export default function RowsActions({
     steps,
@@ -49,37 +45,38 @@ export default function RowsActions({
     }
 
     const handleUpdateRow = async (formData: any) => {
-        if (updateMutation && rowData?.id) {
+
+        if (updateMutation && (rowData?.id)) {
             try {
                 const result = await updateMutation({
                     id: rowData.id,
-                    data: formData
-                })
+                    data: formData,
+                });
 
-                const unwrappedResult = await result.unwrap()
-                onUpdateSuccess?.(unwrappedResult)
-                setIsOpen(false)
+                onUpdateSuccess?.(result);
+                setIsOpen(false);
             } catch (error) {
-                onUpdateError?.(error)
+                onUpdateError?.(error);
             }
         }
-    }
+
+    };
 
     const handleDeleteRow = async () => {
-        if (deleteMutation && rowData?.id) {
-            try {
-                setIsDeleting(true)
-                const result = await deleteMutation(rowData.id).unwrap()
-                onDeleteSuccess?.(result)
-            } catch (error) {
-                onDeleteError?.(error)
-            } finally {
-                setIsDeleting(false)
-            }
-        } else if (rowData?.id) {
-            console.log(`Delete row with ID: ${rowData.id}`, rowData)
-        }
-    }
+		if (deleteMutation && (rowData?.id)) {
+			try {
+				setIsDeleting(true)
+				const result = await deleteMutation(rowData.id)
+				onDeleteSuccess?.(result)
+			} catch (error) {
+				onDeleteError?.(error)
+			} finally {
+				setIsDeleting(false)
+			}
+		} else if (rowData?.id) {
+			console.log(`Delete row with ID: ${rowData.id}`, rowData)
+		}
+	}
 
     return <React.Fragment>
 
@@ -96,26 +93,27 @@ export default function RowsActions({
             />
         )}
 
-      <div className="py-2.5 flex items-center gap-2.5">
-        {isPreview && (
-          <Button
-            onClick={() => handleButtonClick("preview")}
-            variant="outline"
-            size="sm"
-          >
-            <Eye size={16} />
-          </Button>
-        )}
+        <div className="py-2.5 flex items-center gap-2.5">
 
-        {isUpdate && (
-          <Button
-            onClick={() => handleButtonClick("edit")}
-            variant="outline"
-            size="sm"
-          >
-            <SquarePen size={16} />
-          </Button>
-        )}
+            {isPreview && (
+                <Button
+                    onClick={() => handleButtonClick("preview")}
+                    variant="outline"
+                    size="sm"
+                >
+                    <Eye size={16} />
+                </Button>
+            )}
+
+            {isUpdate && (
+                <Button
+                    onClick={() => handleButtonClick("edit")}
+                    variant="outline"
+                    size="sm"
+                >
+                    <SquarePen size={16} />
+                </Button>
+            )}
 
             {isDelete && (
                 <AlertDialog>
@@ -146,7 +144,7 @@ export default function RowsActions({
                             <AlertDialogAction 
                                 onClick={handleDeleteRow}
                                 disabled={isDeleting}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                className="bg-destructive text-white hover:bg-destructive/90"
                             >
                                 {isDeleting ? "Deleting..." : "Delete"}
                             </AlertDialogAction>

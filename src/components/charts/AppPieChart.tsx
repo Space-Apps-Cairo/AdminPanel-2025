@@ -70,7 +70,7 @@ const AppPieChart = ({
                           y={viewBox.cy}
                           className="fill-foreground text-2xl sm:text-3xl font-bold"
                         >
-                          {total.toLocaleString()}
+                          {total.toLocaleString("en-US")}
                         </tspan>
                         <tspan
                           x={viewBox.cx}

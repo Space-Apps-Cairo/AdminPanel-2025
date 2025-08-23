@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useFormContext, useFieldArray, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import { Trash2, Plus } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Field } from "@/app/interface";
 
-interface DynamicArrayFieldProps<T = any> {
+interface DynamicArrayFieldProps<T = Record<string, unknown>> {
   name: string;
   fieldsConfig?: Field[];
   defaultItemValue?: T;
@@ -36,27 +36,48 @@ const DynamicArrayField = ({
   simpleArray = false,
   itemName,
 }: DynamicArrayFieldProps) => {
-  const {
+    const {
     control,
     formState: { errors },
+    getValues,
   } = useFormContext();
 
-  const getDefaultItem = () => {
+  const getDefaultItem = useCallback(() => {
     if (defaultItemValue) return defaultItemValue;
 
     return simpleArray
       ? ""
       : fieldsConfig.reduce((acc, field) => {
-          // Use field.defaultValue if available
           acc[field.name] = field.defaultValue || "";
           return acc;
-        }, {} as Record<string, any>);
-  };
-  const { fields, append, remove } = useFieldArray({
+        }, {} as Record<string, unknown>);
+  }, [defaultItemValue, simpleArray, fieldsConfig]);
+
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name,
-    keyName: "id", // Unique ID for each field
+    keyName: "id",
   });
+
+  const hasInitialized = useRef(false);
+
+  useEffect(() => {
+    if (hasInitialized.current) return;
+
+    const initial = getValues(name);
+    if (Array.isArray(initial) && initial.length > 0 && fields.length === 0) {
+      replace(initial);
+      hasInitialized.current = true;
+      return;
+    }
+
+    if (minItems > 0 && fields.length === 0) {
+      hasInitialized.current = true;
+      for (let i = 0; i < minItems; i++) {
+        append(getDefaultItem());
+      }
+    }
+  }, [getValues, name, fields.length, append, replace, minItems, getDefaultItem]);
 
   const addNewItem = () => {
     if (fields.length < maxItems) {
@@ -74,7 +95,7 @@ const DynamicArrayField = ({
   if (disabled) {
     return (
       <div className="space-y-3">
-        {fields.map((field: any, index) => (
+        {fields.map((field: Record<string, unknown>, index) => (
           <div key={field.id} className="border p-3 rounded-md">
             <div className="flex justify-between">
               <h4 className="text-sm font-medium">
@@ -95,13 +116,24 @@ const DynamicArrayField = ({
             </div>
 
             {simpleArray ? (
-              <p className="text-sm text-gray-600 mt-2">{field || "-"}</p>
+              <p className="text-sm text-gray-600 mt-2">{String(field) || "-"}</p>
             ) : (
               <div className="mt-2 grid grid-cols-1 gap-2">
                 {fieldsConfig.map((config) => (
                   <div key={config.name}>
                     <p className="text-xs text-gray-500">{config.label}</p>
-                    <p className="text-sm">{field[config.name] || "-"}</p>
+                    {(() => {
+                      let displayValue = field[config.name];
+                      console.log(displayValue);
+                      
+                      if (config.type === "select" && config.options && Array.isArray(config.options)) {
+                        const found = config.options.find(
+                          (opt) => String(opt.value).toLowerCase() === String(displayValue).toLowerCase()
+                        );
+                        displayValue = found ? found.placeholder : displayValue;
+                      }
+                      return <p className="text-sm">{String(displayValue) || "-"}</p>;
+                    })()}
                   </div>
                 ))}
               </div>
@@ -182,7 +214,7 @@ const DynamicArrayField = ({
                           return (
                             <>
                               <Select
-                                value={controllerField.value}
+                                value={controllerField.value?.toString() ?? undefined}
                                 onValueChange={controllerField.onChange}
                               >
                                 <SelectTrigger>
@@ -194,7 +226,7 @@ const DynamicArrayField = ({
                                       key={option.value}
                                       value={option.value.toString()}
                                     >
-                                      {option.label}
+                                      {option.placeholder}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

@@ -7,7 +7,7 @@ import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import { Schedule } from '@/types/workshop';
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { getScheduleFields, scheduleColumns } from './_components/columns';
+import { getScheduleFields, getScheduleColumns } from './_components/columns'; // عدّل هنا
 import CrudForm from '@/components/crud-form';
 import { scheduleValidationSchema } from '@/validations/schedule';
 import { Button } from '@/components/ui/button';
@@ -62,8 +62,8 @@ export default function Schedules() {
                 start_time: formData.start_time,
                 end_time: formData.end_time,
                 capacity: parseInt(formData.capacity.toString()),
-                available_slots: parseInt(formData.available_slots.toString()),
-                available_slots_on_site: parseInt(formData.available_slots_on_site.toString()),
+                // available_slots: parseInt(formData.available_slots.toString()),
+                // available_slots_on_site: parseInt(formData.available_slots_on_site.toString()),
             };
 
             console.log("Submitting schedule data:", scheduleData);
@@ -74,13 +74,6 @@ export default function Schedules() {
 
         } catch (error) {
             console.error("Error creating schedule:", error);
-            
-            // const errorMessage = error?.data?.message || 
-            //     error?.message || 
-            //     "Failed to add schedule";
-            
-            // toast.error(errorMessage);
-            
             throw error;
         }
     };
@@ -100,12 +93,11 @@ export default function Schedules() {
 
             <DataTable<Schedule>
                 data={schedules}
-                columns={scheduleColumns}
+                columns={getScheduleColumns(id as string)}
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}
                 actionConfig={actionConfig}
                 onDataChange={setSchedules}
-                // allowTrigger={true}
             />
 
             {isOpen && (

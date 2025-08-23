@@ -10,10 +10,10 @@ import Link from "next/link";
 
 export const getWorkshopsFields = (userData?: Workshop): Field[] => [
     {
-        name: "title",
+        name: "name",
         type: "text",
-        label: "Title",
-        ...(userData?.title && { defaultValue: userData.title }),
+        label: "Name",
+        ...(userData?.name && { defaultValue: userData.name }),
         step: 1,
     },
     {
@@ -43,11 +43,8 @@ export const getWorkshopsFields = (userData?: Workshop): Field[] => [
 
 export const workshopColumns: ColumnDef<Workshop>[] = [
     {
-        header: "Title",
-        accessorKey: "title",
-        cell: ({ row }) => (
-            <div className="font-medium">{row.getValue("title")}</div>
-        ),
+        header: "Name",
+        accessorKey: "name",
         size: 180,
         enableHiding: false,
     },

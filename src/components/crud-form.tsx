@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, ClockIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
@@ -45,6 +45,8 @@ import {
   StepperTrigger,
 } from "@/components/ui/stepper";
 import DynamicArrayField from "./fields/DynamicArrayFields";
+import { DateInput } from '@/components/ui/datefield-rac';
+import { TimeField } from '@/components/ui/datefield-rac';
 
 export default function CrudForm(props: {
   operation: "add" | "edit" | "preview";
@@ -99,10 +101,13 @@ export default function CrudForm(props: {
   } = methods;
 
   const onSubmit = async (data: FieldValues) => {
+
     setIsSubmittingForm(true);
+
     try {
+
       console.log("Form data being submitted:", data);
-      
+
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
@@ -116,14 +121,14 @@ export default function CrudForm(props: {
       });
 
       console.log("FormData entries:", [...formData.entries()]);
-      
+
       await handleFormSubmit(data, formData);
-      
+
       // Only reset and close if successful
       reset();
       setIsOpen(false);
       setCurrentStep(1); // Reset step if using steps
-      
+
     } catch (error) {
       console.error('Form submission error:', error);
       // Don't close the form on error, let user see what happened
@@ -134,7 +139,7 @@ export default function CrudForm(props: {
 
   const FormBody = (
     <>
-      <div id="hello" className="mx-auto max-w-xl space-y-8">
+      <div id="hello" className="mx-auto max-w-xl space-y-8 ">
         <DialogHeader className={`${!asDialog ? "!text-center" : ""}`}>
           <DialogTitle>{operation.toUpperCase()} Form</DialogTitle>
           <DialogDescription>
@@ -222,7 +227,7 @@ export default function CrudForm(props: {
                       render={({ field: fld }) => (
                         <Select
                           disabled={isDisabled}
-                          value={fld.value}
+                          value={fld.value || undefined}
                           onValueChange={fld.onChange}
                         >
                           <SelectTrigger className="w-full">
@@ -290,6 +295,63 @@ export default function CrudForm(props: {
                   </div>
                 )}
 
+                {field.type === 'time' && (
+                  <div className="grid gap-3">
+                    <Label>{field.label ?? field.placeholder}</Label>
+                    <Controller
+                      name={`${field.name}`}
+                      control={control}
+                      render={({ field: fld, fieldState: { error } }) => {
+                        const parseTimeString = (timeStr: string) => {
+                          if (!timeStr) return null;
+                          
+                          const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+                          return {
+                            hour: hours || 0,
+                            minute: minutes || 0,
+                            second: seconds || 0
+                          };
+                        };
+
+                        // Helper function to convert Time object to string
+                        const formatTimeToString = (timeObj: any) => {
+                          if (!timeObj) return "";
+                          
+                          const hours = String(timeObj.hour || 0).padStart(2, "0");
+                          const minutes = String(timeObj.minute || 0).padStart(2, "0");
+                          const seconds = String(timeObj.second || 0).padStart(2, "0");
+                          
+                          return `${hours}:${minutes}:${seconds}`;
+                        };
+
+                        return (
+                          <TimeField 
+                            className="*:not-first:mt-2"
+                            aria-label={field.label ?? field.placeholder} 
+                            value={parseTimeString(fld.value)} // Convert string to Time object
+                            onChange={(time) => {
+                              const timeString = formatTimeToString(time);
+                              fld.onChange(timeString); // Send string back to form
+                            }}
+                          >
+                            <div className="relative">
+                              <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 z-10 flex items-center justify-center ps-3">
+                                <ClockIcon size={16} aria-hidden="true" />
+                              </div>
+                              <DateInput className="ps-9" />
+                            </div>
+                          </TimeField>
+                        );
+                      }}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 {field.type === "checkbox" && (
                   <div className="flex items-center space-x-2">
                     <Controller
@@ -315,7 +377,7 @@ export default function CrudForm(props: {
                 
                 {field.type === "dynamicArrayField" && (
                   <DynamicArrayField
-                    minItems={1}
+                    minItems={field.dynamicArrayFieldsConfig?.minItem ?? 1}
                     name={field.name}
                     addButtonLabel={
                       field.dynamicArrayFieldsConfig?.addButtonLabel ??
@@ -382,10 +444,10 @@ export default function CrudForm(props: {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className={`sm:max-w-[425px] ${!asDialog ? fullPageStyle : ""}`}
+        className={`sm:max-w-[425px] !max-h-[95dvh] overflow-y-auto form-scroll ${!asDialog ? fullPageStyle : ""}`}
       >
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className={`space-y-6 `}>
+          <form onSubmit={handleSubmit(onSubmit)} className={`space-y-6`}>
             {FormBody}
           </form>
         </FormProvider>

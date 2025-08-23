@@ -338,7 +338,7 @@ export default function CrudForm(props: {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className={`sm:max-w-[425px] ${!asDialog ? fullPageStyle : ""}`}
+        className={`sm:max-w-[425px] !max-h-[95dvh] overflow-y-auto form-scroll ${!asDialog ? fullPageStyle : ""}`}
       >
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">

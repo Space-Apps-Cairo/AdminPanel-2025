@@ -8,7 +8,7 @@ export interface Field {
   type: string;
   label?: string;
   placeholder?: string;
-  defaultValue?: string | number | boolean;
+  defaultValue?: string | number | boolean | Record<string, any> | any[];
   value?: string;
   options?: FieldOption[];
   step?: number;
@@ -17,5 +17,6 @@ export interface Field {
     isSimpleArray?: boolean; // [1,2,3] , [{},{}]
     addButtonLabel?: string;
     itemName?: string;
+    minItem?: number
   };
 }
