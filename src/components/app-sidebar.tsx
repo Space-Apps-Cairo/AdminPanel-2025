@@ -16,6 +16,7 @@ import {
   Building,
   // Frame,
   GalleryVerticalEnd,
+  BrickWall,
   // PieChart,
   // Map,
 } from "lucide-react";
@@ -62,6 +63,18 @@ const data = {
           title: "Email Tracking",
           url: "/bootcamp/emails",
         },
+      ],
+    },
+    {
+      title: "Forms",
+      url: "/form-builder",
+      icon: BrickWall,
+      isActive: true,
+      items: [
+        {
+          title: "Form Builder",
+          url: "/form-builder",
+        }
       ],
     },
   ],
