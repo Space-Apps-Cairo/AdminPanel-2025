@@ -9,10 +9,10 @@ export default function DocumentCard({
 }) {
   return (
     <div className="border rounded-lg overflow-hidden">
-      <div className="p-3 bg-gray-50 border-b">
+      <div className="p-3  border-b">
         <h4 className="font-medium">{title}</h4>
       </div>
-      <div className="relative h-48 bg-gray-100">
+      <div className="relative h-48 ">
         <Image
           src={url}
           alt={title}
@@ -21,7 +21,7 @@ export default function DocumentCard({
           unoptimized
         />
       </div>
-      <div className="p-2 bg-gray-50 text-center">
+      <div className="p-2  text-center">
         <a
           href={url}
           target="_blank"

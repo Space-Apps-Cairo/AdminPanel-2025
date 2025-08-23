@@ -1,8 +1,6 @@
-export interface Skill {
-  id: number;
-  name: string;
-  type: string; // could also be union type: "Technical" | "Non-Technical"
-}
+// types/participants.ts
+
+import type { Skill } from "./skill";
 
 export interface CreatedBy {
   id: number;
@@ -34,18 +32,20 @@ export type Participant = {
   why_this_workshop: string;
   comment: string;
   year: string;
-  national_id_front: File | string; // URL
-  national_id_back: File | string; // URL
-  personal_photo: File | string; // URL
+  national_id_front: File | string; // file or URL
+  national_id_back: File | string;  // file or URL
+  personal_photo: File | string;    // file or URL
   skills: Skill[];
   created_by: CreatedBy;
 };
 
-export interface ApiResponse<T> {
-  status: number;
-  message: string;
-  data: T;
-}
-export type ParticipantRequest = Omit<Participant, "id">;
-export type ParticipantsResponse = ApiResponse<Participant[]>;
-export type ParticipantResponse = ApiResponse<Participant>;
+// Request type for sending to API (FormData)
+export type ParticipantRequest = Omit<
+  Participant,
+  "id" | "uuid" | "skills" | "created_by"
+> & {
+  skills: string[]; // send skill IDs instead of full objects
+};
+
+// Form type (optional)
+export type ParticipantFormValues = Partial<Participant>;

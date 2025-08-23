@@ -1,3 +1,7 @@
+
+
+
+
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../../../../../components/ui/button";
 import Link from "next/link";
@@ -8,11 +12,15 @@ import {
   useUpdateParticipantMutation,
 } from "@/service/Api/participants";
 import { Participant } from "@/types/participants";
-import { Field } from "@/app/interface";
+import { Field, FieldOption } from "@/app/interface";
 import { participantValidationSchema } from "@/validations/participantSchema";
 
+//Fields --------------------
 export const getParticipantsFields = (
-  participantData?: Participant
+  participantData?: Participant,
+  educationalLevelOptions?: FieldOption[],
+  fieldOfStudyOptions?: FieldOption[],
+  skillsOptions?: FieldOption[]
 ): Field[] => [
   {
     name: "name_ar",
@@ -108,12 +116,13 @@ export const getParticipantsFields = (
   },
   {
     name: "educational_level_id",
-    type: "text",
+    type: "select",
     label: "Educational Level",
+    options: educationalLevelOptions ?? [],
     ...(participantData?.educational_level_id && {
-      defaultValue: participantData.educational_level_id,
+      defaultValue: participantData.educational_level_id.toString(),
     }),
-    placeholder: "Enter your educational level",
+    placeholder: "Select your educational level",
     step: 2,
   },
   {
@@ -138,12 +147,24 @@ export const getParticipantsFields = (
   },
   {
     name: "field_of_study_id",
-    type: "number",
+    type: "select",
     label: "Field of Study",
+    options: fieldOfStudyOptions ?? [],
     ...(participantData?.field_of_study_id && {
-      defaultValue: participantData.field_of_study_id,
+      defaultValue: participantData.field_of_study_id.toString(),
     }),
-    placeholder: "Enter your field of study",
+    placeholder: "Select your field of study",
+    step: 3,
+  },
+  {
+    name: "skills",
+    type: "select",
+    label: "Skills",
+    options: skillsOptions ?? [],
+    ...(participantData?.skills && {
+      defaultValue: participantData.skills.map((s) => s.id.toString()),
+    }),
+    placeholder: "Select skills",
     step: 3,
   },
   {
@@ -158,7 +179,7 @@ export const getParticipantsFields = (
   },
   {
     name: "comment",
-    type: "textarea",
+    type: "text",
     label: "Comment",
     ...(participantData?.comment && { defaultValue: participantData.comment }),
     placeholder: "Write any additional comments...",
@@ -187,6 +208,7 @@ export const getParticipantsFields = (
   },
 ];
 
+// Columns --------------------
 export const participantColumns: ColumnDef<Participant>[] = [
   { header: "ID", accessorKey: "id", size: 80, enableHiding: false },
   { header: "English Name", accessorKey: "name_en" },
@@ -195,7 +217,6 @@ export const participantColumns: ColumnDef<Participant>[] = [
   { header: "Phone", accessorKey: "phone_number" },
   { header: "National ID", accessorKey: "national_id" },
   { header: "Governorate", accessorKey: "governorate" },
-  // { header: "Age", accessorKey: "age" },
   { header: "Birth Date", accessorKey: "birth_date" },
   { header: "Occupation", accessorKey: "current_occupation" },
   { header: "Institute", accessorKey: "educational_institute" },
@@ -221,6 +242,7 @@ export const participantColumns: ColumnDef<Participant>[] = [
     enableHiding: false,
   },
 ];
+
 
 function ParticipantRowActions({ rowData }: { rowData: Participant }) {
   const [updateParticipant] = useUpdateParticipantMutation();

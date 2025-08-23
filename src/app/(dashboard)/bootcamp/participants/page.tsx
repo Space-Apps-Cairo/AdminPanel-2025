@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -17,11 +18,16 @@ import {
   useAddNewParticipantMutation,
   useGetAllParticipantsQuery,
 } from "@/service/Api/participants";
-import { Participant } from "@/types/participants";
-import { ParticipantRequest } from "@/types/participants";
-import Error from "@/components/Error/page";
+import { Participant, ParticipantRequest } from "@/types/participants";
+import { useGetAllEducationalLevelsQuery } from "@/service/Api/educationalLevels";
+import { useGetAllFieldsOfStudyQuery } from "@/service/Api/fieldsOfStudy";
+import { useGetAllSkillsQuery } from "@/service/Api/skills";
+import { FieldOption } from "@/app/interface";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ParticipantsPage() {
+  const { toast } = useToast(); //  هنا جوه الـ component
+
   const {
     data: participantsData,
     isLoading,
@@ -37,10 +43,32 @@ export default function ParticipantsPage() {
     }
   }, [participantsData]);
 
+  const { data: eduLevelsData } = useGetAllEducationalLevelsQuery();
+  const { data: fieldsData } = useGetAllFieldsOfStudyQuery();
+  const { data: skillsData } = useGetAllSkillsQuery();
+
+  const educationalLevelOptions: FieldOption[] =
+    eduLevelsData?.data?.map((lvl: any) => ({
+      value: lvl.id.toString(),
+      label: lvl.name,
+    })) ?? [];
+
+  const fieldOfStudyOptions: FieldOption[] =
+    fieldsData?.data?.map((f: any) => ({
+      value: f.id.toString(),
+      label: f.name,
+    })) ?? [];
+
+  const skillsOptions: FieldOption[] =
+    skillsData?.data?.map((s: any) => ({
+      value: s.id.toString(),
+      label: s.name,
+    })) ?? [];
+
   const searchConfig: SearchConfig = {
     enabled: true,
     placeholder: "Filter by ID, National ID, Email or Phone",
-    searchKeys: ["id", "national", "email", "phone_number"],
+    searchKeys: ["id", "national_id", "email", "phone_number"],
   };
 
   const actionConfig: ActionConfig = {
@@ -54,30 +82,47 @@ export default function ParticipantsPage() {
 
   const handleAddParticipant = async (data: ParticipantFormValues) => {
     try {
-      // Convert to FormData if files are involved
       const formData = new FormData();
 
-      // Append all fields
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          formData.append(key, value);
+          if (Array.isArray(value)) {
+            value.forEach((v) => formData.append(`${key}[]`, v));
+          } else {
+            formData.append(key, value);
+          }
         }
       });
 
       const result = await addParticipant(
         formData as unknown as ParticipantRequest
       ).unwrap();
+
       if (result.data) {
         setParticipants((prev) => [...prev, result.data]);
+
+        //  Toast للنجاح
+        toast({
+          title: "Participant added",
+          description: "The participant was added successfully 🎉",
+        });
       }
+
       setIsOpen(false);
     } catch (error) {
       console.error("Error adding participant:", error);
+
+      //  Toast للخطأ
+      toast({
+        title: "Error",
+        description: "Something went wrong while adding participant ",
+        variant: "destructive",
+      });
     }
   };
 
   if (isLoading) return <Loading />;
-  if (error) return <Error/>;
+  if (error) return <div>Error loading participants</div>;
 
   return (
     <div className="container mx-auto py-6">
@@ -93,13 +138,18 @@ export default function ParticipantsPage() {
 
       {isOpen && (
         <CrudForm
-          fields={getParticipantsFields()}
+          fields={getParticipantsFields(
+            undefined,
+            educationalLevelOptions,
+            fieldOfStudyOptions,
+            skillsOptions
+          )}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           operation="add"
           asDialog={true}
           validationSchema={participantValidationSchema}
-          onSubmit={handleAddParticipant}
+          onSubmit={handleAddParticipant as any}
           steps={[1, 2, 3]}
         />
       )}
