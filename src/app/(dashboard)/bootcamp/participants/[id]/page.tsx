@@ -52,6 +52,8 @@ import { formatDate } from "@/lib/utils";
 import PreferencesTab from "./_components/tabs/preferences";
 import AssignmentsTab from "./_components/tabs/assignments";
 import DetailsTab from "./_components/tabs/details";
+import { toast } from "sonner";
+import Error from "@/components/Error/page";
 export default function ParticipantPreferencesPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -96,10 +98,9 @@ export default function ParticipantPreferencesPage() {
     isLoadingWorkshopData
   )
     return <Loading />;
-  if (prefError)
-    return <div className="text-red-500">Error loading preferences</div>;
-  if (assignError)
-    return <div className="text-red-500">Error loading assignments</div>;
+  ;
+  if (assignError || prefError)
+    return <Error/>;
   // -------------------- Workshops Options --------------------
   const workshopOptions: FieldOption[] =
     workshopsData?.data?.map((w: Workshop) => ({
@@ -119,8 +120,13 @@ export default function ParticipantPreferencesPage() {
 
       await addNewPreference(payload as any).unwrap();
       setIsPrefFormOpen(false);
+      toast.success("Preference created successfully");
+          
     } catch (error) {
-      console.error("Error adding preference:", error);
+      const err = error as any;
+  toast.error("Failed to add preference. Please try again.", {
+    description: err?.message || err?.data?.message || "Unexpected error",
+  });
     }
   };
 
@@ -135,8 +141,13 @@ export default function ParticipantPreferencesPage() {
 
       await addNewAssignment(payload as any).unwrap();
       setIsAssignFormOpen(false);
+      toast.success("Assignment has been added successfully.");
+
     } catch (error) {
-      console.error("Error adding assignment:", error);
+       const err = error as any;
+  toast.error("Failed to add assignment. Please try again.", {
+    description: err?.message || err?.data?.message || "Unexpected error",
+  });
     }
   };
 
@@ -202,17 +213,4 @@ export default function ParticipantPreferencesPage() {
     </div>
   );
 }
-// function Section({
-//   title,
-//   children,
-// }: {
-//   title: string;
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <div className="mb-6">
-//       <h3 className="text-lg font-semibold mb-3 pb-2 border-b">{title}</h3>
-//       {children}
-//     </div>
-//   );
-// }
+

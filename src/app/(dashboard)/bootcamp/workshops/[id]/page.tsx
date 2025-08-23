@@ -7,7 +7,7 @@ import { Button } from "../../../../../components/ui/button";
 import { Card, CardTitle } from "../../../../../components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../../../components/ui/tabs";
 import Loading from "../../../../../components/loading/loading";
-
+import Error from "@/components/Error/page";
 // --- Priority imports ---
 import { useGetWorkshopDetailsQuery } from "@/service/Api/workshops";
 import { PriorityParticipant } from "@/types/workshop";
@@ -42,7 +42,7 @@ export default function WorkshopPage() {
   // -------------------- Loading States --------------------
   if (isLoadingWorkshop) return <Loading />;
   if (workshopError)
-    return <div className="text-red-500">Error loading workshop data</div>;
+    return <Error/>;
 
   // -------------------- Extract Priorities --------------------
   const getPriorityParticipants = (

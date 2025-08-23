@@ -23,7 +23,7 @@ export const getPreferenceFields = (
     name: "workshop_id",
     type: "select",
     label: "Workshop ",
-    placeholder: "Enter workshop ID",
+    placeholder: "Enter workshop ",
 
     options: workshopOptions ?? [],
     ...(prefData?.workshop && {

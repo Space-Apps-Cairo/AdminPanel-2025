@@ -45,8 +45,8 @@ export const getAssignmentFields = (assignmentData?: Assignment): Field[] => [
   {
     name: "workshop_schedule_id",
     type: "number",
-    label: "Schedule ID",
-    placeholder: "Enter schedule id ",
+    label: "Schedule",
+    placeholder: "Enter schedule ",
     defaultValue: assignmentData?.schedule?.id ?? undefined,
   },
 ];
