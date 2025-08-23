@@ -10,7 +10,7 @@ import FormSettings from './FormSettings';
 import StepsManager from './StepsManager';
 import { FormSchema, FormField, FormStep } from '@/types/form';
 import { Button } from '../ui/button';
-import { Save, Download, Upload, Eye, Settings, Palette } from 'lucide-react';
+import { Save, Download, Upload, Eye, Settings, Palette, LayoutPanelTop } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const FormBuilder = () => {
@@ -367,18 +367,19 @@ const FormBuilder = () => {
           />
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="fields" className="text-xs">
                 <Palette className="w-4 h-4 mr-1" />
                 Fields
               </TabsTrigger>
               <TabsTrigger value="templates" className="text-xs">
+                <LayoutPanelTop className="w-4 h-4 mr-1" />
                 Templates
               </TabsTrigger>
-              <TabsTrigger value="settings" className="text-xs">
+              {/* <TabsTrigger value="settings" className="text-xs">
                 <Settings className="w-4 h-4 mr-1" />
                 Settings
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
 
             <TabsContent value="fields" className="mt-4">

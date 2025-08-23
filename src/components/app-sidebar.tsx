@@ -67,13 +67,13 @@ const data = {
     },
     {
       title: "Forms",
-      url: "/form-builder",
+      url: "/",
       icon: BrickWall,
       isActive: true,
       items: [
         {
-          title: "Form Builder",
-          url: "/form-builder",
+          title: "Forms",
+          url: "/forms",
         }
       ],
     },

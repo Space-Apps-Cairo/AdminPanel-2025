@@ -25,6 +25,10 @@ export interface Field {
   value?: string;
   options?: FieldOption[];
   step?: number;
+  dependsOn?: {
+    name: string;
+    data: (value: string | undefined) => FieldOption[];
+  };
   dynamicArrayFieldsConfig?: {
     fields?: Field[];
     isSimpleArray?: boolean; // [1,2,3] , [{},{}]

@@ -16,6 +16,7 @@ import {
 } from "../ui/alert-dialog";
 import CrudForm from "../crud-form";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 export default function RowsActions({
   steps,
@@ -33,10 +34,13 @@ export default function RowsActions({
   onDeleteSuccess,
   onDeleteError,
   customPreviewHandler,
+  navigateBtn,
 }: RowsActionsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [operation, setOperation] = useState<OperationType>("edit");
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const router = useRouter();
 
   const handleButtonClick = (operation: OperationType) => {
     setOperation(operation);
@@ -89,6 +93,17 @@ export default function RowsActions({
       )}
 
       <div className="py-2.5 flex items-center gap-2.5">
+
+        {navigateBtn && (
+          <Button
+            onClick={() => router.push(navigateBtn.url)}
+            variant="default"
+            size="sm"
+          >
+            {navigateBtn.name}
+          </Button>
+        )}
+
         {isPreview && (
           <Button
             onClick={() =>

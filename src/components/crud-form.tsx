@@ -30,6 +30,7 @@ import {
   Controller,
   FormProvider,
   useForm,
+  useWatch,
   type FieldValues,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,6 +43,7 @@ import {
 } from "./ui/stepper";
 import DynamicArrayField from "./fields/DynamicArrayFields";
 import { Textarea } from "./ui/textarea";
+import { DynamicSelect } from "./fields/DynamicSelect";
 
 export default function CrudForm(props: {
   operation: "add" | "edit" | "preview";
@@ -77,8 +79,8 @@ export default function CrudForm(props: {
       field.defaultValue !== undefined
         ? field.defaultValue
         : field.type === "checkbox"
-        ? false
-        : "";
+          ? false
+          : "";
   });
 
   // Replace useForm with FormProvider
@@ -163,28 +165,28 @@ export default function CrudForm(props: {
               {["text", "email", "password", "number", "tel", "time"].includes(
                 field.type
               ) && (
-                <div className="grid gap-3">
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                  <Input
-                    {...register(`${field.name}`)}
-                    id={field.name}
-                    name={field.name}
-                    type={field.type}
-                    disabled={isDisabled || field.disabled}
-                    placeholder={field.placeholder}
-                    className={
-                      field.type === "time"
-                        ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                        : ""
-                    }
-                  />
-                  {errors[field.name] && (
-                    <p className="text-red-500 text-sm">
-                      {errors[field.name]?.message as string}
-                    </p>
-                  )}
-                </div>
-              )}
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>{field.label}</Label>
+                    <Input
+                      {...register(`${field.name}`)}
+                      id={field.name}
+                      name={field.name}
+                      type={field.type}
+                      disabled={isDisabled || field.disabled}
+                      placeholder={field.placeholder}
+                      className={
+                        field.type === "time"
+                          ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                          : ""
+                      }
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
+                  </div>
+                )}
 
               {field.type == "textArea" && (
                 <div className="grid gap-3">
@@ -233,37 +235,14 @@ export default function CrudForm(props: {
               )}
 
               {field.type === "select" && (
-                <div className="grid gap-3">
-                  <Label>{field.label || field.placeholder}</Label>
-                  <Controller
-                    name={`${field.name}`}
-                    control={control}
-                    render={({ field: fld }) => (
-                      <Select
-                        disabled={isDisabled}
-                        value={fld.value}
-                        onValueChange={fld.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder={field.placeholder} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {field.options?.map((option: FieldOption, index) => (
-                            <SelectItem key={index} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors[field.name] && (
-                    <p className="text-red-500 text-sm">
-                      {errors[field.name]?.message as string}
-                    </p>
-                  )}
-                </div>
+                <DynamicSelect
+                  field={field}
+                  control={control}
+                  errors={errors}
+                  isDisabled={isDisabled}
+                />
               )}
+
 
               {field.type === "date" && (
                 <div className="grid gap-3">
@@ -383,8 +362,8 @@ export default function CrudForm(props: {
             {isSubmittingForm
               ? "Submitting..."
               : operation === "edit"
-              ? "Update"
-              : "Submit"}
+                ? "Update"
+                : "Submit"}
           </Button>
         )}
       </DialogFooter>
@@ -395,9 +374,8 @@ export default function CrudForm(props: {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className={`sm:max-w-[425px] flex flex-col max-h-[90vh] overflow-y-auto ${
-          !asDialog ? fullPageStyle : ""
-        }`}
+        className={`sm:max-w-[425px] flex flex-col max-h-[90vh] overflow-y-auto ${!asDialog ? fullPageStyle : ""
+          }`}
       >
         <FormProvider {...methods}>
           <form

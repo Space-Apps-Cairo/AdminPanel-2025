@@ -1,4 +1,4 @@
-import { api } from "./api"; 
+import { api } from "./api";
 import { Form, FormsResponse } from "@/types/forms";
 
 export const formsApi = api.injectEndpoints({
@@ -40,7 +40,7 @@ export const formsApi = api.injectEndpoints({
     }),
 
     // Get Form Models 
-    getFormModelById: build.query<Form, void>({
+    getFormModels: build.query<Form, void>({
       query: () => `/get-form-models`,
       providesTags: ["Forms"]
     }),
@@ -53,5 +53,5 @@ export const {
   useCreateFormMutation,
   useUpdateFormMutation,
   useDeleteFormMutation,
-  useGetFormModelByIdQuery, 
+  useGetFormModelsQuery,
 } = formsApi;

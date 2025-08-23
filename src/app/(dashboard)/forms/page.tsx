@@ -6,7 +6,7 @@ import Loading from "@/components/loading/loading";
 import CrudForm from "@/components/crud-form";
 import {
   useCreateFormMutation,
-  useGetAllFormsQuery,useGetFormModelByIdQuery
+  useGetAllFormsQuery, useGetFormModelsQuery
 } from "@/service/Api/forms";
 
 import { Form } from "@/types/forms";
@@ -22,11 +22,14 @@ export default function Forms() {
     error: formsError,
     refetch,
   } = useGetAllFormsQuery();
-const { data:formabledata, isLoading } = useGetFormModelByIdQuery();
-const [selectedFormableType, setSelectedFormableType] = useState<number | null>(null);
-const filteredFormableIds = selectedFormableType
-  ? formabledata?.data.find((fd: { formable_type_id: { toString: () => number; }; }) => fd.formable_type_id.toString() === selectedFormableType)?.data ?? []
-  : [];
+  const { data: formabledata, isLoading } = useGetFormModelsQuery();
+
+  console.log(formabledata?.data, "87");
+
+  const [selectedFormableType, setSelectedFormableType] = useState<number | null>(null);
+  const filteredFormableIds = selectedFormableType
+    ? formabledata?.data.find((fd: { formable_type_id: { toString: () => number; }; }) => fd.formable_type_id.toString() === selectedFormableType)?.data ?? []
+    : [];
   const [isOpen, setIsOpen] = useState(false);
 
   const searchConfig: SearchConfig = {
@@ -94,12 +97,12 @@ const filteredFormableIds = selectedFormableType
           searchConfig={searchConfig}
           statusConfig={statusConfig}
           actionConfig={actionConfig}
-         
+
         />
 
         {isOpen && (
           <CrudForm
-            fields={getFormFields(undefined, formabledata?.data,)}
+            fields={getFormFields(undefined, formabledata?.data)}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             operation="add"

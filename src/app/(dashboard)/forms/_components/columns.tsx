@@ -16,59 +16,85 @@ import { format } from "date-fns";
 
 export const getFormFields = (formData?: Form,
   formableData?: FormableType[],
- filteredFormableIds?: FormableItem[]): Field[] => [
-  {
-    name: "title",
-    type: "text",
-    label: "Title",
-    ...(formData?.title && { defaultValue: formData.title }),
-    placeholder: "Enter form title",
-  },
-  {
-    name: "description",
-    type: "text",
-    label: "Description",
-    ...(formData?.description && { defaultValue: formData.description }),
-    placeholder: "Enter form description",
-  },
-  {
-    name: "formable_type_id",
-    type: "select",
-    label: "Formable Type ID",
-    placeholder:"select formable type",
-    options: formableData?.map(fd => ({
-      placeholder: fd.name,
-      value: fd.formable_type_id.toString(),
-    })),
-    ...(formData?.formable_type_id && {
-      defaultValue: formData.formable_type_id.toString(),
-    }),
-  },
-  {
-    name: "formable_id",
-    type: "select",
-    label: "Formable ID",
-    placeholder:" select formable id",
-options: filteredFormableIds?.map(d => ({
-      placeholder: d.name_en,
-      value: d.formable_id.toString(),
-    })),
-    ...(formData?.formable_id && { defaultValue: formData.formable_id.toString() }),
-  },
-  {
-  name: "is_active",
-  type: "select",
-  label: "Status",
-  placeholder:"select active status",
-  options: [
-    { placeholder: "Active", value: "active" },
-    { placeholder: "Inactive", value: "inactive" },
-  ],
-  ...(formData?.is_active !== undefined && {
-    defaultValue: formData.is_active ? "active" : "inactive",
-  }),
+  filteredFormableIds?: FormableItem[]): Field[] => {
+
+  console.log(formableData, "zzz");
+  formableData?.forEach(fd => {
+    console.log(fd.name, "fd");
+  })
+
+  const getFormableId = (formableTypeId?: string) => {
+    if (!formableTypeId) return [];
+    const matched = formableData?.find(fd =>
+      String(fd.formable_type_id) === String(formableTypeId)
+    );
+    if (!matched) return [];
+    return matched.data.map(d => ({
+      label: d.name_en,
+      value: String(d.formable_id),
+    }));
+  };
+
+  console.log(getFormableId("1"), "89999");
+  return [
+    {
+      name: "title",
+      type: "text",
+      label: "Title",
+      ...(formData?.title && { defaultValue: formData.title }),
+      placeholder: "Enter form title",
+    },
+    {
+      name: "description",
+      type: "text",
+      label: "Description",
+      ...(formData?.description && { defaultValue: formData.description }),
+      placeholder: "Enter form description",
+    },
+    {
+      name: "formable_type_id",
+      type: "select",
+      label: "Formable Type ID",
+      placeholder: "select formable type",
+      options: formableData?.map(fd => ({
+        label: fd.name,
+        value: fd.formable_type_id.toString(),
+      })),
+      ...(formData?.formable_type_id && {
+        defaultValue: formData.formable_type_id.toString(),
+      }),
+    },
+    {
+      name: "formable_id",
+      type: "select",
+      label: "Formable ID",
+      placeholder: " select formable id",
+      dependsOn: {
+        name: "formable_type_id",
+        data: getFormableId,
+
+      },
+      options: filteredFormableIds?.map(d => ({
+        label: d.name_en,
+        value: d.formable_id.toString(),
+      })),
+      ...(formData?.formable_id && { defaultValue: formData.formable_id.toString() }),
+    },
+    {
+      name: "is_active",
+      type: "select",
+      label: "Status",
+      placeholder: "select active status",
+      options: [
+        { label: "Active", value: "active" },
+        { label: "Inactive", value: "inactive" },
+      ],
+      ...(formData?.is_active !== undefined && {
+        defaultValue: formData.is_active ? "active" : "inactive",
+      }),
+    }
+  ];
 }
-];
 
 export const formColumns: ColumnDef<Form>[] = [
   {
@@ -111,17 +137,17 @@ export const formColumns: ColumnDef<Form>[] = [
     size: 150,
   },
   {
-  header: "Status",
-  accessorKey: "is_active",
-  cell: ({ row }) =>
-    row.original.is_active ? (
-      <Badge variant="outline">Active</Badge>
-    ) : (
-      <Badge variant="destructive">Inactive</Badge>
-    ),
-  size: 110,
-},
-  
+    header: "Status",
+    accessorKey: "is_active",
+    cell: ({ row }) =>
+      row.original.is_active ? (
+        <Badge variant="outline">Active</Badge>
+      ) : (
+        <Badge variant="destructive">Inactive</Badge>
+      ),
+    size: 110,
+  },
+
   {
     id: "actions",
     header: () => <span>Actions</span>,
@@ -138,6 +164,10 @@ function FormRowActions({ rowData }: { rowData: Form }) {
 
   return (
     <RowsActions
+      navigateBtn={{
+        name: "Form Builder",
+        url: `/forms/form-builder/${rowData.id}`,
+      }}
       rowData={rowData}
       isDelete={true}
       fields={getFormFields(rowData)}

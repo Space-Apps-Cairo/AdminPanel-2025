@@ -11,6 +11,7 @@ export type RowsActionsProps = {
     validationSchema: any;
     updateMutation?: any
     deleteMutation?: any
+    navigateBtn?: any;
     onUpdateSuccess?: (result: any) => void
     onUpdateError?: (error: any) => void
     onDeleteSuccess?: (result: any) => void
