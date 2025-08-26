@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -7,6 +7,8 @@ import { Textarea } from '../ui/textarea';
 import { FormStep, FormField } from '@/types/form';
 import { Plus, Trash2, ChevronRight } from 'lucide-react';
 import { Switch } from '../ui/switch';
+import { useAddStepMutation, useDeleteStepMutation, useGetAllStepsByIdQuery } from '@/service/Api/formBuilder';
+import { useParams } from 'next/navigation';
 
 interface StepsManagerProps {
   steps: FormStep[];
@@ -17,41 +19,86 @@ interface StepsManagerProps {
   onSelectStep: (stepId: string) => void;
 }
 
-const StepsManager = ({ 
-  steps, 
-  isMultiStep, 
-  onUpdateSteps, 
-  onToggleMultiStep, 
+const StepsManager = ({
+  steps,
+  isMultiStep,
+  onUpdateSteps,
+  onToggleMultiStep,
   currentStepId,
-  onSelectStep 
+  onSelectStep
 }: StepsManagerProps) => {
   const [newStepName, setNewStepName] = useState('');
 
-  const addStep = () => {
+
+  const { id: form_id } = useParams();
+  const [addStepApi] = useAddStepMutation();
+  const [deleteStepApi] = useDeleteStepMutation();
+  console.log(form_id, "99");
+  const { data: stepsData } = useGetAllStepsByIdQuery(form_id);
+
+
+  useEffect(() => {
+    if (!form_id || !stepsData?.data) return;
+
+    const stepsArray: FormStep[] = Object.entries(stepsData.data)
+      .filter(([key]) => key.startsWith("step"))
+      .flatMap(([_, stepList], index) =>
+        (stepList as any[]).map((s: any) => ({
+
+          id: s.id,
+          title: s.title || `Step ${index + 1}`,
+          description: s.description || "",
+          fields: [],
+          order: index,
+          form_id,
+        }))
+      );
+
+    // Only update if different to avoid infinite loops
+    const isEqual =
+      steps.length === stepsArray.length &&
+      steps.every((s, i) => s.id === stepsArray[i].id);
+
+    if (!isEqual) onUpdateSteps(stepsArray);
+  }, [form_id, stepsData]);
+
+  const addStep = async () => {
     if (!newStepName.trim()) return;
-    
-    const newStep: FormStep = {
-      id: Date.now().toString(),
-      name: newStepName.trim(),
-      fields: []
-    };
-    
-    onUpdateSteps([...steps, newStep]);
-    setNewStepName('');
+
+    try {
+      const response = await addStepApi({
+        title: newStepName.trim(),
+        description: "",
+        form_id,
+        fields: [],
+      }).unwrap();
+
+      if (response?.data) {
+        onUpdateSteps([...steps, response.data]);
+        setNewStepName("");
+      }
+    } catch (error) {
+      console.error("Failed to add step:", error);
+    }
   };
 
-  const removeStep = (stepId: string) => {
-    onUpdateSteps(steps.filter(step => step.id !== stepId));
+  const removeStep = async (stepId: string) => {
+    try {
+      await deleteStepApi(stepId).unwrap();
+      onUpdateSteps(steps.filter((step) => step.id !== stepId));
+    } catch (error) {
+      console.error("Failed to delete step:", error);
+    }
   };
 
-  const updateStepName = (stepId: string, name: string) => {
-    onUpdateSteps(steps.map(step => 
-      step.id === stepId ? { ...step, name } : step
+  const updateStepName = (stepId: string, title: string) => {
+    onUpdateSteps(steps.map(step =>
+      step.id === stepId ? { ...step, title } : step
     ));
   };
 
   const updateStepDescription = (stepId: string, description: string) => {
-    onUpdateSteps(steps.map(step => 
+    onUpdateSteps(steps.map(step =>
       step.id === stepId ? { ...step, description } : step
     ));
   };
@@ -61,30 +108,29 @@ const StepsManager = ({
       <CardHeader>
         <CardTitle className="text-lg">Form Steps</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center space-x-2">
-          <Switch 
+      <CardContent className="">
+        {/* <div className="flex items-center space-x-2">
+          <Switch
             checked={isMultiStep}
             onCheckedChange={onToggleMultiStep}
           />
           <Label>Enable Multi-Step Form</Label>
-        </div>
+        </div> */}
 
         {isMultiStep && (
           <>
             <div className="space-y-2">
               {steps.map((step, index) => (
-                <div 
+                <div
                   key={step.id}
-                  className={`flex items-center space-x-2 p-2 rounded border cursor-pointer transition-colors ${
-                    currentStepId === step.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
-                  }`}
+                  className={`flex items-center space-x-2 p-2 rounded border cursor-pointer transition-colors ${currentStepId === step.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
+                    }`}
                   onClick={() => onSelectStep(step.id)}
                 >
                   <span className="text-sm font-medium">Step {index + 1}:</span>
                   <div className="flex-1 space-y-2">
                     <Input
-                      value={step.name}
+                      value={step.title}
                       onChange={(e) => updateStepName(step.id, e.target.value)}
                       className="h-8"
                       placeholder="Step title"
@@ -99,8 +145,12 @@ const StepsManager = ({
                     />
                   </div>
                   <span className="text-xs text-gray-500">
-                    {step.fields.length} fields
+                    {step?.fields?.length} fields
                   </span>
+                  <span className="text-xs text-red-500 bg-red-50 px-1 rounded">
+                    ID: {step.id || 'UNDEFINED'}
+                  </span>
+
                   <Button
                     variant="ghost"
                     size="sm"
@@ -119,7 +169,7 @@ const StepsManager = ({
 
             <div className="flex space-x-2">
               <Input
-                placeholder="Step name..."
+                placeholder="Step title..."
                 value={newStepName}
                 onChange={(e) => setNewStepName(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addStep()}

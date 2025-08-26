@@ -1,57 +1,83 @@
+import { FormField, FormStep, FormStepResponse } from "@/types/formBuilder";
 import { api } from "./api";
-import { Form, FormsResponse } from "@/types/forms";
 
-export const formsApi = api.injectEndpoints({
+
+export const formBuilderApi = api.injectEndpoints({
     endpoints: (build) => ({
-        getAllForms: build.query<FormsResponse, void>({
-            query: () => "/forms",
-            providesTags: ["Forms"],
+        getAllStepsById: build.query<FormStepResponse, void>({
+            query: (id) => `/form-steps/${id}`,
+            providesTags: ["FormBuilder"],
         }),
 
-        getFormById: build.query<Form, number>({
-            query: (id) => `/forms/${id}`,
-            providesTags: (_res, _err, id) => [{ type: "Forms", id }],
-        }),
-
-        createForm: build.mutation<Form, Omit<Form, "id">>({
+        addStep: build.mutation<FormStepResponse, FormStep>({
             query: (body) => ({
-                url: "/forms",
+                url: "/form-step",
                 method: "POST",
                 body,
             }),
-            invalidatesTags: ["Forms"],
+            invalidatesTags: ["FormBuilder"],
         }),
 
-        updateForm: build.mutation<Form, Partial<Form> & { id: number }>({
-            query: ({ id, ...body }) => ({
-                url: `/forms/${id}`,
+        updateStep: build.mutation<FormStepResponse, FormStep>({
+            query: (body) => ({
+                url: `/form-step/${body.id}`,
                 method: "PUT",
                 body,
             }),
-            invalidatesTags: (_res, _err, { id }) => [{ type: "Forms", id }],
+            invalidatesTags: ["FormBuilder"],
         }),
 
-        deleteForm: build.mutation<void, number>({
+        deleteStep: build.mutation<void, number>({
             query: (id) => ({
-                url: `/forms/${id}`,
+                url: `/form-step/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["Forms"],
+            invalidatesTags: ["FormBuilder"],
         }),
 
-        // Get Form Models 
-        getFormModels: build.query<Form, void>({
-            query: () => `/get-form-models`,
-            providesTags: ["Forms"]
+        // fields
+        getAllFieldsById: build.query<FormStepResponse, void>({
+            query: (id) => `/form-steps/${id}`,
+            providesTags: ["FormBuilderFields"],
         }),
+
+        addField: build.mutation<FormStepResponse, FormField>({
+            query: (body) => ({
+                url: "/form-fields",
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["FormBuilderFields"],
+        }),
+
+        updateField: build.mutation<FormStepResponse, FormStep>({
+            query: (body) => ({
+                url: `/form-fields/${body.id}`,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["FormBuilderFields"],
+        }),
+
+        deleteField: build.mutation<void, number>({
+            query: (id) => ({
+                url: `/form-fields/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["FormBuilderFields"],
+        }),
+
+
     }),
 });
 
 export const {
-    useGetAllFormsQuery,
-    useGetFormByIdQuery,
-    useCreateFormMutation,
-    useUpdateFormMutation,
-    useDeleteFormMutation,
-    useGetFormModelsQuery,
-} = formsApi;
+    useGetAllStepsByIdQuery,
+    useAddStepMutation,
+    useUpdateStepMutation,
+    useDeleteStepMutation,
+    useGetAllFieldsByIdQuery,
+    useAddFieldMutation,
+    useUpdateFieldMutation,
+    useDeleteFieldMutation,
+} = formBuilderApi;

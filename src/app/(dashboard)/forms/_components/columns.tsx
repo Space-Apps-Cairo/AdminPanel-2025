@@ -98,6 +98,12 @@ export const getFormFields = (formData?: Form,
 
 export const formColumns: ColumnDef<Form>[] = [
   {
+    header: "ID",
+    accessorKey: "id",
+    size: 50,
+    enableHiding: false,
+  },
+  {
     header: "Title",
     accessorKey: "title",
     size: 200,

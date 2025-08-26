@@ -16,11 +16,6 @@ export interface FormField {
     pattern?: string;
     message?: string;
   };
-  dependencies?: {
-    field: string;
-    value: string | string[];
-    action: 'show' | 'hide' | 'require';
-  }[];
   dependsOn?: {
     field: string;
     value: string | boolean;
@@ -33,12 +28,20 @@ export interface FormField {
   className?: string;
 }
 
-export interface FormStep {
+export interface FormStepResponse {
   id: string;
   name: string;
   description?: string;
   fields: FormField[];
 }
+export interface FormStep {
+  id: string;
+  name: string;
+  form_id: string;
+  description?: string;
+  fields: FormField[];
+}
+
 
 export interface FormSchema {
   id: string;

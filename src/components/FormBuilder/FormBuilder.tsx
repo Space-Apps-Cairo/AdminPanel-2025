@@ -12,6 +12,8 @@ import { FormSchema, FormField, FormStep } from '@/types/form';
 import { Button } from '../ui/button';
 import { Save, Download, Upload, Eye, Settings, Palette, LayoutPanelTop } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useParams } from 'next/navigation';
+import { useAddFieldMutation, useDeleteFieldMutation, useGetAllFieldsByIdQuery, useUpdateFieldMutation } from '@/service/Api/formBuilder';
 
 const FormBuilder = () => {
   const [currentForm, setCurrentForm] = useState<FormSchema>({
@@ -20,45 +22,334 @@ const FormBuilder = () => {
     description: '',
     fields: [],
     steps: [],
-    isMultiStep: false,
+    isMultiStep: true,
     createdAt: new Date(),
     updatedAt: new Date()
   });
 
+  const { id: form_id } = useParams();
   const [currentStepId, setCurrentStepId] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState('builder');
   const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
-  const addField = (field: FormField) => {
-    const newField = { ...field, id: Date.now().toString() };
+  const [addFieldApi] = useAddFieldMutation();
+  const [deleteFieldApi] = useDeleteFieldMutation();
+  const [updateFieldApi] = useUpdateFieldMutation();
+  const { data: FieldsData } = useGetAllFieldsByIdQuery(form_id);
 
+
+
+  // Updated removeField function
+  const removeField = async (fieldId: string) => {
+    // snapshot for rollback
+    const prevFormSnapshot = currentForm;
+
+    // optimistic remove
     setCurrentForm(prev => {
-      if (prev.isMultiStep && currentStepId && prev.steps) {
-        // Add to specific step
-        const updatedSteps = prev.steps.map(step =>
-          step.id === currentStepId
-            ? { ...step, fields: [...step.fields, newField] }
-            : step
-        );
-        return {
-          ...prev,
-          steps: updatedSteps,
-          updatedAt: new Date()
-        };
+      if (prev.isMultiStep && prev.steps) {
+        const updatedSteps = prev.steps.map(step => ({
+          ...step,
+          fields: step.fields.filter(field => field.id !== fieldId)
+        }));
+        return { ...prev, steps: updatedSteps, updatedAt: new Date() };
       } else {
-        // Add to main fields array
-        return {
-          ...prev,
-          fields: [...prev.fields, newField],
-          updatedAt: new Date()
-        };
+        return { ...prev, fields: prev.fields.filter(field => field.id !== fieldId), updatedAt: new Date() };
       }
     });
+
+    try {
+      // call API — send whatever the server expects (maybe form_id + fieldId)
+      await deleteFieldApi(fieldId).unwrap();
+
+      toast({ title: "Field Deleted", description: "Field has been removed successfully!" });
+    } catch (error) {
+      console.error("Error deleting field:", error);
+      // rollback on error
+      setCurrentForm(prevFormSnapshot);
+
+      toast({
+        title: "Delete Error",
+        description: "Failed to delete field. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const updateField = (fieldId: string, updates: Partial<FormField>) => {
+
+  // Updated addField function - preserve current step
+  // >> replace your addField implementation with this
+  const addField = async (field: FormField) => {
+    // create a temporary id used for optimistic UI
+    const tempId = `temp-${Date.now()}`;
+    const tempField = { ...field, id: tempId };
+
+    const targetStepId = currentStepId;
+
+    // 1) optimistic update (show instantly)
+    setCurrentForm(prev => {
+      if (prev.isMultiStep && targetStepId && prev.steps) {
+        const updatedSteps = prev.steps.map(step =>
+          step.id === targetStepId ? { ...step, fields: [...step.fields, tempField] } : step
+        );
+        return { ...prev, steps: updatedSteps, updatedAt: new Date() };
+      } else {
+        return { ...prev, fields: [...prev.fields, tempField], updatedAt: new Date() };
+      }
+    });
+
+    try {
+      // 2) call API WITHOUT sending the temp id as the canonical id
+      // send the field data as the server expects; e.g. don't include `id: tempId`
+      const payload = {
+        // include only server expected props, not temporary id
+        label: field.label,
+        name: field.name,
+        type: field.type,
+        placeholder: field.placeholder,
+        validation: field.validation,
+        options: field.options,
+        form_id,
+        form_step_id: targetStepId
+      };
+
+      const created = await addFieldApi(payload as any).unwrap();
+      // assume `created` is the created field returned by server with real id
+
+      // 3) replace the temp id field in local state with server-provided field
+      setCurrentForm(prev => {
+        if (prev.isMultiStep && targetStepId && prev.steps) {
+          const updatedSteps = prev.steps.map(step => ({
+            ...step,
+            fields: step.fields.map(f => (f.id === tempId ? { ...f, ...created } : f))
+          }));
+          return { ...prev, steps: updatedSteps, updatedAt: new Date() };
+        } else {
+          return {
+            ...prev,
+            fields: prev.fields.map(f => (f.id === tempId ? { ...f, ...created } : f)),
+            updatedAt: new Date()
+          };
+        }
+      });
+
+      toast({ title: "Field Added", description: "Field has been added successfully!" });
+    } catch (error) {
+      console.error("Error adding field:", error);
+      // rollback: remove temp field
+      setCurrentForm(prev => {
+        if (prev.isMultiStep && targetStepId && prev.steps) {
+          const updatedSteps = prev.steps.map(step => ({
+            ...step,
+            fields: step.fields.filter(f => f.id !== tempId)
+          }));
+          return { ...prev, steps: updatedSteps, updatedAt: new Date() };
+        } else {
+          return { ...prev, fields: prev.fields.filter(f => f.id !== tempId), updatedAt: new Date() };
+        }
+      });
+
+      toast({
+        title: "Add Field Error",
+        description: "Failed to add field. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+
+  // Updated getFields function - only call when absolutely necessary
+  const getFields = () => {
+    if (!FieldsData?.data) return;
+
+    const apiData = FieldsData.data;
+
+    const transformedForm: FormSchema = {
+      id: form_id || Date.now().toString(),
+      name: apiData.title || 'Untitled Form',
+      description: apiData.description || '',
+      fields: [],
+      steps: apiData.steps?.map((step: any) => ({
+        id: String(step.id),
+        name: step.title,
+        description: step.description || '',
+        fields: (step.fields || []).map((field: any) => ({
+          id: String(field.id),
+          label: field.label,
+          name: field.name,
+          type: field.type,
+          placeholder: field.placeholder || '',
+          required: field.validation?.required || false,
+          validation: field.validation || {},
+          dependencies: field.dependsOn && field.dependsOn.field ? [{
+            field: String(field.dependsOn.field),
+            value: field.dependsOn.value
+          }] : [],
+          dependsOn: field.dependsOn || {},
+          options: field.options || [],
+          order: field.order || 0,
+          isComeFromApi: !!field.isComeFromApi,
+          endpoint: field.endpoint || '',
+          body: field.body || ''
+        }))
+      })) || [],
+      isMultiStep: apiData.steps && apiData.steps.length > 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    // Replace the form state with server data (clear local-to-server conflict)
+    setCurrentForm(prev => ({ ...prev, ...transformedForm, updatedAt: new Date() }));
+
+    // preserve previously selected step if it still exists
+    if (transformedForm.isMultiStep && transformedForm.steps.length > 0) {
+      const stepExists = currentStepId && transformedForm.steps.some(s => s.id === currentStepId);
+      setCurrentStepId(stepExists ? currentStepId : transformedForm.steps[0].id);
+    } else {
+      setCurrentStepId(null);
+    }
+  };
+
+
+  // Update the useEffect to only call getFields on initial load
+  useEffect(() => {
+    if (FieldsData?.data) {
+      // always reconcile when new server data comes in (safer than conditional)
+      // but you might choose to skip if there's local unsaved work
+      getFields();
+    }
+  }, [FieldsData, form_id]);
+
+
+
+
+  // const getFields = () => {
+  //   if (!FieldsData?.data) return;
+
+  //   const apiData = FieldsData.data;
+
+  //   // Transform API data to match your form structure
+  //   const transformedForm = {
+  //     id: form_id || Date.now().toString(),
+  //     name: apiData.title || 'Untitled Form',
+  //     description: apiData.description || '',
+  //     fields: [], // This will be empty if multi-step
+  //     steps: apiData.steps?.map(step => ({
+  //       id: step.id.toString(),
+  //       name: step.title,
+  //       description: step.description || '',
+  //       fields: step.fields?.map(field => ({
+  //         id: field.id.toString(),
+  //         label: field.label,
+  //         name: field.name,
+  //         type: field.type,
+  //         placeholder: field.placeholder || '',
+  //         required: field.validation?.required || false,
+  //         validation: field.validation || {},
+  //         dependencies: field.dependsOn && field.dependsOn.field ? [{
+  //           field: field.dependsOn.field,
+  //           value: field.dependsOn.value
+  //         }] : [],
+  //         dependsOn: field.dependsOn || {},
+  //         options: field.options || [],
+  //         order: field.order || 0,
+  //         // Add any other properties you need
+  //         isComeFromApi: field.isComeFromApi || false,
+  //         endpoint: field.endpoint || '',
+  //         body: field.body || ''
+  //       })) || []
+  //     })) || [],
+  //     isMultiStep: apiData.steps && apiData.steps.length > 0,
+  //     createdAt: new Date(),
+  //     updatedAt: new Date()
+  //   };
+
+  //   // Add this useEffect to call getFields when FieldsData changes
+
+
+  //   // If there are steps but we want single step mode, flatten all fields
+  //   if (!transformedForm.isMultiStep && apiData.steps && apiData.steps.length > 0) {
+  //     transformedForm.fields = apiData.steps.flatMap(step =>
+  //       step.fields?.map(field => ({
+  //         id: field.id.toString(),
+  //         label: field.label,
+  //         name: field.name,
+  //         type: field.type,
+  //         placeholder: field.placeholder || '',
+  //         required: field.validation?.required || false,
+  //         validation: field.validation || {},
+  //         dependencies: field.dependsOn && field.dependsOn.field ? [{
+  //           field: field.dependsOn.field,
+  //           value: field.dependsOn.value
+  //         }] : [],
+  //         dependsOn: field.dependsOn || {},
+  //         options: field.options || [],
+  //         order: field.order || 0,
+  //         isComeFromApi: field.isComeFromApi || false,
+  //         endpoint: field.endpoint || '',
+  //         body: field.body || ''
+  //       })) || []
+  //     );
+  //   }
+
+  //   setCurrentForm(prev => ({
+  //     ...prev,
+  //     ...transformedForm,
+  //     updatedAt: new Date()
+  //   }));
+
+  //   // Set the first step as current if multi-step
+  //   if (transformedForm.isMultiStep && transformedForm.steps && transformedForm.steps.length > 0) {
+  //     setCurrentStepId(transformedForm.steps[0].id);
+  //   }
+  // };
+
+  // const addField = async (field: FormField) => {
+  //   const newField = { ...field, id: Date.now().toString() };
+
+  //   console.log("ADD Field");
+
+  //   setCurrentForm(prev => {
+  //     if (prev.isMultiStep && currentStepId && prev.steps) {
+  //       // Add to specific step
+  //       const updatedSteps = prev.steps.map(step =>
+  //         step.id === currentStepId
+  //           ? { ...step, fields: [...step.fields, newField] }
+  //           : step
+  //       );
+  //       return {
+  //         ...prev,
+  //         steps: updatedSteps,
+  //         updatedAt: new Date()
+  //       };
+  //     } else {
+  //       // Add to main fields array
+  //       return {
+  //         ...prev,
+  //         fields: [...prev.fields, newField],
+  //         updatedAt: new Date()
+  //       };
+  //     }
+  //   });
+  //   await addFieldApi({
+  //     ...newField,
+  //     form_id,
+  //     form_step_id: currentStepId
+  //   }).unwrap();
+  //   ;
+  // };
+
+  const updateField = async (fieldId: string, updates: Partial<FormField>) => {
+
+    console.log(fieldId, updates, "uuu");
+
+    updateFieldApi({
+      form_id,
+      form_step_id: currentStepId,
+      id: fieldId,
+      ...updates
+    }).unwrap();
     setCurrentForm(prev => {
       if (prev.isMultiStep && prev.steps) {
         const updatedSteps = prev.steps.map(step => ({
@@ -84,27 +375,31 @@ const FormBuilder = () => {
     });
   };
 
-  const removeField = (fieldId: string) => {
-    setCurrentForm(prev => {
-      if (prev.isMultiStep && prev.steps) {
-        const updatedSteps = prev.steps.map(step => ({
-          ...step,
-          fields: step.fields.filter(field => field.id !== fieldId)
-        }));
-        return {
-          ...prev,
-          steps: updatedSteps,
-          updatedAt: new Date()
-        };
-      } else {
-        return {
-          ...prev,
-          fields: prev.fields.filter(field => field.id !== fieldId),
-          updatedAt: new Date()
-        };
-      }
-    });
-  };
+  // const removeField = async (fieldId: string) => {
+
+  //   console.log(fieldId, "removed");
+
+  //   setCurrentForm(prev => {
+  //     if (prev.isMultiStep && prev.steps) {
+  //       const updatedSteps = prev.steps.map(step => ({
+  //         ...step,
+  //         fields: step.fields.filter(field => field.id !== fieldId)
+  //       }));
+  //       return {
+  //         ...prev,
+  //         steps: updatedSteps,
+  //         updatedAt: new Date()
+  //       };
+  //     } else {
+  //       return {
+  //         ...prev,
+  //         fields: prev.fields.filter(field => field.id !== fieldId),
+  //         updatedAt: new Date()
+  //       };
+  //     }
+  //   });
+  //   await deleteFieldApi(fieldId).unwrap();
+  // };
 
   const reorderFields = (dragIndex: number, hoverIndex: number) => {
     setCurrentForm(prev => {
@@ -355,8 +650,8 @@ const FormBuilder = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-1 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+        <div className="lg:col-span-2 space-y-4">
           <StepsManager
             steps={currentForm.steps || []}
             isMultiStep={currentForm.isMultiStep || false}
@@ -383,7 +678,7 @@ const FormBuilder = () => {
             </TabsList>
 
             <TabsContent value="fields" className="mt-4">
-              <FormFieldsPanel onAddField={addField} />
+              <FormFieldsPanel onAddField={addField} stepId={currentStepId} form_id={form_id} />
             </TabsContent>
 
             <TabsContent value="templates" className="mt-4">
@@ -399,7 +694,7 @@ const FormBuilder = () => {
           </Tabs>
         </div>
 
-        <div className={`${showPreview ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+        <div className={`${showPreview ? 'lg:col-span-2' : 'lg:col-span-4'}`}>
           <Card className="p-6 min-h-[600px]">
             {currentForm.isMultiStep && (!currentStepId || !currentForm.steps?.find(s => s.id === currentStepId)) ? (
               <div className="flex flex-col items-center justify-center h-96 text-center">
@@ -423,7 +718,7 @@ const FormBuilder = () => {
         </div>
 
         {showPreview && (
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <Card className="p-6 min-h-[600px]">
               <h3 className="text-lg font-semibold mb-4">Live Preview</h3>
               <FormPreview form={currentForm} />
