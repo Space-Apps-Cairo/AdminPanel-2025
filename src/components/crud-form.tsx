@@ -110,8 +110,8 @@ export default function CrudForm(props: {
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
-        if (value instanceof FileList) {
-          formData.append(key, value[0]);
+        if (value instanceof File) {
+          formData.append(key, value);
         } else if (value instanceof Date) {
           formData.append(key, value.toISOString());
         } else if (value !== null && value !== undefined) {
