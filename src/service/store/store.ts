@@ -8,6 +8,7 @@ export const store = configureStore({
   reducer: {
     auth: authSlice,
     [authApi.reducerPath]: authApi.reducer,
+
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware),
@@ -15,5 +16,6 @@ export const store = configureStore({
 
 setupListeners(store.dispatch);
 
+// نوع الـ RootState و AppDispatch
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

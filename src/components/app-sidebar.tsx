@@ -6,11 +6,10 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
 
-import { TeamSwitcher } from "@/components/team-switcher";
-import { NavMain } from "@/components/nav-main";
-import SearchBar from "@/components/ui/search-bar";
+import { TeamSwitcher } from "./team-switcher";
+import SearchBar from "./ui/search-bar";
 
 import {
   HomeIcon,
@@ -21,6 +20,7 @@ import {
   // PieChart,
   // Map,
 } from "lucide-react";
+import { NavMain } from "./nav-main";
 
 const data = {
   teams: [
@@ -71,6 +71,10 @@ const data = {
       icon: Building,
       isActive: true,
       items: [
+        {
+          title: "Dashboard",
+          url: "/bootcamp/dashboard",
+        },
         {
           title: "Details",
           url: "/bootcamp/details",

@@ -19,91 +19,86 @@ import { Button } from "@/components/ui/button";
 
 
 export default function RowsActions({
-    steps,
-    fields,
-    rowData,
-    isDelete = false,
-    isUpdate = true,
-    asDialog = true,
-    isPreview = true,
-    validationSchema,
-    updateMutation,
-    deleteMutation,
-    onUpdateSuccess,
-    onUpdateError,
-    onDeleteSuccess,
-    onDeleteError, 
+  steps,
+  fields,
+  rowData,
+  isDelete = false,
+  isUpdate = true,
+  asDialog = true,
+  isPreview = true,
+  validationSchema,
+  updateMutation,
+  deleteMutation,
+  onUpdateSuccess,
+  onUpdateError,
+  onDeleteSuccess,
+  onDeleteError,
+  customPreviewHandler,
 }: RowsActionsProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [operation, setOperation] = useState<OperationType>("edit");
+  const [isDeleting, setIsDeleting] = useState(false);
 
-    const [isOpen, setIsOpen] = useState(false)
-    const [operation, setOperation] = useState<OperationType>("edit");
-    const [isDeleting, setIsDeleting] = useState(false)
+  const handleButtonClick = (operation: OperationType) => {
+    setOperation(operation);
+    setIsOpen(true);
+  };
 
-    const handleButtonClick = (operation: OperationType) => {
-        setOperation(operation)
-        setIsOpen(true)
+  const handleUpdateRow = async (jsonData: any, formData: FormData) => {
+    try {
+      const result = await updateMutation(jsonData, formData);
+      onUpdateSuccess?.(result);
+      setIsOpen(false);
+    } catch (error) {
+      onUpdateError?.(error);
     }
+  };
 
-    const handleUpdateRow = async (formData: any) => {
+  const handleDeleteRow = async () => {
+    if (deleteMutation && rowData?.id) {
+      try {
+        setIsDeleting(true);
+        const result = await deleteMutation(rowData.id).unwrap();
+        onDeleteSuccess?.(result);
+      } catch (error) {
+        onDeleteError?.(error);
+      } finally {
+        setIsDeleting(false);
+      }
+    } else if (rowData?.id) {
+      console.log(`Delete row with ID: ${rowData.id}`, rowData);
+    }
+  };
 
-        if (updateMutation && (rowData?.id)) {
-            try {
-                const result = await updateMutation({
-                    id: rowData.id,
-                    data: formData,
-                });
+  return (
+    <React.Fragment>
+      {isOpen && (
+        <CrudForm
+          fields={fields}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          operation={operation}
+          asDialog={asDialog}
+          validationSchema={validationSchema}
+          steps={steps}
+          onSubmit={handleUpdateRow}
+        />
+      )}
 
-                onUpdateSuccess?.(result);
-                setIsOpen(false);
-            } catch (error) {
-                onUpdateError?.(error);
+      <div className="py-2.5 flex items-center gap-2.5">
+        {isPreview && (
+          <Button
+            onClick={() =>
+              customPreviewHandler
+                ? customPreviewHandler(rowData)
+                : handleButtonClick("preview")
             }
-        }
-
-    };
-
-    const handleDeleteRow = async () => {
-		if (deleteMutation && (rowData?.id)) {
-			try {
-				setIsDeleting(true)
-				const result = await deleteMutation(rowData.id)
-				onDeleteSuccess?.(result)
-			} catch (error) {
-				onDeleteError?.(error)
-			} finally {
-				setIsDeleting(false)
-			}
-		} else if (rowData?.id) {
-			console.log(`Delete row with ID: ${rowData.id}`, rowData)
-		}
-	}
-
-    return <React.Fragment>
-
-        {isOpen && (
-            <CrudForm
-                fields={fields}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                operation={operation}
-                asDialog={asDialog}
-                validationSchema={validationSchema}
-                steps={steps}
-                onSubmit={handleUpdateRow}
-            />
+            variant="outline"
+            size="sm"
+          >
+            <Eye size={16} />
+          </Button>
         )}
-
-        <div className="py-2.5 flex items-center gap-2.5">
-
-            {isPreview && (
-                <Button
-                    onClick={() => handleButtonClick("preview")}
-                    variant="outline"
-                    size="sm"
-                >
-                    <Eye size={16} />
-                </Button>
-            )}
 
             {isUpdate && (
                 <Button
@@ -156,5 +151,5 @@ export default function RowsActions({
         </div>
 
     </React.Fragment>
-
+  );
 }

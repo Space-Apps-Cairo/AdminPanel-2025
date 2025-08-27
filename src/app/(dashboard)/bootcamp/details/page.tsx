@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   useGetBootcampsQuery,
   useAddBootcampMutation,
+  useDeleteBootcampMutation,
 } from "@/service/Api/bootcamp";
 
 import { BootcampType, BootcampRequest } from "@/types/bootcamp";
@@ -11,25 +12,31 @@ import {
   bootcampColumns,
   getBootcampFields,
 } from "./_components/columns/columns";
-import DataTable from "@/components/table/data-table";
-import CrudForm from "@/components/bootcamp/bootcamp-crud-form";
-import Loading from "@/components/loading/loading";
+import DataTable from "../../../../components/table/data-table";
+import CrudForm from "../../../../components/bootcamp/bootcamp-crud-form";
+import Loading from "../../../../components/loading/loading";
 import { BootcampSchema } from "@/validations/bootcamp";
+import { toast } from "sonner";
 
 export default function BootcampPage() {
   // const { data = [], isLoading, error } = useGetBootcampsQuery(); // The Error ❌
   const { data, isLoading, error } = useGetBootcampsQuery(); // The Error ❌
-  const bootcamps = data?.data ?? []; // The right one 
-  const [addBootcamp] = useAddBootcampMutation();
-
   const [isOpen, setIsOpen] = useState(false);
+  const bootcamps = data?.data ?? []; // The right one
+
+  const [addBootcamp] = useAddBootcampMutation();
+  const [deleteBootcamp] = useDeleteBootcampMutation();
 
   const handleAddSubmit = async (values: BootcampRequest) => {
     try {
       await addBootcamp(values).unwrap();
       setIsOpen(false);
+      toast.success("Bootcamp created successfully");
       console.log("Bootcamp created successfully");
     } catch (err) {
+      toast.error("Failed to add bootcamp", {
+        description: err.message,
+      });
       console.error("Failed to add bootcamp:", err);
     }
   };
@@ -48,7 +55,7 @@ export default function BootcampPage() {
           operation="add"
           asDialog
           validationSchema={BootcampSchema}
-          steps={[1, 2]}
+          // steps={[1, 2]}
           onSubmit={handleAddSubmit}
         />
       )}
@@ -70,7 +77,7 @@ export default function BootcampPage() {
           addButtonText: "Add Bootcamp",
           onAdd: () => setIsOpen(true),
         }}
-        onDataChange={() => {}}
+        onDeleteRows={deleteBootcamp}
       />
     </div>
   );

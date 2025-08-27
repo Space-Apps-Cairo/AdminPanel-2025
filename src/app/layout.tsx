@@ -40,7 +40,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               {children}
-              <Toaster />
+              <Toaster richColors />
             </ThemeProvider>
           </ReduxProvider>
         </div>

@@ -2,20 +2,25 @@
 
 import { Workshop } from "@/types/workshop";
 import React, { useEffect, useState } from "react";
-import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
-import DataTable from "@/components/table/data-table";
+import {
+  ActionConfig,
+  ColumnVisibilityConfig,
+  SearchConfig,
+  StatusConfig,
+} from "@/types/table";
+import DataTable from "../../../../components/table/data-table";
 import { getWorkshopsFields, workshopColumns } from "./_components/columns";
-import Loading from "@/components/loading/loading";
-import CrudForm from "@/components/crud-form";
+import Loading from "../../../../components/loading/loading";
+import CrudForm from "../../../../components/crud-form";
 import { workshopValidationSchema } from "@/validations/workshop";
 import {
   useAddNewWorkshopMutation,
   useGetAllWorkshopsQuery,
 } from "@/service/Api/workshops";
 import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function Workshops() {
-
   const {
     data: workshopsData,
     isLoading: isLoadingWorkshops,
@@ -72,8 +77,9 @@ export default function Workshops() {
       );
 
       const workshopData: Omit<Workshop, "id" | "created_at" | "schedules"> = {
-        name: data.title,
+        title: data.title,
         description: data.description,
+        workshop_details: data.workshop_details,
         start_date:
           data.start_date instanceof Date
             ? data.start_date.toISOString().split("T")[0]
@@ -86,15 +92,17 @@ export default function Workshops() {
 
       const result = await addWorkshop(workshopData as Workshop).unwrap();
 
-      console.log("Workshop added successfully:", result);
+      toast.success("Workshop created successfully");
 
       // Update local state with new workshop
       if (result.data) {
         setWorkshops((prev) => [...prev, result.data]);
       }
     } catch (error) {
-      console.error("Error adding workshop:", error);
-      // Don't close the form if there's an error so user can see what happened
+      const err = error as any;
+      toast.error("Failed to add workshop. Please try again.", {
+        description: err?.message || err?.data?.message || "Unexpected error",
+      });
       throw error;
     }
   };
@@ -104,9 +112,7 @@ export default function Workshops() {
   if (workshopsError) {
     return (
       <div className="container mx-auto py-6">
-        <div className="text-red-500">
-          Error loading workshops
-        </div>
+        <div className="text-red-500">Error loading workshops</div>
       </div>
     );
   }
@@ -114,7 +120,6 @@ export default function Workshops() {
   return (
     <React.Fragment>
       <div className="container mx-auto py-6">
-        
         <h1 className="text-2xl font-bold mb-6">Workshop</h1>
 
         <DataTable<Workshop>
@@ -138,7 +143,6 @@ export default function Workshops() {
             onSubmit={handleAddWorkshopSubmit}
           />
         )}
-
       </div>
     </React.Fragment>
   );

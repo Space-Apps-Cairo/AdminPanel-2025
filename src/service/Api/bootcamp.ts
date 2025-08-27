@@ -29,11 +29,14 @@ export const bootcampApi = api.injectEndpoints({
       invalidatesTags: ["Bootcamps"],
     }),
 
-    updateBootcamp: builder.mutation<BootcampResponse, BootcampType>({
-      query: ({ id, ...rest }) => ({
+    updateBootcamp: builder.mutation<
+      BootcampResponse,
+      { id: string; data: BootcampType }
+    >({
+      query: ({ id, data }) => ({
         url: `/BootcampDetails/${id}`,
         method: "PUT",
-        body: rest,
+        body: data,
       }),
       invalidatesTags: ["Bootcamps"],
     }),

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
@@ -10,24 +10,24 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
+} from "../ui/select";
+import { Calendar } from "../ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "../ui/checkbox";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "../ui/popover";
 import { format } from "date-fns";
 import type { Field, FieldOption } from "@/app/interface";
 import {
@@ -43,8 +43,8 @@ import {
   StepperItem,
   StepperSeparator,
   StepperTrigger,
-} from "@/components/ui/stepper";
-import DynamicArrayField from "@/components/fields/DynamicArrayFields";
+} from "../ui/stepper";
+import DynamicArrayField from "../fields/DynamicArrayFields";
 
 export default function CrudForm(props: {
   operation: "add" | "edit" | "preview";
@@ -52,10 +52,9 @@ export default function CrudForm(props: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   asDialog?: boolean;
-  validationSchema: any ;
+  validationSchema: any;
   steps?: number[];
-  
-  onSubmit: (values: FieldValues) => Promise<void>;  
+  onSubmit: (values: FieldValues) => Promise<void>;
 }) {
   const {
     operation,
@@ -96,7 +95,6 @@ export default function CrudForm(props: {
     register,
   } = methods;
 
- 
   const handleFormSubmit = async (data: FieldValues) => {
     if (onSubmitProp) {
       await onSubmitProp(data);
@@ -158,6 +156,8 @@ export default function CrudForm(props: {
                       name={field.name}
                       type={field.type}
                       disabled={isDisabled}
+                      placeholder={field?.placeholder ?? field.label}
+                      min={field.type == "number" ? 1 : undefined}
                     />
                     {errors[field.name] && (
                       <p className="text-red-500">

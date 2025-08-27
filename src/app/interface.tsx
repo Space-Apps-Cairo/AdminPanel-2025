@@ -1,11 +1,24 @@
 export interface FieldOption {
   value: string;
-  placeholder: string;
+  label: string;
 }
 
+export type FieldType =
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "tel"
+  | "time"
+  | "textArea"
+  | "file"
+  | "select"
+  | "date"
+  | "checkbox"
+  | "dynamicArrayField";
 export interface Field {
   name: string;
-  type: string;
+  type: FieldType;
   label?: string;
   placeholder?: string;
   defaultValue?: string | number | boolean | Record<string, any> | any[];
@@ -19,4 +32,5 @@ export interface Field {
     itemName?: string;
     minItem?: number
   };
+  disabled?: boolean;
 }

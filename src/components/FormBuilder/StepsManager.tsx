@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
 import { FormStep, FormField } from '@/types/form';
 import { Plus, Trash2, ChevronRight } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
+import { Switch } from '../ui/switch';
 
 interface StepsManagerProps {
   steps: FormStep[];

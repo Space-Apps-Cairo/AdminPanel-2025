@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { useFormContext, useFieldArray, Controller } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "../ui/select";
 import { Trash2, Plus } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Field } from "@/app/interface";
