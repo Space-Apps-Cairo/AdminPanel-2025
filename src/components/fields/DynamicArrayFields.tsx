@@ -59,6 +59,8 @@ const DynamicArrayField = ({
     keyName: "id",
   });
 
+  console.log(fieldsConfig);
+
   const hasInitialized = useRef(false);
 
   useEffect(() => {

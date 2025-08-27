@@ -76,6 +76,10 @@ const data = {
           url: "/bootcamp/details",
         },
         {
+          title: "Bootcamps",
+          url: "/bootcamp/bootcamps",
+        },
+        {
           title: "Workshops",
           url: "/bootcamp/workshops",
         },
