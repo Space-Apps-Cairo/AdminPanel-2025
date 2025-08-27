@@ -1,6 +1,9 @@
 import z from "zod";
 
+const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
+
 export const scheduleValidationSchema = z.object({
+  date: z.coerce.date(),
   date: z.coerce.date(),
 
   start_time: z
@@ -67,3 +70,4 @@ export const scheduleValidationSchema = z.object({
 //   );
 
 export type ScheduleValidation = z.infer<typeof scheduleValidationSchema>;
+

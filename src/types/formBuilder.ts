@@ -1,7 +1,7 @@
 
 export interface FormField {
   id: string;
-  type: 'text' | 'email' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'date' | 'file' | 'phone' | 'url' | 'password';
+  type: 'text' | 'email' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'date' | 'file' | 'phone' | 'url' | 'password' | 'time' | 'dynamicArrayField';
   label: string;
   name: string; // key to send data
   placeholder?: string;

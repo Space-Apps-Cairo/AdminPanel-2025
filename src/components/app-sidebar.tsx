@@ -16,6 +16,7 @@ import {
   Building,
   // Frame,
   GalleryVerticalEnd,
+  Shapes,
   // PieChart,
   // Map,
 } from "lucide-react";
@@ -35,6 +36,34 @@ const data = {
       url: "/",
       icon: HomeIcon,
       isActive: true,
+    },
+    {
+      title: 'Materials Management',
+      url: '/materials',
+      isActive: true,
+      icon: Shapes,
+      items: [
+        {
+          title: 'Overview',
+          url: '/materials',
+        },
+        // {
+        //   title: 'Scan QR-Code',
+        //   url: '/materials/scan-qr-code',
+        // },
+        {
+          title: 'Volunteers',
+          url: '/materials/volunteers',
+        },
+        {
+          title: 'Materials',
+          url: '/materials/materials',
+        },
+        {
+          title: 'Collections',
+          url: '/materials/collections',
+        },
+      ]
     },
     {
       title: "Bootcamp Management",

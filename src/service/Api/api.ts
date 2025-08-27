@@ -24,7 +24,11 @@ export const api = createApi({
     "Preference",
     "Assignment",
     "Participant",
-    "BootcampDashboard","Forms"
+    "BootcampDashboard",
+    "Forms",
+    "Volunteers",
+    "Materials",
+    "Collections",
   ],
 
   endpoints: () => ({}), // start empty

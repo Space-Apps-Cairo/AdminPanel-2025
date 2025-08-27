@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/providers/Providers";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

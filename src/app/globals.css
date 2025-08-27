@@ -126,3 +126,36 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .form-scroll {
+    max-height: 95dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable both-edges;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .form-scroll::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .form-scroll::-webkit-scrollbar-track {
+    background: var(--muted);
+    border-radius: var(--radius-md);
+  }
+
+  .form-scroll::-webkit-scrollbar-thumb {
+    background: var(--input);
+    border-radius: var(--radius-md);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .form-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--border);
+    background-clip: padding-box;
+  }
+}

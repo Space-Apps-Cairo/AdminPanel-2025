@@ -21,6 +21,7 @@ import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function Workshops() {
+
   const {
     data: workshopsData,
     isLoading: isLoadingWorkshops,
@@ -76,9 +77,8 @@ export default function Workshops() {
         formData ? [...formData.entries()] : "No form data"
       );
 
-      // Transform the data if needed (e.g., format dates)
       const workshopData: Omit<Workshop, "id" | "created_at" | "schedules"> = {
-        title: data.title,
+        name: data.title,
         description: data.description,
         workshop_details: data.workshop_details,
         start_date:
@@ -114,7 +114,7 @@ export default function Workshops() {
     return (
       <div className="container mx-auto py-6">
         <div className="text-red-500">
-          Error loading workshops: {JSON.stringify(workshopsError)}
+          Error loading workshops
         </div>
       </div>
     );
@@ -123,6 +123,7 @@ export default function Workshops() {
   return (
     <React.Fragment>
       <div className="container mx-auto py-6">
+        
         <h1 className="text-2xl font-bold mb-6">Workshop</h1>
 
         <DataTable<Workshop>
@@ -146,6 +147,7 @@ export default function Workshops() {
             onSubmit={handleAddWorkshopSubmit}
           />
         )}
+
       </div>
     </React.Fragment>
   );
