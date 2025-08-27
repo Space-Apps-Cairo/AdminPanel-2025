@@ -45,8 +45,8 @@ import {
   StepperTrigger,
 } from "./ui/stepper";
 import DynamicArrayField from "./fields/DynamicArrayFields";
-import { DateInput } from '@/components/ui/datefield-rac';
-import { TimeField } from '@/components/ui/datefield-rac';
+import { DateInput } from "@/components/ui/datefield-rac";
+import { TimeField } from "@/components/ui/datefield-rac";
 import { Textarea } from "./ui/textarea";
 
 export default function CrudForm(props: {
@@ -102,11 +102,9 @@ export default function CrudForm(props: {
   } = methods;
 
   const onSubmit = async (data: FieldValues) => {
-
     setIsSubmittingForm(true);
 
     try {
-
       console.log("Form data being submitted:", data);
 
       const formData = new FormData();
@@ -124,7 +122,6 @@ export default function CrudForm(props: {
       console.log("FormData entries:", [...formData.entries()]);
 
       await handleFormSubmit(data, formData);
-
 
       // Only reset and close if successful
       reset();
@@ -148,132 +145,139 @@ export default function CrudForm(props: {
           </DialogDescription>
         </DialogHeader>
 
-      {/* <div className="flex-1 overflow-auto px-1 space-y-6 max-h-[90vh]"> */}
-      {steps && (
-        <Stepper value={currentStep} onValueChange={setCurrentStep}>
-          {steps?.map((mainStep) => (
-            <StepperItem
-              key={mainStep}
-              step={mainStep}
-              className="not-last:flex-1"
-            >
-              <StepperTrigger asChild>
-                <StepperIndicator />
-              </StepperTrigger>
-              {mainStep < steps.length && <StepperSeparator />}
-            </StepperItem>
-          ))}
-        </Stepper>
-      )}
+        {/* <div className="flex-1 overflow-auto px-1 space-y-6 max-h-[90vh]"> */}
+        {steps && (
+          <Stepper value={currentStep} onValueChange={setCurrentStep}>
+            {steps?.map((mainStep) => (
+              <StepperItem
+                key={mainStep}
+                step={mainStep}
+                className="not-last:flex-1"
+              >
+                <StepperTrigger asChild>
+                  <StepperIndicator />
+                </StepperTrigger>
+                {mainStep < steps.length && <StepperSeparator />}
+              </StepperItem>
+            ))}
+          </Stepper>
+        )}
 
-      {fields.map(
-        (field: Field, idx: number) =>
-          (!steps || field.step === currentStep) && (
-            <Fragment key={idx}>
-              {["text", "email", "password", "number", "tel", "time"].includes(
-                field.type
-              ) && (
-                <div className="grid gap-3">
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                  <Input
-                    {...register(`${field.name}`)}
-                    id={field.name}
-                    name={field.name}
-                    type={field.type}
-                    disabled={isDisabled || field.disabled}
-                    placeholder={field.placeholder}
-                    className={
-                      field.type === "time"
-                        ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                        : ""
-                    }
-                  />
-                  {errors[field.name] && (
-                    <p className="text-red-500 text-sm">
-                      {errors[field.name]?.message as string}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {field.type == "textArea" && (
-                <div className="grid gap-3">
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                  <Textarea
-                    {...register(`${field.name}`)}
-                    id={field.name}
-                    name={field.name}
-                    disabled={isDisabled || field.disabled}
-                    placeholder={field.placeholder}
-                  />
-                  {errors[field.name] && (
-                    <p className="text-red-500 text-sm">
-                      {errors[field.name]?.message as string}
-                    </p>
-                  )}
-                </div>
-              )}
-              {field.type === "file" && (
-                <div className="grid gap-3">
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                  <Controller
-                    name={field.name}
-                    control={control}
-                    render={({ field: fld }) => (
-                      <Input
-                        type="file"
-                        id={field.name}
-                        disabled={isDisabled}
-                        name={field.name}
-                        onChange={(e) => {
-                          const fileList = e.target.files;
-                          if (fileList && fileList.length > 0) {
-                            fld.onChange(fileList[0]);
-                          }
-                        }}
-                      />
+        {fields.map(
+          (field: Field, idx: number) =>
+            (!steps || field.step === currentStep) && (
+              <Fragment key={idx}>
+                {[
+                  "text",
+                  "email",
+                  "password",
+                  "number",
+                  "tel",
+                  "time",
+                ].includes(field.type) && (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>{field.label}</Label>
+                    <Input
+                      {...register(`${field.name}`)}
+                      id={field.name}
+                      name={field.name}
+                      type={field.type}
+                      disabled={isDisabled || field.disabled}
+                      placeholder={field.placeholder}
+                      className={
+                        field.type === "time"
+                          ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                          : ""
+                      }
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
                     )}
-                  />
-                  {errors[field.name] && (
-                    <p className="text-red-500 text-sm">
-                      {errors[field.name]?.message as string}
-                    </p>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
 
-              {field.type === "select" && (
-                <div className="grid gap-3">
-                  <Label>{field.label || field.placeholder}</Label>
-                  <Controller
-                    name={`${field.name}`}
-                    control={control}
-                    render={({ field: fld }) => (
-                      <Select
-                        disabled={isDisabled}
-                        value={fld.value}
-                        onValueChange={fld.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder={field.placeholder} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {field.options?.map((option: FieldOption, index) => (
-                            <SelectItem key={index} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                {field.type == "textArea" && (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>{field.label}</Label>
+                    <Textarea
+                      {...register(`${field.name}`)}
+                      id={field.name}
+                      name={field.name}
+                      disabled={isDisabled || field.disabled}
+                      placeholder={field.placeholder}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
                     )}
-                  />
-                  {errors[field.name] && (
-                    <p className="text-red-500 text-sm">
-                      {errors[field.name]?.message as string}
-                    </p>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+                {field.type === "file" && (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>{field.label}</Label>
+                    <Controller
+                      name={field.name}
+                      control={control}
+                      render={({ field: fld }) => (
+                        <Input
+                          type="file"
+                          id={field.name}
+                          disabled={isDisabled}
+                          name={field.name}
+                          onChange={(e) => {
+                            const fileList = e.target.files;
+                            if (fileList && fileList.length > 0) {
+                              fld.onChange(fileList[0]);
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {field.type === "select" && (
+                  <div className="grid gap-3">
+                    <Label>{field.label || field.placeholder}</Label>
+                    <Controller
+                      name={`${field.name}`}
+                      control={control}
+                      render={({ field: fld }) => (
+                        <Select
+                          disabled={isDisabled}
+                          value={fld.value}
+                          onValueChange={fld.onChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder={field.placeholder} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {field.options?.map(
+                              (option: FieldOption, index) => (
+                                <SelectItem key={index} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {field.type === "date" && (
                   <div className="grid gap-3">
@@ -317,7 +321,7 @@ export default function CrudForm(props: {
                   </div>
                 )}
 
-                {field.type === 'time' && (
+                {/* {field.type === "time" && (
                   <div className="grid gap-3">
                     <Label>{field.label ?? field.placeholder}</Label>
                     <Controller
@@ -326,30 +330,41 @@ export default function CrudForm(props: {
                       render={({ field: fld, fieldState: { error } }) => {
                         const parseTimeString = (timeStr: string) => {
                           if (!timeStr) return null;
-                          
-                          const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+
+                          const [hours, minutes, seconds] = timeStr
+                            .split(":")
+                            .map(Number);
                           return {
                             hour: hours || 0,
                             minute: minutes || 0,
-                            second: seconds || 0
+                            second: seconds || 0,
                           };
                         };
 
                         // Helper function to convert Time object to string
                         const formatTimeToString = (timeObj: any) => {
                           if (!timeObj) return "";
-                          
-                          const hours = String(timeObj.hour || 0).padStart(2, "0");
-                          const minutes = String(timeObj.minute || 0).padStart(2, "0");
-                          const seconds = String(timeObj.second || 0).padStart(2, "0");
-                          
+
+                          const hours = String(timeObj.hour || 0).padStart(
+                            2,
+                            "0"
+                          );
+                          const minutes = String(timeObj.minute || 0).padStart(
+                            2,
+                            "0"
+                          );
+                          const seconds = String(timeObj.second || 0).padStart(
+                            2,
+                            "0"
+                          );
+
                           return `${hours}:${minutes}:${seconds}`;
                         };
 
                         return (
-                          <TimeField 
+                          <TimeField
                             className="*:not-first:mt-2"
-                            aria-label={field.label ?? field.placeholder} 
+                            aria-label={field.label ?? field.placeholder}
                             value={parseTimeString(fld.value)} // Convert string to Time object
                             onChange={(time) => {
                               const timeString = formatTimeToString(time);
@@ -372,7 +387,7 @@ export default function CrudForm(props: {
                       </p>
                     )}
                   </div>
-                )}
+                )} */}
 
                 {field.type === "checkbox" && (
                   <div className="flex items-center space-x-2">
@@ -396,7 +411,7 @@ export default function CrudForm(props: {
                     )}
                   </div>
                 )}
-                
+
                 {field.type === "dynamicArrayField" && (
                   <DynamicArrayField
                     minItems={field.dynamicArrayFieldsConfig?.minItem ?? 1}
@@ -417,54 +432,56 @@ export default function CrudForm(props: {
             )
         )}
 
-      {steps && (
-        <div className="flex justify-center space-x-4">
-          <Button
-            variant="outline"
-            className="w-32"
-            type="button"
-            onClick={() => setCurrentStep((prev) => prev - 1)}
-            disabled={currentStep === 1 || isSubmittingForm}
-          >
-            Prev step
-          </Button>
-          <Button
-            variant="outline"
-            className="w-32"
-            type="button"
-            onClick={() => setCurrentStep((prev) => prev + 1)}
-            disabled={currentStep >= steps.length || isSubmittingForm}
-          >
-            Next step
-          </Button>
-        </div>
-      )}
-      {/* </div> */}
-
-      <DialogFooter className={` ${!asDialog ? "!flex-col-reverse" : ""}`}>
-        <DialogClose asChild>
-          <Button variant="outline" disabled={isSubmittingForm}>
-            Cancel
-          </Button>
-        </DialogClose>
-        {!isDisabled && (
-          <Button type="submit" disabled={isSubmittingForm}>
-            {isSubmittingForm
-              ? "Submitting..."
-              : operation === "edit"
-              ? "Update"
-              : "Submit"}
-          </Button>
+        {steps && (
+          <div className="flex justify-center space-x-4">
+            <Button
+              variant="outline"
+              className="w-32"
+              type="button"
+              onClick={() => setCurrentStep((prev) => prev - 1)}
+              disabled={currentStep === 1 || isSubmittingForm}
+            >
+              Prev step
+            </Button>
+            <Button
+              variant="outline"
+              className="w-32"
+              type="button"
+              onClick={() => setCurrentStep((prev) => prev + 1)}
+              disabled={currentStep >= steps.length || isSubmittingForm}
+            >
+              Next step
+            </Button>
+          </div>
         )}
-      </DialogFooter>
-      {/* </div> */}
+        {/* </div> */}
+
+        <DialogFooter className={` ${!asDialog ? "!flex-col-reverse" : ""}`}>
+          <DialogClose asChild>
+            <Button variant="outline" disabled={isSubmittingForm}>
+              Cancel
+            </Button>
+          </DialogClose>
+          {!isDisabled && (
+            <Button type="submit" disabled={isSubmittingForm}>
+              {isSubmittingForm
+                ? "Submitting..."
+                : operation === "edit"
+                ? "Update"
+                : "Submit"}
+            </Button>
+          )}
+        </DialogFooter>
+      </div>
     </>
   );
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className={`sm:max-w-[425px] !max-h-[95dvh] overflow-y-auto form-scroll ${!asDialog ? fullPageStyle : ""}`}
+        className={`sm:max-w-[425px] !max-h-[95dvh] overflow-y-auto form-scroll ${
+          !asDialog ? fullPageStyle : ""
+        }`}
       >
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className={`space-y-6`}>
