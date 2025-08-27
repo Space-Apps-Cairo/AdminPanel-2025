@@ -7,6 +7,7 @@ import {
   useDeleteBootcampMutation,
   useUpdateBootcampMutation,
 } from "@/service/Api/bootcamp";
+import { toast } from "sonner";
 
 export const getBootcampFields = (bootcampData?: BootcampType): Field[] => [
   {
@@ -72,12 +73,20 @@ function BootcampRowActions({ rowData }: { rowData: BootcampType }) {
       isDelete={true}
       fields={getBootcampFields(rowData)}
       validationSchema={BootcampSchema}
-      updateMutation={updateBootcamp}
+      updateMutation={(data) => updateBootcamp({ data, id: rowData.id })}
       deleteMutation={deleteBootcamp}
-      onUpdateSuccess={(result) => console.log("Bootcamp updated:", result)}
-      onUpdateError={(error) => console.error("Update error:", error)}
-      onDeleteSuccess={(result) => console.log("Bootcamp deleted:", result)}
-      onDeleteError={(error) => console.error("Delete error:", error)}
+      onUpdateSuccess={(result) =>
+        toast.success("Bootcamp updated successfully")
+      }
+      onUpdateError={(error) =>
+        toast.error("Falid to update bootcamp:", error?.data?.message)
+      }
+      onDeleteSuccess={(result) =>
+        toast.success("Bootcamp deleted successfully")
+      }
+      onDeleteError={(error) =>
+        toast.error("Falid to delete bootcamp:", error?.data?.message)
+      }
     />
   );
 }

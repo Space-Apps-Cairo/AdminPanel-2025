@@ -2,7 +2,12 @@
 
 import { Workshop } from "@/types/workshop";
 import React, { useEffect, useState } from "react";
-import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
+import {
+  ActionConfig,
+  ColumnVisibilityConfig,
+  SearchConfig,
+  StatusConfig,
+} from "@/types/table";
 import DataTable from "../../../../components/table/data-table";
 import { getWorkshopsFields, workshopColumns } from "./_components/columns";
 import Loading from "../../../../components/loading/loading";
@@ -96,9 +101,9 @@ export default function Workshops() {
       }
     } catch (error) {
       const err = error as any;
-        toast.error("Failed to add workshop. Please try again.", {
-          description: err?.message || err?.data?.message || "Unexpected error",
-        });
+      toast.error("Failed to add workshop. Please try again.", {
+        description: err?.message || err?.data?.message || "Unexpected error",
+      });
       throw error;
     }
   };

@@ -1,5 +1,5 @@
 import { Field } from "@/app/interface";
-import RowsActions from "../../../../../../components/table/rows-actions";
+import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteScheduleMutation,
   useUpdateScheduleMutation,
@@ -7,6 +7,8 @@ import {
 import { Schedule } from "@/types/workshop";
 import { scheduleValidationSchema } from "@/validations/schedule";
 import { ColumnDef } from "@tanstack/react-table";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 export const getScheduleFields = (ScheduleData?: Schedule): Field[] => [
   {
@@ -112,6 +114,29 @@ export const scheduleColumns: ColumnDef<Schedule>[] = [
 function ScheduleRowActions({ rowData }: { rowData: Schedule }) {
   const [updateSchedule] = useUpdateScheduleMutation();
   const [deleteSchedule] = useDeleteScheduleMutation();
+  const params = useParams();
+  const workshopId = params?.id;
+  function handleScheduleUpdate(data: any) {
+    const scheduleData = {
+      workshop_id: parseInt(workshopId),
+      date:
+        data.date instanceof Date
+          ? data.date.toISOString().split("T")[0]
+          : data.date,
+      start_time: `${data.start_time}:00`,
+      end_time: `${data.end_time}:00`,
+      capacity: parseInt(data.capacity.toString()),
+      // available_slots: parseInt(data.available_slots.toString()),
+      // available_slots_on_site: parseInt(
+      //   data.available_slots_on_site.toString()
+      // ),
+    };
+
+    return updateSchedule({
+      id: rowData.id,
+      data: scheduleData,
+    }).unwrap();
+  }
 
   return (
     <RowsActions
@@ -119,19 +144,25 @@ function ScheduleRowActions({ rowData }: { rowData: Schedule }) {
       isDelete={true}
       fields={getScheduleFields(rowData)}
       validationSchema={scheduleValidationSchema}
-      updateMutation={updateSchedule}
+      updateMutation={handleScheduleUpdate}
       deleteMutation={deleteSchedule}
-      onUpdateSuccess={(result) => {
-        console.log("Schedule updated successfully:", result);
+      onUpdateSuccess={() => {
+        toast.success("Schedule updated successfully");
       }}
       onUpdateError={(error) => {
-        console.error("Error updating schedule:", error);
+        console.error("Update error:", error);
+
+        toast.error("Falid to update schedule", {
+          description: error?.data?.meesage,
+        });
       }}
-      onDeleteSuccess={(result) => {
-        console.log("Schedule deleted successfully:", result);
+      onDeleteSuccess={() => {
+        toast.success("Schedule deleted successfully");
       }}
       onDeleteError={(error) => {
-        console.error("Error deleting schedule:", error);
+        toast.error("Falid to delete schedule", {
+          description: error?.data?.meesage,
+        });
       }}
     />
   );

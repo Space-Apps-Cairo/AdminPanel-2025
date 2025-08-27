@@ -1,8 +1,11 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ActionConfig, SearchConfig } from "@/types/table";
+import {
+  ActionConfig,
+  ColumnVisibilityConfig,
+  SearchConfig,
+} from "@/types/table";
 import DataTable from "../../../../components/table/data-table";
 import {
   getParticipantsFields,
@@ -78,6 +81,16 @@ export default function ParticipantsPage() {
     onAdd: () => setIsOpen(true),
   };
 
+  const columnVisibilityConfig: ColumnVisibilityConfig = {
+    enableColumnVisibility: true,
+    invisibleColumns: [
+      "is_have_team",
+      "field_of_study_id",
+      "birth_date",
+      "governorate",
+      "graduation_year",
+    ],
+  };
   const [addParticipant] = useAddNewParticipantMutation();
 
   const handleAddParticipant = async (data: ParticipantFormValues) => {
@@ -125,7 +138,7 @@ export default function ParticipantsPage() {
   if (error) return <div>Error loading participants</div>;
 
   return (
-    <div className="container mx-auto py-6">
+    <div>
       <h1 className="text-2xl font-bold mb-6">Participants</h1>
 
       <DataTable<Participant>
@@ -134,6 +147,7 @@ export default function ParticipantsPage() {
         searchConfig={searchConfig}
         actionConfig={actionConfig}
         onDataChange={setParticipants}
+        columnVisibilityConfig={columnVisibilityConfig}
       />
 
       {isOpen && (

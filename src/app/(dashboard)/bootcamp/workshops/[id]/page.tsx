@@ -5,13 +5,14 @@ import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "../../../../../components/ui/button";
 import { Card, CardTitle } from "../../../../../components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../../../components/ui/tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../../../../../components/ui/tabs";
 import Loading from "../../../../../components/loading/loading";
-<<<<<<< HEAD
 import Error from "@/components/Error/page";
-=======
-
->>>>>>> d09027ff1e8163dd11057f7abe4203d92a041de9
 // --- Priority imports ---
 import { useGetWorkshopDetailsQuery } from "@/service/Api/workshops";
 import { PriorityParticipant } from "@/types/workshop";
@@ -45,12 +46,7 @@ export default function WorkshopPage() {
 
   // -------------------- Loading States --------------------
   if (isLoadingWorkshop) return <Loading />;
-  if (workshopError)
-<<<<<<< HEAD
-    return <Error/>;
-=======
-    return <div className="text-red-500">Error loading workshop data</div>;
->>>>>>> d09027ff1e8163dd11057f7abe4203d92a041de9
+  if (workshopError) return <Error />;
 
   // -------------------- Extract Priorities --------------------
   const getPriorityParticipants = (

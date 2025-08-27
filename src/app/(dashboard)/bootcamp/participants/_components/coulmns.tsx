@@ -1,7 +1,3 @@
-
-
-
-
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../../../../../components/ui/button";
 import Link from "next/link";
@@ -14,6 +10,7 @@ import {
 import { Participant } from "@/types/participants";
 import { Field, FieldOption } from "@/app/interface";
 import { participantValidationSchema } from "@/validations/participantSchema";
+import { toast } from "sonner";
 
 //Fields --------------------
 export const getParticipantsFields = (
@@ -216,12 +213,24 @@ export const participantColumns: ColumnDef<Participant>[] = [
   { header: "Email", accessorKey: "email" },
   { header: "Phone", accessorKey: "phone_number" },
   { header: "National ID", accessorKey: "national_id" },
-  { header: "Governorate", accessorKey: "governorate" },
+  { header: "Governorate", accessorKey: "governorate", enableHiding: false },
   { header: "Birth Date", accessorKey: "birth_date" },
-  { header: "Occupation", accessorKey: "current_occupation" },
+  {
+    header: "Occupation",
+    accessorKey: "current_occupation",
+    enableHiding: true,
+  },
   { header: "Institute", accessorKey: "educational_institute" },
-  { header: "Graduation Year", accessorKey: "graduation_year" },
-  { header: "Field of Study", accessorKey: "field_of_study_id" },
+  {
+    header: "Graduation Year",
+    accessorKey: "graduation_year",
+    enableHiding: true,
+  },
+  {
+    header: "Field of Study",
+    accessorKey: "field_of_study_id",
+    enableHiding: true,
+  },
   { header: "Team", accessorKey: "is_have_team" },
   {
     header: "Details",
@@ -243,7 +252,6 @@ export const participantColumns: ColumnDef<Participant>[] = [
   },
 ];
 
-
 function ParticipantRowActions({ rowData }: { rowData: Participant }) {
   const [updateParticipant] = useUpdateParticipantMutation();
   const [deleteParticipant] = useDeleteParticipantMutation();
@@ -256,10 +264,18 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
       validationSchema={participantValidationSchema}
       updateMutation={updateParticipant}
       deleteMutation={deleteParticipant}
-      onUpdateSuccess={(result) => console.log("Participant updated:", result)}
-      onUpdateError={(error) => console.error("Update error:", error)}
-      onDeleteSuccess={(result) => console.log("Participant deleted:", result)}
-      onDeleteError={(error) => console.error("Delete error:", error)}
+      onUpdateSuccess={() => toast.success("Participant updated successfully")}
+      onUpdateError={(error) =>
+        toast.error("Falid to update participant", {
+          description: error?.data?.message,
+        })
+      }
+      onDeleteSuccess={() => toast.success("Participant deleted successfully")}
+      onDeleteError={(error) =>
+        toast.error("Falid to delete participant", {
+          description: error?.data?.message,
+        })
+      }
       steps={[1, 2, 3]}
     />
   );

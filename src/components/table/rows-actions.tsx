@@ -45,11 +45,7 @@ export default function RowsActions({
 
   const handleUpdateRow = async (jsonData: any, formData: FormData) => {
     try {
-      const result = await updateMutation({
-        id: rowData.id,
-        data: jsonData,
-      }).unwrap();
-
+      const result = await updateMutation(jsonData, formData);
       onUpdateSuccess?.(result);
       setIsOpen(false);
     } catch (error) {

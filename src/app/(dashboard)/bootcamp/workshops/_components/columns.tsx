@@ -12,6 +12,7 @@ import { workshopValidationSchema } from "@/validations/workshop";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export const getWorkshopsFields = (workshop?: Workshop): Field[] => [
   {
@@ -62,9 +63,9 @@ export const getWorkshopsFields = (workshop?: Workshop): Field[] => [
 export const workshopColumns: ColumnDef<Workshop>[] = [
   {
     header: "Title",
-    accessorKey: "name",
+    accessorKey: "title",
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
+      <div className="font-medium">{row.getValue("title")}</div>
     ),
     size: 180,
     enableHiding: false,
@@ -124,20 +125,20 @@ function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
       isDelete={true}
       fields={getWorkshopsFields(rowData)}
       validationSchema={workshopValidationSchema}
-      updateMutation={updateWorkshop}
+      updateMutation={(data) => updateWorkshop({ id: rowData.id, data })}
       deleteMutation={deleteWorkshop}
       customPreviewHandler={customPreviewHandler}
-      onUpdateSuccess={(result) => {
-        console.log("Workshop updated successfully:", result);
+      onUpdateSuccess={() => {
+        toast.success("Workshop updated successfully:");
       }}
       onUpdateError={(error) => {
-        console.error("Error updating workshop:", error);
+        toast.error("Error updating workshop:", error?.data?.message);
       }}
-      onDeleteSuccess={(result) => {
-        console.log("Workshop deleted successfully:", result);
+      onDeleteSuccess={() => {
+        toast.success("Workshop deleted successfully:");
       }}
       onDeleteError={(error) => {
-        console.error("Error deleting workshop:", error);
+        toast.error("Error deleting workshop:", error?.data?.message);
       }}
     />
   );

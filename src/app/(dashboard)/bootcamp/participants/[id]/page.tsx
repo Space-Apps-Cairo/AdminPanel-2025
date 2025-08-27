@@ -1,24 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Loading from "../../../../../components/loading/loading";
-import DataTable from "../../../../../components/table/data-table";
-import CrudForm from "../../../../../components/crud-form";
+
 import { Button } from "../../../../../components/ui/button";
-import { Cake, ChevronLeft, IdCard, Mail, Phone } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { FieldValues } from "react-hook-form";
 
 import {
   useGetPreferencesByParticipantQuery,
   useAddNewPreferenceMutation,
 } from "@/service/Api/preferences";
-import {
-  preferenceColumns,
-  getPreferenceFields,
-} from "./_components/columns/preferenceColumns";
 
-import { ParticipantPreferenceSchema } from "@/validations/preference";
 import { Workshop } from "@/types/workshop";
 
 import {
@@ -30,24 +24,13 @@ import {
 import { useGetAllWorkshopsQuery } from "@/service/Api/workshops";
 import { FieldOption } from "@/app/interface";
 
-import { AssignmentSchema } from "@/validations/assignment";
 import {
   useGetAssignmentsByParticipantQuery,
   useAddNewAssignmentMutation,
 } from "@/service/Api/assignment";
-import {
-  assignmentColumns,
-  getAssignmentFields,
-} from "./_components/columns/assignmentColumns";
-import {
-  useAddNewParticipantMutation,
-  useGetParticipantDetailsQuery,
-} from "@/service/Api/participants";
-import InfoCard from "./_components/InfoCard";
-import DocumentCard from "./_components/DocumentCard";
-import Image from "next/image";
-import { Label } from "../../../../../components/ui/label";
-import { Badge } from "../../../../../components/ui/badge";
+import { assignmentColumns } from "./_components/columns/assignmentColumns";
+import { useGetParticipantDetailsQuery } from "@/service/Api/participants";
+
 import { formatDate } from "@/lib/utils";
 import PreferencesTab from "./_components/tabs/preferences";
 import AssignmentsTab from "./_components/tabs/assignments";
@@ -98,17 +81,14 @@ export default function ParticipantPreferencesPage() {
     isLoadingWorkshopData
   )
     return <Loading />;
-  ;
-  if (assignError || prefError)
-    return <Error/>;
+  if (assignError || prefError) return <Error />;
   // -------------------- Workshops Options --------------------
   const workshopOptions: FieldOption[] =
     workshopsData?.data?.map((w: Workshop) => ({
       value: w.id.toString(),
-      label: w.name ?? "",
+      label: w.title ?? "",
     })) ?? [];
 
-    
   // -------------------- Handlers --------------------
   const handleAddPreference = async (formData: FieldValues) => {
     try {
@@ -121,12 +101,11 @@ export default function ParticipantPreferencesPage() {
       await addNewPreference(payload as any).unwrap();
       setIsPrefFormOpen(false);
       toast.success("Preference created successfully");
-          
     } catch (error) {
       const err = error as any;
-  toast.error("Failed to add preference. Please try again.", {
-    description: err?.message || err?.data?.message || "Unexpected error",
-  });
+      toast.error("Failed to add preference. Please try again.", {
+        description: err?.message || err?.data?.message || "Unexpected error",
+      });
     }
   };
 
@@ -142,12 +121,11 @@ export default function ParticipantPreferencesPage() {
       await addNewAssignment(payload as any).unwrap();
       setIsAssignFormOpen(false);
       toast.success("Assignment has been added successfully.");
-
     } catch (error) {
-       const err = error as any;
-  toast.error("Failed to add assignment. Please try again.", {
-    description: err?.message || err?.data?.message || "Unexpected error",
-  });
+      const err = error as any;
+      toast.error("Failed to add assignment. Please try again.", {
+        description: err?.message || err?.data?.message || "Unexpected error",
+      });
     }
   };
 
@@ -213,4 +191,3 @@ export default function ParticipantPreferencesPage() {
     </div>
   );
 }
-

@@ -114,6 +114,7 @@ export default function CrudForm(props: {
 
       console.log("FormData entries:", [...formData.entries()]);
 
+      
       await handleFormSubmit(data, formData);
 
       // Only reset and close if successful

@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef,useId, useMemo,  useState } from "react";
+import { useRef, useId, useMemo, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -60,11 +60,7 @@ import {
   PaginationContent,
   PaginationItem,
 } from "../ui/pagination";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Select,
   SelectContent,
@@ -125,19 +121,28 @@ export default function DataTable<TData extends DataTableRow>({
   searchConfig = { enabled: false, searchKeys: [] },
   statusConfig = { enabled: false, columnKey: "" },
   actionConfig = { enabled: false },
-  onDataChange,
+  onDeleteRows,
   error,
   pageSize = 10,
-  enableColumnVisibility = true,
+  // enableColumnVisibility = true,
   enableSorting = true,
   enableSelection = true,
   allowTrigger = false,
   className,
+  columnVisibilityConfig,
 }: DataTableProps<TData>) {
-
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<
+    Record<string, boolean>
+  >(() => {
+    //initialize hidden columns from config
+    const initial: Record<string, boolean> = {};
+    columnVisibilityConfig?.invisibleColumns?.forEach((key) => {
+      initial[key] = false;
+    });
+    return initial;
+  });
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize,
@@ -146,9 +151,9 @@ export default function DataTable<TData extends DataTableRow>({
   const [globalFilter, setGlobalFilter] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-    // Create columns with optional selection column
-    const columns : ColumnDef<TData>[] = useMemo(() => {
-        const cols: ColumnDef<TData>[] = []
+  // Create columns with optional selection column
+  const columns: ColumnDef<TData>[] = useMemo(() => {
+    const cols: ColumnDef<TData>[] = [];
 
     // Add selection column if enabled
     if (enableSelection) {
@@ -199,12 +204,12 @@ export default function DataTable<TData extends DataTableRow>({
   }, [baseColumns, enableSelection, statusConfig]);
 
   const handleDeleteRows = () => {
-    if (!onDataChange) return;
+    if (!onDeleteRows) return;
     const selectedRows = table.getSelectedRowModel().rows;
     const updatedData = data.filter(
       (item) => !selectedRows.some((row) => row.original.id === item.id)
     );
-    onDataChange(updatedData);
+    onDeleteRows(updatedData);
     table.resetRowSelection();
   };
 
@@ -242,12 +247,11 @@ export default function DataTable<TData extends DataTableRow>({
   //handle Export
 
   const handleExport = (type: string) => {
-    const exportData = table.getFilteredRowModel().rows.map((r) => r.original)
-    if  (type === "excel") exportToExcel(exportData)
-    else if (type === "pdf") exportToPDF(exportData)
-    else if (type === "csv") exportToCSV(exportData)
-
-  }
+    const exportData = table.getFilteredRowModel().rows.map((r) => r.original);
+    if (type === "excel") exportToExcel(exportData);
+    else if (type === "pdf") exportToPDF(exportData);
+    else if (type === "csv") exportToCSV(exportData);
+  };
 
   // Get unique status values for status filter
   const uniqueStatusValues = useMemo(() => {
@@ -256,10 +260,7 @@ export default function DataTable<TData extends DataTableRow>({
     if (!statusColumn) return [];
     const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
     return values.sort();
-  }, [
-    statusConfig.enabled,
-    statusConfig.columnKey, table
-  ]);
+  }, [statusConfig.enabled, statusConfig.columnKey, table]);
 
   const statusCounts = useMemo(() => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return new Map();
@@ -267,10 +268,7 @@ export default function DataTable<TData extends DataTableRow>({
     const statusColumn = table.getColumn(statusConfig.columnKey);
     if (!statusColumn) return new Map();
     return statusColumn.getFacetedUniqueValues();
-  }, [
-    statusConfig.enabled,
-    statusConfig.columnKey, table
-  ]);
+  }, [statusConfig.enabled, statusConfig.columnKey, table]);
 
   const selectedStatuses = useMemo(() => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return [];
@@ -279,10 +277,7 @@ export default function DataTable<TData extends DataTableRow>({
       .getColumn(statusConfig.columnKey)
       ?.getFilterValue() as string[];
     return filterValue ?? [];
-  }, [
-    statusConfig.enabled,
-    statusConfig.columnKey, table
-  ]);
+  }, [statusConfig.enabled, statusConfig.columnKey, table]);
 
   const handleStatusChange = (checked: boolean, value: string) => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return;
@@ -406,7 +401,7 @@ export default function DataTable<TData extends DataTableRow>({
           )}
 
           {/* Column visibility toggle */}
-          {enableColumnVisibility && (
+          {columnVisibilityConfig?.enableColumnVisibility && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
@@ -449,7 +444,7 @@ export default function DataTable<TData extends DataTableRow>({
             {/* Delete button */}
             {enableSelection &&
               actionConfig.showDelete &&
-              onDataChange &&
+              onDeleteRows &&
               table.getSelectedRowModel().rows.length > 0 && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -548,16 +543,25 @@ export default function DataTable<TData extends DataTableRow>({
 
       {/* Table */}
       <Tabs defaultValue="table" className="w-full">
-        {allowTrigger && <TabsList>
-          <TabsTrigger className="p-2.5 cursor-pointer" value="table">Table</TabsTrigger>
-          <TabsTrigger className="p-2.5 cursor-pointer" value="cards">Cards</TabsTrigger>
-        </TabsList>}
+        {allowTrigger && (
+          <TabsList>
+            <TabsTrigger className="p-2.5 cursor-pointer" value="table">
+              Table
+            </TabsTrigger>
+            <TabsTrigger className="p-2.5 cursor-pointer" value="cards">
+              Cards
+            </TabsTrigger>
+          </TabsList>
+        )}
         <TabsContent value="table">
           <div className="bg-background overflow-hidden rounded-md border">
             <Table className="table-fixed">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  <TableRow
+                    key={headerGroup.id}
+                    className="hover:bg-transparent"
+                  >
                     {headerGroup.headers.map((header) => {
                       return (
                         <TableHead
@@ -585,7 +589,9 @@ export default function DataTable<TData extends DataTableRow>({
                                   header.column.getToggleSortingHandler()?.(e);
                                 }
                               }}
-                              tabIndex={header.column.getCanSort() ? 0 : undefined}
+                              tabIndex={
+                                header.column.getCanSort() ? 0 : undefined
+                              }
                             >
                               {flexRender(
                                 header.column.columnDef.header,
@@ -685,24 +691,31 @@ export default function DataTable<TData extends DataTableRow>({
                   </CardHeader>
                   <div className="mx-5 border-t border-border/50"></div>
                   <CardContent className="flex flex-col gap-2.5">
-                    {row.getVisibleCells().slice(1, -1).map(cell => (
-                      <div key={cell.id} className="flex items-center gap-2.5">
-                        <h3 className="text-sm font-medium">
-                          {cell.column.id} :
-                        </h3>
-                        <CardDescription>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </CardDescription>
-                      </div>
-                    ))}
+                    {row
+                      .getVisibleCells()
+                      .slice(1, -1)
+                      .map((cell) => (
+                        <div
+                          key={cell.id}
+                          className="flex items-center gap-2.5"
+                        >
+                          <h3 className="text-sm font-medium">
+                            {cell.column.id} :
+                          </h3>
+                          <CardDescription>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </CardDescription>
+                        </div>
+                      ))}
                   </CardContent>
                   <div className="mx-5 border-t border-border/50"></div>
                   <CardFooter className="flex justify-end">
                     {(() => {
-                      const lastCell = row.getVisibleCells()[row.getVisibleCells().length - 1];
+                      const lastCell =
+                        row.getVisibleCells()[row.getVisibleCells().length - 1];
                       return flexRender(
                         lastCell?.column.columnDef.cell,
                         lastCell?.getContext()
@@ -836,19 +849,3 @@ export default function DataTable<TData extends DataTableRow>({
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

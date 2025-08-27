@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   useGetBootcampsQuery,
   useAddBootcampMutation,
+  useDeleteBootcampMutation,
 } from "@/service/Api/bootcamp";
 
 import { BootcampType, BootcampRequest } from "@/types/bootcamp";
@@ -20,10 +21,11 @@ import { toast } from "sonner";
 export default function BootcampPage() {
   // const { data = [], isLoading, error } = useGetBootcampsQuery(); // The Error ❌
   const { data, isLoading, error } = useGetBootcampsQuery(); // The Error ❌
-  const bootcamps = data?.data ?? []; // The right one
-  const [addBootcamp] = useAddBootcampMutation();
-
   const [isOpen, setIsOpen] = useState(false);
+  const bootcamps = data?.data ?? []; // The right one
+
+  const [addBootcamp] = useAddBootcampMutation();
+  const [deleteBootcamp] = useDeleteBootcampMutation();
 
   const handleAddSubmit = async (values: BootcampRequest) => {
     try {
@@ -75,7 +77,7 @@ export default function BootcampPage() {
           addButtonText: "Add Bootcamp",
           onAdd: () => setIsOpen(true),
         }}
-        onDataChange={() => {}}
+        onDeleteRows={deleteBootcamp}
       />
     </div>
   );
