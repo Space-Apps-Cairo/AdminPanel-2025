@@ -37,6 +37,9 @@ export type Participant = {
   personal_photo: File | string;    // file or URL
   skills: Skill[];
   created_by: CreatedBy;
+  first_priority_id?: number;
+  second_priority_id?: number;
+  third_priority_id?: number;
 };
 
 // Request type for sending to API (FormData)

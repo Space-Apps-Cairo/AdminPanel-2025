@@ -29,6 +29,7 @@ export const api = createApi({
     "Volunteers",
     "Materials",
     "Collections",
+    "FieldOfStudy", "EducationalLevel", "Skill"
   ],
 
   endpoints: () => ({}), // start empty

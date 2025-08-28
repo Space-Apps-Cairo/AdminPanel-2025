@@ -53,6 +53,7 @@ export const getParticipantsFields = (
     placeholder: "Enter your phone number",
     step: 1,
   },
+
   {
     name: "national_id",
     type: "number",
@@ -132,6 +133,93 @@ export const getParticipantsFields = (
     placeholder: "Enter your educational institute",
     step: 2,
   },
+{
+  name: "first_priority_id",
+  type: "number",
+  label: "First Priority Workshop",
+  ...(participantData?.first_priority_id && {
+    defaultValue: participantData.first_priority_id,
+  }),
+  placeholder: "Enter first priority workshop ID",
+  step: 3,
+},
+{
+  name: "second_priority_id",
+  type: "number",
+  label: "Second Priority Workshop",
+  ...(participantData?.second_priority_id && {
+    defaultValue: participantData.second_priority_id,
+  }),
+  placeholder: "Enter second priority workshop ID",
+  step: 3,
+},
+{
+  name: "third_priority_id",
+  type: "number",
+  label: "Third Priority Workshop",
+  ...(participantData?.third_priority_id && {
+    defaultValue: participantData.third_priority_id,
+  }),
+  placeholder: "Enter third priority workshop ID",
+  step: 3,
+},
+{
+  name: "participation_status",
+  type: "select",
+  label: "Participation Status",
+  options: [
+    { value: "ex_participant", label: "Ex Participant" },
+    { value: "ex_volunteer", label: "Ex Volunteer" },
+    { value: "first_time", label: "First Time" },
+  ],
+  ...(participantData?.participation_status && {
+    defaultValue: participantData.participation_status,
+  }),
+  placeholder: "Select your participation status",
+  step: 3,
+},
+{
+  name: "is_have_team",
+  type: "select",
+  label: "Team Status",
+  options: [
+    { value: "individual", label: "Individual" },
+    { value: "team_not_complete", label: "Team Not Complete" },
+    { value: "team_complete", label: "Team Complete" },
+  ],
+  ...(participantData?.is_have_team && {
+    defaultValue: participantData.is_have_team,
+  }),
+  placeholder: "Select your team status",
+  step: 3,
+},
+{
+  name: "why_this_workshop",
+  type: "text",
+  label: "Reason for Workshop",
+  ...(participantData?.why_this_workshop && {
+    defaultValue: participantData.why_this_workshop,
+  }),
+  placeholder: "Why do you want this workshop?",
+  step: 3,
+},
+{
+  name: "year",
+  type: "number",
+  label: "Year",
+  ...(participantData?.year && {
+    defaultValue: participantData.year,
+  }),
+  placeholder: "Enter year",
+  step: 3,
+},
+
+
+
+
+
+
+
   {
     name: "graduation_year",
     type: "number",

@@ -118,7 +118,7 @@ export default function ParticipantsPage() {
         //  Toast للنجاح
         toast({
           title: "Participant added",
-          description: "The participant was added successfully 🎉",
+          description: "The participant was added successfully ",
         });
       }
 
