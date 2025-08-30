@@ -141,7 +141,7 @@ export default function AttendanceDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-8">
       {/* ---------- Section Cards ---------- */}
       <SectionCards data={cards} />
 
