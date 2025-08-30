@@ -117,7 +117,7 @@ export default function Materials() {
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}
                 actionConfig={actionConfig}
-                onDataChange={setMaterials}
+                // onDataChange={setMaterials}
             />
 
         </div>

@@ -102,35 +102,15 @@ function VolunteerRowActions({ rowData }: { rowData: Volunteer }) {
             isPreview={true}
             fields={getVolunteerFields(rowData)}
             validationSchema={volunteerValidationSchema}
-            updateMutation={async (payload: { id: string | number; data: any }) => {
-                console.log('Update payload:', payload);
-                try {
-                    const result = await updateVolunteer(payload).unwrap();
-                    console.log('Update result:', result);
-                    return result;
-                } catch (error) {
-                    console.error('Update error:', error);
-                    throw error;
-                }
-            }}
-            deleteMutation={async (id: string | number) => {
-                console.log('Delete ID:', id);
-                try {
-                    const result = await deleteVolunteer(id).unwrap();
-                    console.log('Delete result:', result);
-                    return result;
-                } catch (error) {
-                    console.error('Delete error:', error);
-                    throw error;
-                }
-            }}
+            updateMutation={(data: Volunteer) => updateVolunteer({ id: rowData.id, data })}
+            deleteMutation={deleteVolunteer}
             onUpdateSuccess={(result) => {
                 console.log('Volunteer updated successfully:', result);
                 toast.success(result.msg || "Volunteer updated successfully!");
             }}
             onUpdateError={(error) => {
                 console.error('Error updating volunteer:', error);
-                toast.error(error.data.msg || "Failed to update volunteer. Please try again.");
+                toast.error(error.data?.msg || "Failed to update volunteer. Please try again.");
             }}
             onDeleteSuccess={(result) => {
                 console.log('Volunteer deleted successfully:', result);
@@ -138,7 +118,7 @@ function VolunteerRowActions({ rowData }: { rowData: Volunteer }) {
             }}
             onDeleteError={(error) => {
                 console.error('Error deleting volunteer:', error);
-                toast.error(error.data.msg || "Failed to delete volunteer. Please try again.");
+                toast.error(error.data?.msg || "Failed to delete volunteer. Please try again.");
             }}
         />
     );

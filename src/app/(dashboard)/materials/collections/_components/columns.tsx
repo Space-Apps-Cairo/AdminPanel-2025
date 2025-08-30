@@ -129,7 +129,6 @@ export const collectionColumns: ColumnDef<Collection>[] = [
 ];
 
 function CollectionRowActions({ rowData }: { rowData: Collection }) {
-
 	const [updateCollection] = useUpdateCollectionMutation();
 	const [deleteCollection] = useDeleteCollectionMutation();
 	const [assignCollection] = useAssignCollectionMutation();
@@ -141,7 +140,6 @@ function CollectionRowActions({ rowData }: { rowData: Collection }) {
 	return (
 		<React.Fragment>
 			<div className="flex items-center gap-2">
-
 				<Button variant="outline" size={'sm'} onClick={() => setShowScanner(true)}>
 					<QrCode />
 				</Button>
@@ -154,53 +152,38 @@ function CollectionRowActions({ rowData }: { rowData: Collection }) {
 					fields={useCollectionsFields(rowData, true)}
 					validationSchema={collectionValidationSchema}
 					steps={[1, 2]}
-					updateMutation={async (payload: { id: string | number; data: UpdateCollectionRequest }) => {
+					updateMutation={(data) => {
+						console.log("Data from form:", data);
 
-						try {
-							console.log("Payload data from form:", payload.data);
+						const transformedData: CreateCollectionRequest & { used_quantity?: number } = {
+							collection_name: data.collection_name,
+							total_quantity: Number(data.total_quantity),
+							max_per_user: Number(data.max_per_user),
+							materials: data.materials?.map((material: MaterialsForCollections) => ({
+								id: Number(material.id),
+								quantity_used: Number(material.quantity_used)
+							})) || []
+						};
 
-							const transformedData: CreateCollectionRequest & { used_quantity?: number } = {
-								collection_name: payload.data.collection_name,
-								total_quantity: Number(payload.data.total_quantity),
-								max_per_user: Number(payload.data.max_per_user),
-								materials: payload.data.materials?.map((material: MaterialsForCollections) => ({
-									id: Number(material.id),
-									quantity_used: Number(material.quantity_used)
-								})) || []
-							};
-
-							if (payload.data.used_quantity !== undefined) {
-								transformedData.used_quantity = Number(payload.data.used_quantity);
-							}
-
-							console.log("Transformed data for API:", transformedData);
-
-							const result = await updateCollection({
-								id: payload.id,
-								data: transformedData
-							}).unwrap();
-							return result;
-						} catch (error) {
-							console.error('Update collection error:', error);
-							throw error;
+						if (data.used_quantity !== undefined) {
+							transformedData.used_quantity = Number(data.used_quantity);
 						}
+
+						console.log("Transformed data for API:", transformedData);
+
+						return updateCollection({
+							id: rowData.id,
+							data: transformedData
+						});
 					}}
-					deleteMutation={async (id: string | number) => {
-						try {
-							const result = await deleteCollection(id).unwrap();
-							return result;
-						} catch (error) {
-							console.error('Delete collection error:', error);
-							throw error;
-						}
-					}}
+					deleteMutation={deleteCollection}
 					onUpdateSuccess={(result) => {
 						console.log('Collection updated successfully:', result);
 						toast.success(result.msg || "Collection updated successfully!");
 					}}
 					onUpdateError={(error) => {
 						console.error('Error updating collection:', error);
-						toast.error(error.data.msg || "Failed to update collection. Please try again.");
+						toast.error(error.data?.msg || "Failed to update collection. Please try again.");
 					}}
 					onDeleteSuccess={(result) => {
 						console.log('Collection deleted successfully:', result);
@@ -208,7 +191,7 @@ function CollectionRowActions({ rowData }: { rowData: Collection }) {
 					}}
 					onDeleteError={(error) => {
 						console.error('Error deleting collection:', error);
-						toast.error(error.data.msg || "Failed to delete collection. Please try again.");
+						toast.error(error.data?.msg || "Failed to delete collection. Please try again.");
 					}}
 				/>
 			</div>

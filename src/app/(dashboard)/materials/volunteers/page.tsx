@@ -434,13 +434,14 @@ export default function Volunteers() {
 
             <div className="container mx-auto py-6">
 
-                <div className='w-full flex item-center justify-between'>
+                <div className='w-full flex flex-wrap item-center justify-between'>
 
                     <h1 className="text-2xl font-bold mb-6">Volunteers</h1>
                     <Button className='font-semibold' onClick={() => setIsUploadDialogOpen(true)}>
                         <Upload className="w-4 h-4 mr-2" />
                         Import CSV file
                     </Button>
+
                 </div>
 
                 <DataTable<Volunteer>

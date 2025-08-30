@@ -5,6 +5,9 @@ import {
   Workshop,
   WorkshopRes,
   WorkshopsRes,
+  WorkshopCheckInRequest,
+  WorkshopCheckInResponse,
+  WorkshopAttendeesResponse,
 } from "@/types/workshop";
 
 export const workshopsApi = api.injectEndpoints({
@@ -105,6 +108,27 @@ export const workshopsApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Workshop"],
     }),
+
+    // ====== workshop check-in ====== //
+    checkInWorkshopParticipant: build.mutation<
+      WorkshopCheckInResponse,
+      WorkshopCheckInRequest
+    >({
+      query: (checkInData) => ({
+        url: "/participant-workshop-assignments/check-in",
+        method: "POST",
+        body: checkInData,
+      }),
+      invalidatesTags: ["Workshop"],
+    }),
+
+    // ====== workshop attendees ====== //
+    getWorkshopAttendees: build.query<WorkshopAttendeesResponse, string>({
+      query: (scheduleId) => `/workshop-schedules/${scheduleId}/checked-in-participants`,
+      providesTags: (result, error, scheduleId) => [
+        { type: "Workshop", id: scheduleId },
+      ],
+    }),
   }),
 });
 
@@ -112,10 +136,12 @@ export const {
   useGetAllWorkshopsQuery,
   useGetWorkshopDetailsQuery,
   useGetWorkshopScheduleQuery,
+  useGetWorkshopAttendeesQuery,
   useAddNewWorkshopMutation,
   useUpdateWorkshopMutation,
   useDeleteWorkshopMutation,
   useAddNewScheduleMutation,
   useUpdateScheduleMutation,
   useDeleteScheduleMutation,
+  useCheckInWorkshopParticipantMutation,
 } = workshopsApi;

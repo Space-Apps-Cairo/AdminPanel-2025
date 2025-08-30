@@ -16,9 +16,14 @@ import { workshopValidationSchema } from "@/validations/workshop";
 import {
   useAddNewWorkshopMutation,
   useGetAllWorkshopsQuery,
+  useCheckInWorkshopParticipantMutation,
 } from "@/service/Api/workshops";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+import { ChevronRight, QrCode, Upload, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import QrScanner from "@/components/scanner/QrScanner";
 
 export default function Workshops() {
   const {
@@ -29,6 +34,14 @@ export default function Workshops() {
 
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  const [checkInParticipant] = useCheckInWorkshopParticipantMutation();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     if (
@@ -119,8 +132,22 @@ export default function Workshops() {
 
   return (
     <React.Fragment>
-      <div className="container mx-auto py-6">
-        <h1 className="text-2xl font-bold mb-6">Workshop</h1>
+      <div className="container mx-auto py-6 flex flex-col gap-6">
+
+        <div className='w-full flex flex-wrap item-center justify-between'>
+
+          <h1 className="text-2xl font-bold mb-6">Workshops</h1>
+
+          <div className="flex items-center gap-2">
+
+            <Button onClick={() => setShowScanner(true)}>
+                <QrCode size={16} />
+                Check Attendees
+            </Button>
+
+          </div>
+
+        </div>
 
         <DataTable<Workshop>
           data={workshops}
@@ -141,6 +168,36 @@ export default function Workshops() {
             asDialog={true}
             validationSchema={workshopValidationSchema}
             onSubmit={handleAddWorkshopSubmit}
+          />
+        )}
+
+        {isClient && showScanner && (
+          <QrScanner
+            onScanSuccess={async (res) => {
+              try {
+                setShowScanner(false);
+                const participantUuid = String(res).trim();
+                const result = await checkInParticipant({
+                  bootcamp_participant_uuid: participantUuid,
+                }).unwrap();
+
+                toast.success("Check-in successful", {
+                  description: result.message || `Participant checked in successfully`,
+                });
+              } catch (err: unknown) {
+                const apiErr = err as { data?: { message?: string } };
+                toast.error("Check-in failed", {
+                  description: apiErr?.data?.message || "An error occurred while checking in the participant.",
+                });
+              }
+            }}
+            onError={(msg) => {
+              setShowScanner(false);
+              toast.error("Scan error", {
+                description: msg,
+              });
+            }}
+            onClose={() => setShowScanner(false)}
           />
         )}
       </div>
