@@ -139,7 +139,7 @@ export default function ParticipantsPage() {
   if (error) return <div>Error loading participants</div>;
 
   return (
-    <div className="px-5">
+    <div className="px-8">
       <h1 className="text-2xl font-bold mb-6">Participants</h1>
 
       <DataTable<Participant>

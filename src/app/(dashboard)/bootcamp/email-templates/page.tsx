@@ -111,7 +111,7 @@ export default function Page() {
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full px-8">
       <header className="w-full  flex items-center justify-between p-5">
         {/* Email Template Logo  */}
         <div className="flex items-center gap-3">
