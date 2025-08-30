@@ -42,12 +42,13 @@ export interface DataTableProps<TData extends DataTableRow> {
   searchConfig?: SearchConfig;
   statusConfig?: StatusConfig;
   actionConfig?: ActionConfig;
-  // onDataChange?: (data: TData[]) => void;
+  // Legacy callback for backward compatibility
   onDeleteRows?: (data: TData[]) => void;
+  // Single delete mutation hook for bulk operations
+  bulkDeleteMutation?: any; // RTK Query mutation hook
   error?: string;
   pageSize?: number;
   columnVisibilityConfig?: ColumnVisibilityConfig;
-  //   enableColumnVisibility?: boolean;
   enableSorting?: boolean;
   enableSelection?: boolean;
   className?: string;

@@ -2,7 +2,7 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useAddMaterialMutation, useGetAllMaterialsQuery } from '@/service/Api/materials';
+import { useAddMaterialMutation, useGetAllMaterialsQuery, useDeleteMaterialMutation } from '@/service/Api/materials';
 import { Material } from '@/types/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useEffect, useState } from 'react'
@@ -22,6 +22,9 @@ export default function Materials() {
 
     const [materials, setMaterials] = useState<Material[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+
+    // Delete mutation for bulk operations
+    const [deleteMaterial] = useDeleteMaterialMutation();
 
     useEffect(() => {
         if (
@@ -117,7 +120,7 @@ export default function Materials() {
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}
                 actionConfig={actionConfig}
-                // onDataChange={setMaterials}
+                bulkDeleteMutation={deleteMaterial}
             />
 
         </div>

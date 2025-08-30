@@ -2,7 +2,11 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useAddBootcampDetailsMutation, useGetAllBootcampDetailsQuery } from '@/service/Api/bootcampDetails';
+import { 
+  useAddBootcampDetailsMutation, 
+  useGetAllBootcampDetailsQuery,
+  useDeleteBootcampDetailsMutation
+} from '@/service/Api/bootcampDetails';
 import { BootcampDetailsRequest, BootcampDetailsType } from '@/types/bootcampDetails';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useEffect, useState } from 'react'
@@ -22,6 +26,9 @@ export default function Bootcamps() {
 
     const [bootcamps, setBootcamps] = useState<BootcampDetailsType[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+
+    // Delete mutation for bulk operations
+    const [deleteBootcampDetails] = useDeleteBootcampDetailsMutation();
 
     useEffect(() => {
         if (
@@ -121,7 +128,7 @@ export default function Bootcamps() {
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}
                 actionConfig={actionConfig}
-                // onDataChange={setBootcamps}
+                bulkDeleteMutation={deleteBootcampDetails}
             />
 
         </div>
