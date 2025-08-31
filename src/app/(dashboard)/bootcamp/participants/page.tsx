@@ -165,7 +165,7 @@ export default function ParticipantsPage() {
           asDialog={true}
           validationSchema={participantValidationSchema}
           onSubmit={handleAddParticipant as any}
-          steps={[1, 2, 3]}
+          steps={[1, 2, 3, 4, 5]}
         />
       )}
     </div>
