@@ -6,11 +6,12 @@ import { useAssignCollectionMutation, useDeleteCollectionMutation, useGetAllMate
 import { Collection, CreateCollectionRequest, Material, MaterialsForCollections, MaterialsRes, UpdateCollectionRequest } from "@/types/materials";
 import { collectionValidationSchema } from "@/validations/collection";
 import { ColumnDef } from "@tanstack/react-table";
-import { QrCode } from "lucide-react";
+import { ChevronRight, QrCode } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from '@/components/ui/button';
 import QrScanner from "@/components/scanner/QrScanner";
 import { toast } from 'sonner';
+import Link from "next/link";
 
 export const useCollectionsFields = (collectionData?: Collection, isUpdate: boolean = false): Field[] => {
 
@@ -116,6 +117,19 @@ export const collectionColumns: ColumnDef<Collection>[] = [
 		header: "Max Per User",
 		accessorKey: "max_per_user",
 		size: 180,
+	},
+	{
+    header: "Registrants",
+    cell: ({ row }) => (
+		<Link href={`collections/${row.original.id}`}>
+			<Button variant="outline" size="sm">
+				<p>Registrants</p>
+				<ChevronRight />
+			</Button>
+		</Link>
+	),
+	size: 180,
+	enableHiding: false,
 	},
     {
         id: "actions",

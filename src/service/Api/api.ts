@@ -30,6 +30,7 @@ export const api = createApi({
     "Materials",
     "Collections",
     "BootcampDetails",
+    "CollectionUsers"
   ],
 
   endpoints: () => ({}), // start empty
