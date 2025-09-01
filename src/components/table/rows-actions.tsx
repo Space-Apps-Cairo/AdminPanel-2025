@@ -34,6 +34,7 @@ export default function RowsActions({
   onDeleteSuccess,
   onDeleteError,
   customPreviewHandler,
+  customEditHandler,
 }: RowsActionsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [operation, setOperation] = useState<OperationType>("edit");
@@ -102,7 +103,10 @@ export default function RowsActions({
 
             {isUpdate && (
                 <Button
-                    onClick={() => handleButtonClick("edit")}
+                    onClick={() =>
+                      customEditHandler? customEditHandler(rowData) :
+                       handleButtonClick("edit")
+                      }
                     variant="outline"
                     size="sm"
                 >
