@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useId, useMemo, useState } from "react";
+import { useRef, useId, useMemo, useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -301,6 +301,39 @@ export default function DataTable<TData extends DataTableRow>({
       ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
   };
 
+  // Handle auto scroll
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const { top, bottom, left, right } = container.getBoundingClientRect();
+      const threshold = 70;
+      const scrollSpeed = 30;
+
+      // -------- Vertical scroll ----------
+      // if (e.clientY < top + threshold) {
+      //   container.scrollTop -= scrollSpeed;
+      // } else if (e.clientY > bottom - threshold) {
+      //   container.scrollTop += scrollSpeed;
+      // }
+
+      // -------- Horizontal scroll ----------
+      if (e.clientX < left + threshold) {
+        container.scrollLeft -= scrollSpeed;
+        console.log("Scrolling left, scrollLeft:", container.scrollLeft);
+      } else if (e.clientX > right - threshold) {
+        container.scrollLeft += scrollSpeed;
+        console.log("Scrolling right, scrollLeft:", container.scrollLeft);
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   if (error) {
     return (
       <div className="flex items-center justify-center h-32">
@@ -554,8 +587,11 @@ export default function DataTable<TData extends DataTableRow>({
           </TabsList>
         )}
         <TabsContent value="table">
-          <div className="bg-background overflow-hidden rounded-md border">
-            <Table className="table-fixed">
+          <div
+            ref={scrollRef}
+            className="bg-background overflow-auto max-h-[500px] max-w-full rounded-md border"
+          >
+            <Table className="table-fixed min-w-[1000px]">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow

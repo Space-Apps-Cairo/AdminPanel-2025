@@ -307,7 +307,7 @@ export default function CrudForm(props: {
                               mode="single"
                               selected={fld.value}
                               onSelect={(date) => fld.onChange(date)}
-                              initialFocus
+                              captionLayout="dropdown"
                             />
                           </PopoverContent>
                         </Popover>

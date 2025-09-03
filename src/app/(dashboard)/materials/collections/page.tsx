@@ -120,7 +120,7 @@ export default function Collections() {
             />
         )}
 
-        <div className="container mx-auto py-6">
+        <div className="container mx-auto py-6 px-7">
         
             <h1 className="text-2xl font-bold mb-6">Collections</h1>
 

@@ -27,6 +27,7 @@ import { useGetAllFieldsOfStudyQuery } from "@/service/Api/fieldsOfStudy";
 import { useGetAllSkillsQuery } from "@/service/Api/skills";
 import { FieldOption } from "@/app/interface";
 import { useToast } from "@/components/ui/use-toast";
+import { useGetAllWorkshopsQuery } from "@/service/Api/workshops";
 
 export default function ParticipantsPage() {
   const { toast } = useToast(); //  هنا جوه الـ component
@@ -67,6 +68,16 @@ export default function ParticipantsPage() {
       value: s.id.toString(),
       label: s.name,
     })) ?? [];
+
+
+const { data: workshopsData } = useGetAllWorkshopsQuery();
+
+const workshopOptions: FieldOption[] =
+  workshopsData?.data?.map((w: any) => ({
+    value: w.id.toString(),
+    label: w.title,
+  })) ?? [];
+
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -139,7 +150,7 @@ export default function ParticipantsPage() {
   if (error) return <div>Error loading participants</div>;
 
   return (
-    <div>
+    <div className="px-8">
       <h1 className="text-2xl font-bold mb-6">Participants</h1>
 
       <DataTable<Participant>
@@ -158,6 +169,7 @@ export default function ParticipantsPage() {
             educationalLevelOptions,
             fieldOfStudyOptions,
             skillsOptions
+            , workshopOptions
           )}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
@@ -165,7 +177,7 @@ export default function ParticipantsPage() {
           asDialog={true}
           validationSchema={participantValidationSchema}
           onSubmit={handleAddParticipant as any}
-          steps={[1, 2, 3]}
+          steps={[1, 2, 3, 4, 5]}
         />
       )}
     </div>

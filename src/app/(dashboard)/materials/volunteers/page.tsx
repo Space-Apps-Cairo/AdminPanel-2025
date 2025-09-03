@@ -432,7 +432,7 @@ export default function Volunteers() {
 
             </Dialog>
 
-            <div className="container mx-auto py-6">
+            <div className="container mx-auto py-6 px-8">
 
                 <div className='w-full flex item-center justify-between'>
 

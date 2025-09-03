@@ -168,7 +168,7 @@ export default function ParticipantPreferencesPage() {
   console.log(participantDetails);
   // -------------------- Render --------------------
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-6 px-8">
       <Button variant="outline" className="mb-6" onClick={() => router.back()}>
         <ChevronLeft />
         <p>Go Back</p>

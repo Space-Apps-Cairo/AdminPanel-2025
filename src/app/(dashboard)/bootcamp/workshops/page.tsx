@@ -119,7 +119,7 @@ export default function Workshops() {
 
   return (
     <React.Fragment>
-      <div className="container mx-auto py-6">
+      <div className="container mx-auto py-6 px-8">
         <h1 className="text-2xl font-bold mb-6">Workshop</h1>
 
         <DataTable<Workshop>
