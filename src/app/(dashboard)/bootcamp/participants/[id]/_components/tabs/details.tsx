@@ -25,7 +25,7 @@ export default function DetailsTab({
             <div className="flex flex-col items-center">
               <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden aspect-square">
                 <Image
-                  src={"/images/ali.png"}
+                  src={participantDetails?.personal_photo}
                   alt="Profile photo"
                   fill
                   className="object-cover w-full rounded-full h-full"
@@ -78,8 +78,14 @@ export default function DetailsTab({
         {/* ID Documents Section */}
         <Section title="Identification Documents">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <DocumentCard title="National ID Front" url={"/images/front.jpg"} />
-            <DocumentCard title="National ID Back" url={"/images/back.jpg"} />
+            <DocumentCard
+              title="National ID Front"
+              url={participantDetails.national_id_front}
+            />
+            <DocumentCard
+              title="National ID Back"
+              url={participantDetails.national_id_back}
+            />
           </div>
         </Section>
 

@@ -34,6 +34,9 @@ export const api = createApi({
     "Skill",
     "BootcampDetails",
     "CollectionUsers",
+    "Nationalities",
+    "TeamStatus",
+    "ParticipationStatus",
   ],
 
   endpoints: () => ({}), // start empty

@@ -18,6 +18,7 @@ import {
   GalleryVerticalEnd,
   Shapes,
   QrCode,
+  ClipboardList,
   // PieChart,
   // Map,
 } from "lucide-react";
@@ -105,6 +106,8 @@ const data = {
     {
       title: "Registeration Details ",
       url: "/bootcamp/registerationDetails",
+      isActive: true,
+      icon: ClipboardList,
       items: [
         {
           title: "Skills",
@@ -117,6 +120,18 @@ const data = {
         {
           title: "Field Of Study",
           url: "/bootcamp/registerationDetails/field-of-study",
+        },
+        {
+          title: "Nationality",
+          url: "/bootcamp/registerationDetails/nationality",
+        },
+        {
+          title: "Team Status",
+          url: "/bootcamp/registerationDetails/team-status",
+        },
+        {
+          title: "Participation Status",
+          url: "/bootcamp/registerationDetails/participation-status",
         },
       ],
     },
