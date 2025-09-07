@@ -1,107 +1,122 @@
+"use client";
 import { Field } from "@/app/interface";
 import RowsActions from "@/components/table/rows-actions";
-import { useDeleteMaterialMutation, useUpdateMaterialMutation } from "@/service/Api/materials";
+import {
+  useDeleteMaterialMutation,
+  useUpdateMaterialMutation,
+} from "@/service/Api/materials";
 import { Material } from "@/types/materials";
 import { materialValidationSchema } from "@/validations/material";
 import { ColumnDef } from "@tanstack/react-table";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
-export const getMaterialFields = (materialData?: Material, isUpdate: boolean = false): Field[] => [
+export const getMaterialFields = (
+  materialData?: Material,
+  isUpdate: boolean = false
+): Field[] => [
+  {
+    name: "material_name",
+    type: "text",
+    label: "Material Name",
+    ...(materialData?.material_name && {
+      defaultValue: materialData.material_name,
+    }),
+    step: 1,
+  },
 
-    {
-        name: "material_name",
-        type: "text",
-        label: "Material Name",
-        ...(materialData?.material_name && { defaultValue: materialData.material_name }),
-        step: 1,
-    },
+  {
+    name: "total_quantity",
+    type: "number",
+    label: "Total Quantity",
+    ...(materialData?.total_quantity && {
+      defaultValue: materialData.total_quantity,
+    }),
+    step: 1,
+  },
 
-    {
-        name: "total_quantity",
-        type: "number",
-        label: "Total Quantity",
-        ...(materialData?.total_quantity && { defaultValue: materialData.total_quantity }),
-        step: 1,
-    },
-
-    ...(isUpdate || materialData?.used_quantity !== undefined
-        ? [{
-            name: "used_quantity",
-            type: "number",
-            label: "Used Quantity",
-            placeholder: "Enter the used quantity",
-            ...(materialData?.used_quantity !== undefined && { defaultValue: materialData.used_quantity }),
-            step: 1,
-            }]
-        : []
-    ),
-
+  ...(isUpdate || materialData?.used_quantity !== undefined
+    ? [
+        {
+          name: "used_quantity",
+          type: "number",
+          label: "Used Quantity",
+          placeholder: "Enter the used quantity",
+          ...(materialData?.used_quantity !== undefined && {
+            defaultValue: materialData.used_quantity,
+          }),
+          step: 1,
+        },
+      ]
+    : []),
 ];
 
 export const materialColumns: ColumnDef<Material>[] = [
+  {
+    header: "Name",
+    accessorKey: "material_name",
+    size: 220,
+    enableHiding: false,
+  },
 
-    {
-        header: "Name",
-        accessorKey: "material_name",
-        size: 220,
-        enableHiding: false,
-    },
+  {
+    header: "Total Quantity",
+    accessorKey: "total_quantity",
+    size: 180,
+    enableHiding: false,
+  },
 
-    {
-        header: "Total Quantity",
-        accessorKey: "total_quantity",
-        size: 180,
-        enableHiding: false,
-    },
+  {
+    header: "Used Quantity",
+    accessorKey: "used_quantity",
+    size: 180,
+    enableHiding: false,
+  },
 
-    {
-        header: "Used Quantity",
-        accessorKey: "used_quantity",
-        size: 180,
-        enableHiding: false,
-    },
-
-    {
-        id: "actions",
-        header: () => <span>Actions</span>,
-        cell: ({ row }) => (
-            <MaterialRowActions rowData={row.original} />
-        ),
-        size: 100,
-        enableHiding: false,
-    },
+  {
+    id: "actions",
+    header: () => <span>Actions</span>,
+    cell: ({ row }) => <MaterialRowActions rowData={row.original} />,
+    size: 100,
+    enableHiding: false,
+  },
 ];
 
 function MaterialRowActions({ rowData }: { rowData: Material }) {
-    const [updateMaterial] = useUpdateMaterialMutation();
-    const [deleteMaterial] = useDeleteMaterialMutation();
+  const [updateMaterial] = useUpdateMaterialMutation();
+  const [deleteMaterial] = useDeleteMaterialMutation();
 
-    return (
-        <RowsActions
-            rowData={rowData}
-            isDelete={true}
-            isUpdate={true}
-            isPreview={true}
-            fields={getMaterialFields(rowData, true)}
-            validationSchema={materialValidationSchema}
-            updateMutation={(data: Material) => updateMaterial({ id: rowData.id, data })}
-            deleteMutation={deleteMaterial}
-            onUpdateSuccess={(result) => {
-                console.log('Material updated successfully:', result);
-                toast.success(result.msg || "Material updated successfully!");
-            }}
-            onUpdateError={(error) => {
-                console.error('Error updating material:', error);
-                toast.error(error.data?.msg || "Failed to update material. Please try again.");
-            }}
-            onDeleteSuccess={(result) => {
-                console.log('Material deleted successfully:', result);
-                toast.success(result.msg || "Material deleted successfully!");
-            }}
-            onDeleteError={(error) => {
-                console.error('Error deleting material:', error);
-                toast.error(error.data?.msg || "Failed to delete material. Please try again.");
-            }}
-        />
-    );
+  return (
+    <RowsActions
+      rowData={rowData}
+      isDelete={true}
+      isUpdate={true}
+      isPreview={true}
+      fields={getMaterialFields(rowData, true)}
+      validationSchema={materialValidationSchema}
+      updateMutation={(data: Material) =>
+        updateMaterial({ id: rowData.id, data })
+      }
+      deleteMutation={deleteMaterial}
+      onUpdateSuccess={(result) => {
+        console.log("Material updated successfully:", result);
+        toast.success(result.msg || "Material updated successfully!");
+      }}
+      onUpdateError={(error) => {
+        console.error("Error updating material:", error);
+        toast.error(
+          error.data?.msg || "Failed to update material. Please try again."
+        );
+      }}
+      onDeleteSuccess={(result) => {
+        console.log("Material deleted successfully:", result);
+        toast.success(result.msg || "Material deleted successfully!");
+      }}
+      onDeleteError={(error) => {
+        console.error("Error deleting material:", error);
+        toast.error(
+          error.data?.msg || "Failed to delete material. Please try again."
+        );
+      }}
+    />
+  );
 }
