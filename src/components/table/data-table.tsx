@@ -150,7 +150,7 @@ export default function DataTable<TData extends DataTableRow>({
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  
+
   // Add loading state for delete operation
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -221,11 +221,11 @@ export default function DataTable<TData extends DataTableRow>({
         await Promise.all(
           selectedIds.map((id) => bulkDeleteMutation(id).unwrap())
         );
-        
+
         // Show success toast
         toast.success(
-          selectedCount === 1 
-            ? "Item deleted successfully" 
+          selectedCount === 1
+            ? "Item deleted successfully"
             : `${selectedCount} items deleted successfully`
         );
       } else if (onDeleteRows) {
@@ -234,23 +234,23 @@ export default function DataTable<TData extends DataTableRow>({
           (item) => !selectedRows.some((row) => row.original.id === item.id)
         );
         onDeleteRows(updatedData);
-        
+
         // Show success toast
         toast.success(
-          selectedCount === 1 
-            ? "Item deleted successfully" 
+          selectedCount === 1
+            ? "Item deleted successfully"
             : `${selectedCount} items deleted successfully`
         );
       }
-      
+
       table.resetRowSelection();
     } catch (error) {
       console.error("Bulk delete error:", error);
-      
+
       // Show error toast
       toast.error(
-        selectedCount === 1 
-          ? "Failed to delete item. Please try again." 
+        selectedCount === 1
+          ? "Failed to delete item. Please try again."
           : `Failed to delete ${selectedCount} items. Please try again.`
       );
     } finally {
@@ -565,7 +565,7 @@ export default function DataTable<TData extends DataTableRow>({
                       <AlertDialogCancel disabled={isDeleting}>
                         Cancel
                       </AlertDialogCancel>
-                      <AlertDialogAction 
+                      <AlertDialogAction
                         onClick={handleDeleteRows}
                         disabled={isDeleting}
                         className="flex items-center gap-2"
@@ -643,7 +643,7 @@ export default function DataTable<TData extends DataTableRow>({
         <TabsContent value="table">
           <div
             ref={scrollRef}
-            className="bg-background overflow-auto max-h-[500px] max-w-full rounded-md border"
+            className="bg-background overflow-x-auto  max-w-full rounded-md border"
           >
             <Table className="table-fixed min-w-[1000px]">
               <TableHeader>

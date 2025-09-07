@@ -34,13 +34,13 @@ export const educationalLevelsApi = api.injectEndpoints({
 
     // Update educational level
     updateEducationalLevel: builder.mutation<
-      { data: EducationalLevel },
-      { id: number; body: Partial<EducationalLevel> }
+      any,
+      { id: number; data: EducationalLevel }
     >({
-      query: ({ id, body }) => ({
+      query: ({ id, data }) => ({
         url: `/education-levels/${id}`,
         method: "PUT",
-        body,
+        body: data,
       }),
       invalidatesTags: (_r, _e, { id }) => [
         { type: "EducationalLevel", id },

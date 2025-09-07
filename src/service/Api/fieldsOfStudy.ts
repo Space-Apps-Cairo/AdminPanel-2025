@@ -34,13 +34,13 @@ export const fieldsOfStudyApi = api.injectEndpoints({
 
     // Update field of study
     updateFieldOfStudy: builder.mutation<
-      { data: FieldOfStudy },
-      { id: number; body: Partial<FieldOfStudy> }
+      any,
+      { id: number; data: FieldOfStudy }
     >({
-      query: ({ id, body }) => ({
+      query: ({ id, data }) => ({
         url: `/mention-your-fields/${id}`,
         method: "PUT",
-        body,
+        body: data,
       }),
       invalidatesTags: (_r, _e, { id }) => [
         { type: "FieldOfStudy", id },

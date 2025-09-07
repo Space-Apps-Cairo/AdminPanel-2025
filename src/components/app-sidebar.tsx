@@ -74,6 +74,7 @@ const data = {
       url: "/bootcamp",
       icon: Building,
       isActive: true,
+
       items: [
         {
           title: "Dashboard",
@@ -99,9 +100,23 @@ const data = {
           title: "Email Templates",
           url: "/bootcamp/email-templates",
         },
+      ],
+    },
+    {
+      title: "Registeration Details ",
+      url: "/bootcamp/registerationDetails",
+      items: [
         {
-          title: "Registeration Details ",
-          url: "/bootcamp/registerationDetails",
+          title: "Skills",
+          url: "/bootcamp/registerationDetails/skills",
+        },
+        {
+          title: "Education Levels",
+          url: "/bootcamp/registerationDetails/education-levels",
+        },
+        {
+          title: "Field Of Study",
+          url: "/bootcamp/registerationDetails/field-of-study",
         },
       ],
     },

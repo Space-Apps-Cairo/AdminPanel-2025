@@ -3,7 +3,7 @@ import { api } from "./api";
 export interface Skill {
   id: number;
   name: string;
-  type: string; 
+  type: string;
 }
 
 export const skillApi = api.injectEndpoints({
@@ -31,14 +31,11 @@ export const skillApi = api.injectEndpoints({
     }),
 
     // Update skill
-    updateSkill: builder.mutation<
-      { data: Skill },
-      { id: number; body: Partial<Skill> }
-    >({
-      query: ({ id, body }) => ({
+    updateSkill: builder.mutation<any, { id: number | string; data: Skill }>({
+      query: ({ id, data }) => ({
         url: `/bootcamp-participant-skills/${id}`,
         method: "PUT",
-        body,
+        body: data,
       }),
       invalidatesTags: (_result, _error, { id }) => [
         { type: "Skill", id },
