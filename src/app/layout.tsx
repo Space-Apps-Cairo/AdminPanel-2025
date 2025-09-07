@@ -19,9 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "NASA Space Apps Admin Panal",
   description: "NASA Space Apps Admin Panal",
-  icons: {
-    icon: "/favicon.ico"
-  }
+  // icons: {
+  //   icon: "/favicon.ico"
+  // }
 };
 
 export default function RootLayout({
