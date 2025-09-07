@@ -18,6 +18,7 @@ import {
   GalleryVerticalEnd,
   Shapes,
   QrCode,
+  ClipboardList,
   // PieChart,
   // Map,
 } from "lucide-react";
@@ -99,11 +100,27 @@ const data = {
           title: "Email Templates",
           url: "/bootcamp/email-templates",
         },
-        {
-          title: "Registeration Details ",
-          url: "/bootcamp/registerationDetails",
-        },
       ],
+    },
+    {
+      title: "Registeration Details ",
+      url: "/bootcamp/registerationDetails",
+      isActive: true,
+      icon: ClipboardList,
+      items: [
+        {
+          title: "Nationality",
+          url: '/bootcamp/registerationDetails/nationality',
+        },
+        {
+          title: "Team Status",
+          url: '/bootcamp/registerationDetails/team-status',
+        },
+        {
+          title: "Participation Status",
+          url: '/bootcamp/registerationDetails/participation-status',
+        },
+      ]
     },
   ],
 };
