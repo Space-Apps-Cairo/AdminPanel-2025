@@ -9,11 +9,10 @@ import { ChevronRight, QrCode, User } from "lucide-react";
 
 import { useGetAllCollectionsQuery, useAssignCollectionMutation } from "@/service/Api/materials";
 import { useGetBootcampsQuery, useRegisterBootcampAttendeeMutation } from "@/service/Api/bootcamp";
-import { useCheckInWorkshopParticipantMutation, useGetAllWorkshopsQuery } from "@/service/Api/workshops";
+import { useCheckInWorkshopParticipantMutation } from "@/service/Api/workshops";
 
 import { Collection } from "@/types/materials";
 import { BootcampType } from "@/types/bootcamp";
-import { Workshop } from "@/types/workshop";
 import Loading from "@/components/loading/loading";
 import Link from "next/link";
 
@@ -42,7 +41,6 @@ export default function ScanQrCodePage() {
 
     const { data: collectionsData, isLoading: isLoadingCollections } = useGetAllCollectionsQuery();
     const { data: bootcampsData, isLoading: isLoadingBootcamps } = useGetBootcampsQuery();
-    const { data: workshopsData, isLoading: isLoadingWorkshops } = useGetAllWorkshopsQuery();
 
     const [assignCollection] = useAssignCollectionMutation();
     const [registerBootcampAttendee] = useRegisterBootcampAttendeeMutation();
@@ -74,7 +72,7 @@ export default function ScanQrCodePage() {
                     attendance_status: 'attended'
                 }).unwrap();
                 toast.success("Bootcamp registration successful", {
-                    description: "Participant has been registered for the bootcamp.",
+                   description: "Participant has been registered for the bootcamp.",
                 });
             } else if (scanFor.type === 'workshop') {
                 result = await checkInWorkshopParticipant({
@@ -115,7 +113,7 @@ export default function ScanQrCodePage() {
         setShowScanner(true);
     }
 
-    const isLoading = isLoadingCollections || isLoadingBootcamps || isLoadingWorkshops;
+    const isLoading = isLoadingCollections || isLoadingBootcamps;
 
     if (isLoading) {
         return <Loading />;
@@ -123,7 +121,6 @@ export default function ScanQrCodePage() {
 
     const collections = collectionsData?.data ?? [];
     const bootcamp = bootcampsData?.data?.[0];
-    const workshops = workshopsData?.data ?? [];
 
     return (
         <div className="container mx-auto space-y-8">
@@ -165,31 +162,21 @@ export default function ScanQrCodePage() {
             <section>
                 <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Workshops</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Workshop Cards */}
-                    {workshops.map((workshop: Workshop) => (
-                        <Card key={workshop.id}>
-                            <CardHeader>
-                                <CardTitle>{workshop.title}</CardTitle>
-                                <CardDescription>{workshop.description}</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p>Start Date: {new Date(workshop.start_date).toLocaleDateString()}</p>
-                                <p>End Date: {new Date(workshop.end_date).toLocaleDateString()}</p>
-                            </CardContent>
-                            <CardFooter className="grid grid-cols-2 gap-2 max-[450px]:grid-cols-1">
-                                <Button className="w-full" onClick={() => openScanner({ type: 'workshop' })}>
-                                    <QrCode className="mr-2 h-4 w-4" /> Scan
-                                </Button>
-                                <Link className="w-full" href={`/bootcamp/workshops/${workshop.id}#schedules`}>
-                                    <Button className="w-full" variant="outline">
-                                        <User className="mr-2 h-4 w-4" /> 
-                                        <p>Schedules</p>
-                                        <ChevronRight />
-                                    </Button>
-                                </Link>
-                            </CardFooter>
-                        </Card>
-                    ))}
+                    {/* Workshop Card */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Workshop</CardTitle>
+                            <CardDescription>Scan QR code for workshop attendance</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p>Click the button to start scanning participant QR codes for the workshops.</p>
+                        </CardContent>
+                        <CardFooter>
+                            <Button className="w-full" onClick={() => openScanner({ type: 'workshop' })}>
+                                <QrCode className="mr-2 h-4 w-4" /> Scan
+                            </Button>
+                        </CardFooter>
+                    </Card>
                 </div>
             </section>
 
