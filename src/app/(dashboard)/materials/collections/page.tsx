@@ -2,7 +2,7 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useAddCollectionMutation, useGetAllCollectionsQuery } from '@/service/Api/materials';
+import { useAddCollectionMutation, useGetAllCollectionsQuery, useDeleteCollectionMutation } from '@/service/Api/materials';
 import { Collection, CreateCollectionRequest, MaterialsForCollections } from '@/types/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useEffect, useState } from 'react';
@@ -24,6 +24,9 @@ export default function Collections() {
     const [isOpen, setIsOpen] = useState(false);
 
     const fields = useCollectionsFields();
+
+    // Delete mutation for bulk operations
+    const [deleteCollection] = useDeleteCollectionMutation();
 
     useEffect(() => {
         if (
@@ -130,8 +133,7 @@ export default function Collections() {
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}
                 actionConfig={actionConfig}
-                onDataChange={setCollections}
-                // allowTrigger={true}
+                bulkDeleteMutation={deleteCollection}
             />
 
         </div>

@@ -14,7 +14,6 @@ import {
   PaginationState,
   SortingState,
   useReactTable,
-  VisibilityState,
 } from "@tanstack/react-table";
 import {
   ChevronDownIcon,
@@ -90,6 +89,7 @@ import {
 
 import { DataTableRow, DataTableProps } from "@/types/table";
 import { exportToExcel, exportToPDF, exportToCSV } from "@/lib/exporter";
+import { toast } from "sonner";
 // Create a global filter function for multi-column search
 const createGlobalFilterFn = <TData extends DataTableRow>(
   searchKeys: string[]
@@ -122,6 +122,7 @@ export default function DataTable<TData extends DataTableRow>({
   statusConfig = { enabled: false, columnKey: "" },
   actionConfig = { enabled: false },
   onDeleteRows,
+  bulkDeleteMutation, // New: single delete mutation hook
   error,
   pageSize = 10,
   // enableColumnVisibility = true,
@@ -149,6 +150,10 @@ export default function DataTable<TData extends DataTableRow>({
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  
+  // Add loading state for delete operation
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Create columns with optional selection column
@@ -203,14 +208,54 @@ export default function DataTable<TData extends DataTableRow>({
     return cols;
   }, [baseColumns, enableSelection, statusConfig]);
 
-  const handleDeleteRows = () => {
-    if (!onDeleteRows) return;
+  const handleDeleteRows = async () => {
     const selectedRows = table.getSelectedRowModel().rows;
-    const updatedData = data.filter(
-      (item) => !selectedRows.some((row) => row.original.id === item.id)
-    );
-    onDeleteRows(updatedData);
-    table.resetRowSelection();
+    const selectedIds = selectedRows.map((row) => row.original.id);
+    const selectedCount = selectedIds.length;
+
+    setIsDeleting(true);
+
+    try {
+      if (bulkDeleteMutation) {
+        // Use Promise.all to execute multiple delete operations
+        await Promise.all(
+          selectedIds.map((id) => bulkDeleteMutation(id).unwrap())
+        );
+        
+        // Show success toast
+        toast.success(
+          selectedCount === 1 
+            ? "Item deleted successfully" 
+            : `${selectedCount} items deleted successfully`
+        );
+      } else if (onDeleteRows) {
+        // Legacy callback approach
+        const updatedData = data.filter(
+          (item) => !selectedRows.some((row) => row.original.id === item.id)
+        );
+        onDeleteRows(updatedData);
+        
+        // Show success toast
+        toast.success(
+          selectedCount === 1 
+            ? "Item deleted successfully" 
+            : `${selectedCount} items deleted successfully`
+        );
+      }
+      
+      table.resetRowSelection();
+    } catch (error) {
+      console.error("Bulk delete error:", error);
+      
+      // Show error toast
+      toast.error(
+        selectedCount === 1 
+          ? "Failed to delete item. Please try again." 
+          : `Failed to delete ${selectedCount} items. Please try again.`
+      );
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   // Create global filter function
@@ -477,7 +522,7 @@ export default function DataTable<TData extends DataTableRow>({
             {/* Delete button */}
             {enableSelection &&
               actionConfig.showDelete &&
-              onDeleteRows &&
+              (onDeleteRows || bulkDeleteMutation) &&
               table.getSelectedRowModel().rows.length > 0 && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -517,9 +562,18 @@ export default function DataTable<TData extends DataTableRow>({
                       </AlertDialogHeader>
                     </div>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDeleteRows}>
-                        Delete
+                      <AlertDialogCancel disabled={isDeleting}>
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={handleDeleteRows}
+                        disabled={isDeleting}
+                        className="flex items-center gap-2"
+                      >
+                        {isDeleting && (
+                          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        )}
+                        {isDeleting ? "Deleting..." : "Delete"}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

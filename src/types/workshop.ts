@@ -87,3 +87,43 @@ export type AttendeesResponse = {
   message: string;
   data: AttendeesData;
 };
+
+export type WorkshopCheckInRequest = {
+  bootcamp_participant_uuid: string;
+};
+
+export type WorkshopCheckInResponse = {
+  status: number;
+  success: boolean;
+  message: string;
+  data: {
+    id: number;
+    attendance_status: string;
+    check_in_time: string;
+    schedule: {
+      id: number;
+      date: string;
+      workshop_title: string;
+      workshop_description: string;
+      workshop_start_date: string;
+      workshop_end_date: string;
+    };
+  };
+};
+
+export type WorkshopAttendee = {
+  id: number;
+  attendance_status: string;
+  check_in_time: string;
+  participant: {
+    id: number;
+    name: string;
+  };
+};
+
+export type WorkshopAttendeesResponse = {
+  success: boolean;
+  status: number;
+  message: string;
+  data: WorkshopAttendee[];
+};

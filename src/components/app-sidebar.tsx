@@ -17,6 +17,7 @@ import {
   // Frame,
   GalleryVerticalEnd,
   Shapes,
+  QrCode,
   // PieChart,
   // Map,
 } from "lucide-react";
@@ -38,6 +39,13 @@ const data = {
       isActive: true,
     },
     {
+      title: "Qr Code",
+      url: "/qr-code",
+      icon: QrCode,
+      isActive: true,
+      items: [{ title: "Scan QR Code", url: "/qr-code/scan" }],
+    },
+    {
       title: "Materials Management",
       url: "/materials",
       isActive: true,
@@ -47,10 +55,6 @@ const data = {
           title: "Overview",
           url: "/materials",
         },
-        // {
-        //   title: 'Scan QR-Code',
-        //   url: '/materials/scan-qr-code',
-        // },
         {
           title: "Volunteers",
           url: "/materials/volunteers",
@@ -78,6 +82,10 @@ const data = {
         {
           title: "Details",
           url: "/bootcamp/details",
+        },
+        {
+          title: "Bootcamps",
+          url: "/bootcamp/bootcamps",
         },
         {
           title: "Workshops",

@@ -1,3 +1,5 @@
+import { DataTableRow } from "@/types/table";
+
 // ====== volunteers-types ====== //
 
 export type Volunteer = {
@@ -123,4 +125,27 @@ export type AssignCollectionResponse = {
 		allowed: number
 	}
 	msg: string
+}
+
+// ====== collections-users-types ====== //
+
+export interface CollectionUser extends DataTableRow {
+	id: string;
+	user_uuid: string;
+	user_type: string;
+	collection_id: number;
+	quantity: number;
+	user_info: {
+		id: number;
+		uuid: string;
+		name: string | null;
+		email: string;
+	};
+}
+
+export interface CollectionUsersRes {
+	success: boolean;
+	status: number;
+	data: CollectionUser[];
+	msg: string;
 }

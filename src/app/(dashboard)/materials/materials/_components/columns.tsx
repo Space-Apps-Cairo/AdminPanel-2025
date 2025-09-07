@@ -73,7 +73,6 @@ export const materialColumns: ColumnDef<Material>[] = [
 ];
 
 function MaterialRowActions({ rowData }: { rowData: Material }) {
-
     const [updateMaterial] = useUpdateMaterialMutation();
     const [deleteMaterial] = useDeleteMaterialMutation();
 
@@ -85,36 +84,15 @@ function MaterialRowActions({ rowData }: { rowData: Material }) {
             isPreview={true}
             fields={getMaterialFields(rowData, true)}
             validationSchema={materialValidationSchema}
-            updateMutation={async (payload: { id: string | number; data: any }) => {
-                console.log('Update payload:', payload);
-                console.log('start updating');
-                try {
-                    const result = await updateMaterial(payload).unwrap();
-                    console.log('Update result:', result);
-                    return result;
-                } catch (error) {
-                    console.error('Update error:', error);
-                    throw error;
-                }
-            }}
-            deleteMutation={async (id: string | number) => {
-                console.log('Delete ID:', id);
-                try {
-                    const result = await deleteMaterial(id).unwrap();
-                    console.log('Delete result:', result);
-                    return result;
-                } catch (error) {
-                    console.error('Delete error:', error);
-                    throw error;
-                }
-            }}
+            updateMutation={(data: Material) => updateMaterial({ id: rowData.id, data })}
+            deleteMutation={deleteMaterial}
             onUpdateSuccess={(result) => {
                 console.log('Material updated successfully:', result);
                 toast.success(result.msg || "Material updated successfully!");
             }}
             onUpdateError={(error) => {
                 console.error('Error updating material:', error);
-                toast.error(error.data.msg || "Failed to update material. Please try again.");
+                toast.error(error.data?.msg || "Failed to update material. Please try again.");
             }}
             onDeleteSuccess={(result) => {
                 console.log('Material deleted successfully:', result);
@@ -122,9 +100,8 @@ function MaterialRowActions({ rowData }: { rowData: Material }) {
             }}
             onDeleteError={(error) => {
                 console.error('Error deleting material:', error);
-                toast.error(error.data.msg || "Failed to delete material. Please try again.");
+                toast.error(error.data?.msg || "Failed to delete material. Please try again.");
             }}
         />
     );
-
 }

@@ -2,7 +2,7 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useAddVolunteerMutation, useGetAllVolunteersQuery, useImportVolunteersFileMutation } from '@/service/Api/materials';
+import { useAddVolunteerMutation, useGetAllVolunteersQuery, useImportVolunteersFileMutation, useDeleteVolunteerMutation } from '@/service/Api/materials';
 import { Volunteer } from '@/types/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useEffect, useState, useRef } from 'react';
@@ -45,8 +45,12 @@ export default function Volunteers() {
     // Import Volunteers Mutation
     const [importVolunteers, { 
         isLoading: isImportLoading, 
-        error: importError 
+        error: importError,
+        reset: resetImportMutation // Add this to reset the mutation state
     }] = useImportVolunteersFileMutation();
+
+    // Delete mutation for bulk operations
+    const [deleteVolunteer] = useDeleteVolunteerMutation();
 
     useEffect(() => {
         if (
@@ -100,7 +104,10 @@ export default function Volunteers() {
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        processFile(file);
+        if (file) {
+            processFile(file);
+            // Remove automatic upload - just process the file
+        }
     };
 
     const processFile = (file: File | undefined) => {
@@ -143,12 +150,13 @@ export default function Volunteers() {
 
         const files = e.dataTransfer.files;
         if (files && files[0]) {
-            processFile(files[0]);
+            const file = files[0];
+            processFile(file);
+            // Remove automatic upload - just process the file
         }
     };
 
     const handleUpload = async () => {
-
         if (!selectedFile) return;
 
         setIsUploading(true);
@@ -217,6 +225,8 @@ export default function Volunteers() {
         setUploadError('');
         setUploadSuccess(false);
         setIsDragOver(false);
+        // Reset the RTK Query mutation state
+        resetImportMutation();
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -227,6 +237,13 @@ export default function Volunteers() {
             setIsUploadDialogOpen(false);
             resetUploadState();
         }
+    };
+
+    // Add new function to handle opening the dialog
+    const handleOpenUploadDialog = () => {
+        setIsUploadDialogOpen(true);
+        // Reset state when opening the dialog
+        resetUploadState();
     };
 
     const getAPIErrorMessage = (): string => {
@@ -300,7 +317,7 @@ export default function Volunteers() {
                     <DialogHeader>
                         <DialogTitle>Import Volunteers from CSV</DialogTitle>
                         <DialogDescription>
-                            Upload a CSV file to import multiple volunteers at once.
+                            Upload a CSV file to import multiple volunteers at once. Click Submit to process the file.
                         </DialogDescription>
                     </DialogHeader>
                     
@@ -313,7 +330,7 @@ export default function Volunteers() {
                                     ${isDragOver 
                                         ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20' 
                                         : 'border-gray-300 bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-800 dark:bg-gray-700 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
-                                    }`}
+                                    } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 onDragEnter={handleDragEnter}
                                 onDragLeave={handleDragLeave}
                                 onDragOver={handleDragOver}
@@ -322,7 +339,9 @@ export default function Volunteers() {
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     <FileText className={`w-8 h-8 mb-4 ${isDragOver ? 'text-blue-500' : 'text-gray-500 dark:text-gray-400'}`} />
                                     <p className={`mb-2 text-sm ${isDragOver ? 'text-blue-600' : 'text-gray-500 dark:text-gray-400'}`}>
-                                        {isDragOver ? (
+                                        {isProcessing ? (
+                                            <span className="font-semibold">Processing file...</span>
+                                        ) : isDragOver ? (
                                             <span className="font-semibold">Drop your CSV file here</span>
                                         ) : (
                                             <>
@@ -330,7 +349,7 @@ export default function Volunteers() {
                                             </>
                                         )}
                                     </p>
-                                    {!isDragOver && (
+                                    {!isDragOver && !isProcessing && (
                                         <p className="text-xs text-gray-500 dark:text-gray-400">CSV files only</p>
                                     )}
                                 </div>
@@ -346,7 +365,7 @@ export default function Volunteers() {
                         </div>
 
                         {/* Selected File Info */}
-                        {selectedFile && (
+                        {selectedFile && !isProcessing && (
                             <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                                 <div className="flex items-center space-x-2">
                                     <FileText className="w-4 h-4 text-blue-600" />
@@ -416,14 +435,14 @@ export default function Volunteers() {
                             onClick={handleUploadDialogClose}
                             disabled={isProcessing}
                         >
-                            Cancel
+                            {uploadSuccess ? 'Close' : 'Cancel'}
                         </Button>
 
                         <Button
                             onClick={handleUpload}
                             disabled={!selectedFile || isProcessing || uploadSuccess}
                         >
-                            {isProcessing ? 'Processing...' : 'Import CSV'}
+                            {isProcessing ? 'Processing...' : 'Submit'}
                         </Button>
 
                     </DialogFooter>
@@ -434,13 +453,14 @@ export default function Volunteers() {
 
             <div className="container mx-auto py-6 px-8">
 
-                <div className='w-full flex item-center justify-between'>
+                <div className='w-full flex flex-wrap item-center justify-between'>
 
                     <h1 className="text-2xl font-bold mb-6">Volunteers</h1>
-                    <Button className='font-semibold' onClick={() => setIsUploadDialogOpen(true)}>
+                    <Button className='font-semibold' onClick={handleOpenUploadDialog}>
                         <Upload className="w-4 h-4 mr-2" />
                         Import CSV file
                     </Button>
+
                 </div>
 
                 <DataTable<Volunteer>
@@ -449,7 +469,7 @@ export default function Volunteers() {
                     searchConfig={searchConfig}
                     statusConfig={statusConfig}
                     actionConfig={actionConfig}
-                    onDataChange={setVolunteers}
+                    bulkDeleteMutation={deleteVolunteer}
                 />
             </div>
         </React.Fragment>

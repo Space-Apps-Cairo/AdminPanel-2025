@@ -1,4 +1,16 @@
-import { CollectionsRes, CreateCollectionRequest, CreateMaterialRequest, CreateVolunteerRequest, MaterialsRes, VolunteersRes, AssignCollectionRequest, AssignCollectionResponse, SingleCollectionRes, UpdateCollectionRequest } from "@/types/materials";
+import {
+	CollectionsRes,
+	CreateCollectionRequest,
+	CreateMaterialRequest,
+	CreateVolunteerRequest,
+	MaterialsRes,
+	VolunteersRes,
+	AssignCollectionRequest,
+	AssignCollectionResponse,
+	SingleCollectionRes,
+	UpdateCollectionRequest,
+	CollectionUsersRes,
+} from "@/types/materials";
 import { api } from "./api";
 
 export const materialsApi = api.injectEndpoints({
@@ -113,6 +125,20 @@ export const materialsApi = api.injectEndpoints({
 			invalidatesTags: ['Collections'],
 		}),
 
+		getCollectionUsers: build.query<CollectionUsersRes, string>({
+			query: (id) => `/collections/${id}/users`,
+			providesTags: ["CollectionUsers"],
+			transformResponse: (response: CollectionUsersRes) => {
+				return {
+					...response,
+					data: response.data.map((user) => ({
+						...user,
+						id: user.user_uuid,
+					})),
+				};
+			},
+		}),
+
 		// ====== QR assign collection ====== //
 
 		assignCollection: build.mutation<AssignCollectionResponse, AssignCollectionRequest>({
@@ -144,6 +170,7 @@ export const {
 	useAddCollectionMutation,
 	useUpdateCollectionMutation,
 	useDeleteCollectionMutation,
+	useGetCollectionUsersQuery,
 
 	useAssignCollectionMutation,
 

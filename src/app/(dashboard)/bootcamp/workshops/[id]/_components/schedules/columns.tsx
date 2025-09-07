@@ -1,5 +1,6 @@
 import { Field } from "@/app/interface";
 import RowsActions from "@/components/table/rows-actions";
+import { Button } from "@/components/ui/button";
 import {
   useDeleteScheduleMutation,
   useUpdateScheduleMutation,
@@ -7,6 +8,8 @@ import {
 import { Schedule } from "@/types/workshop";
 import { scheduleValidationSchema } from "@/validations/schedule";
 import { ColumnDef } from "@tanstack/react-table";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -101,6 +104,17 @@ export const scheduleColumns: ColumnDef<Schedule>[] = [
     header: "Available Slots On Site",
     accessorKey: "available_slots_on_site",
     size: 180,
+  },
+  {
+    header: "Attendees",
+    cell: ({ row }) => (
+        <Button variant="outline" size="sm">
+            <Link href={`/bootcamp/workshops/attendees/${row.original.id}`}>Attendees</Link>
+            <ChevronRight />
+        </Button>
+    ),
+    size: 180,
+    enableHiding: false,
   },
   {
     id: "actions",

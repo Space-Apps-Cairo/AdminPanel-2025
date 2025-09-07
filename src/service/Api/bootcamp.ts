@@ -3,6 +3,9 @@ import {
   BootcampType,
   BootcampRequest,
   BootcampResponse,
+  BootcampAttendeeRequest,
+  BootcampAttendeeResponse,
+  BootcampAttendeesResponse,
 } from "@/types/bootcamp";
 
 export const bootcampApi = api.injectEndpoints({
@@ -40,6 +43,27 @@ export const bootcampApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Bootcamps"],
     }),
+
+    // Bootcamp Attendees
+    registerBootcampAttendee: builder.mutation<
+      BootcampAttendeeResponse,
+      BootcampAttendeeRequest
+    >({
+      query: (attendeeData) => ({
+        url: "/bootcamp-attendees",
+        method: "POST",
+        body: attendeeData,
+      }),
+      invalidatesTags: ["Bootcamps"],
+    }),
+
+    // Add this new endpoint for getting bootcamp attendees
+    getBootcampAttendees: builder.query<BootcampAttendeesResponse, string>({
+      query: (bootcampId) => `/bootcamp-attendees/attended/${bootcampId}`,
+      providesTags: (result, error, bootcampId) => [
+        { type: "Bootcamps", id: bootcampId },
+      ],
+    }),
   }),
 });
 
@@ -48,4 +72,6 @@ export const {
   useAddBootcampMutation,
   useDeleteBootcampMutation,
   useUpdateBootcampMutation,
+  useRegisterBootcampAttendeeMutation,
+  useGetBootcampAttendeesQuery, // Add this export
 } = bootcampApi;
