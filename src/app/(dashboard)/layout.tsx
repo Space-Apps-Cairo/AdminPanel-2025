@@ -5,7 +5,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "../../components/ui/sidebar";
-import { Separator } from "../../components/ui/separator";
 
 import ModeToggle from "../../components/ui/theme-toggle";
 import { SearchProvider } from "../../components/ui/search-context";
@@ -28,7 +27,7 @@ export default function DashboardLayout({
             </div>
           </header>
 
-          <main className="p-4 flex-1 overflow-hidden">
+          <main className=" flex-1 overflow-hidden">
             <div className="h-full overflow-auto">{children}</div>
           </main>
         </SidebarInset>

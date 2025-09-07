@@ -46,7 +46,7 @@ export default function BootcampPage() {
     return <div className="text-red-500 p-4">Error fetching bootcamps</div>;
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-6 px-8">
       {isOpen && (
         <CrudForm
           fields={getBootcampFields()}

@@ -25,7 +25,7 @@ export type Participant = {
   educational_level_id: string;
   field_of_study_id: string;
   national_id: string;
-  is_have_team: string; // e.g. "individual"
+  is_have_team: "individual" | "team_not_complete" | "team_complete";
   participation_status: string; // e.g. "ex_participant"
   participated_years: string; // could also be string[] if multiple years
   attend_workshop: number; // 0 | 1 maybe? could also be boolean if API allows
@@ -37,6 +37,9 @@ export type Participant = {
   personal_photo: File | string;    // file or URL
   skills: Skill[];
   created_by: CreatedBy;
+   first_priority_id?: number;
+  second_priority_id?: number;
+  third_priority_id?: number;
 };
 
 // Request type for sending to API (FormData)

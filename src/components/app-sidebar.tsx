@@ -43,33 +43,31 @@ const data = {
       url: "/qr-code",
       icon: QrCode,
       isActive: true,
-      items: [
-        {title: "Scan QR Code", url: "/qr-code/scan"},
-      ],
+      items: [{ title: "Scan QR Code", url: "/qr-code/scan" }],
     },
     {
-      title: 'Materials Management',
-      url: '/materials',
+      title: "Materials Management",
+      url: "/materials",
       isActive: true,
       icon: Shapes,
       items: [
         {
-          title: 'Overview',
-          url: '/materials',
+          title: "Overview",
+          url: "/materials",
         },
         {
-          title: 'Volunteers',
-          url: '/materials/volunteers',
+          title: "Volunteers",
+          url: "/materials/volunteers",
         },
         {
-          title: 'Materials',
-          url: '/materials/materials',
+          title: "Materials",
+          url: "/materials/materials",
         },
         {
-          title: 'Collections',
-          url: '/materials/collections',
+          title: "Collections",
+          url: "/materials/collections",
         },
-      ]
+      ],
     },
     {
       title: "Bootcamp Management",
@@ -98,8 +96,12 @@ const data = {
           url: "/bootcamp/participants",
         },
         {
-          title: "Email Tracking",
-          url: "/bootcamp/emails",
+          title: "Email Templates",
+          url: "/bootcamp/email-templates",
+        },
+        {
+          title: "Registeration Details ",
+          url: "/bootcamp/registerationDetails",
         },
       ],
     },

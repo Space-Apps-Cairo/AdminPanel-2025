@@ -63,10 +63,10 @@ export default function DetailsTab({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InfoCard
+              {/* <InfoCard
                 label="Nationality"
                 value={participantDetails?.nationality}
-              />
+              /> */}
               <InfoCard
                 label="Governorate"
                 value={participantDetails?.governorate}
