@@ -99,6 +99,10 @@ const data = {
           title: "Email Templates",
           url: "/bootcamp/email-templates",
         },
+        {
+          title: "Registeration Details ",
+          url: "/bootcamp/registerationDetails",
+        },
       ],
     },
   ],
