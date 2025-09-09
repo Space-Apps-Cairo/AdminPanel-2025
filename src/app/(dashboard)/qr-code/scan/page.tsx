@@ -144,7 +144,8 @@ export default function ScanQrCodePage() {
   const bootcamp = bootcampsData?.data?.[0];
 
   return (
-    <div className="container mx-auto space-y-8">
+    <div className="container mx-auto space-y-6 py-8 px-8">
+
       <h1 className="text-3xl font-bold mb-8">Scan QR Code</h1>
 
       {/* Bootcamp Section */}
