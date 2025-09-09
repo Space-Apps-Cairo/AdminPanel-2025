@@ -1,3 +1,5 @@
+
+
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -27,7 +29,16 @@ export async function middleware(request: NextRequest) {
         res.cookies.delete("token");
         return res;
       }
-      console.log("the token is valid");
+
+      
+      const res = NextResponse.next();
+      res.cookies.set("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+      });
+      console.log("the token is valid and refreshed (no expiry)");
+      return res;
     } catch (error) {
       console.error("Auth check failed:", error);
       const res = NextResponse.redirect(new URL("/login", request.url));
@@ -38,14 +49,10 @@ export async function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
 export const config = {
-  // Run for every path except Next.js internals and static assets
+  
   matcher: [
-    /*
-          Match all requests except:
-            - URLs starting with /_next/
-            - /favicon.ico
-        */
     "/((?!_next|favicon.ico|images).*)",
   ],
 };
