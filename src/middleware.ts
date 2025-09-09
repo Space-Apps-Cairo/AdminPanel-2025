@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  
+  // Run for every path except Next.js internals and static assets
   matcher: [
     "/((?!_next|favicon.ico|images).*)",
   ],
