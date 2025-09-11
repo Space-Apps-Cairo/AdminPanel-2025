@@ -6,11 +6,15 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+   useSidebar,
 } from "./ui/sidebar";
 
 import { TeamSwitcher } from "./team-switcher";
 import SearchBar from "./ui/search-bar";
-
+import { Button } from "@/components/ui/button";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { logout } from "@/service/store/features/authSlice"
 import {
   HomeIcon,
   Building,
@@ -19,10 +23,12 @@ import {
   Shapes,
   QrCode,
   ClipboardList,
+  LogOut,
   // PieChart,
   // Map,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
+import { toast } from "sonner";
 
 const data = {
   teams: [
@@ -81,10 +87,7 @@ const data = {
           title: "Dashboard",
           url: "/bootcamp/dashboard",
         },
-        {
-          title: "Details",
-          url: "/bootcamp/details",
-        },
+       
         {
           title: "Bootcamps",
           url: "/bootcamp/bootcamps",
@@ -139,6 +142,15 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const dispatch=useDispatch();
+  const router=useRouter();
+  const { state } = useSidebar();
+  const Handlelogout=()=>{
+dispatch(logout());
+toast.success("Logout Successfully");
+
+ router.push("/login");
+  }
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -148,7 +160,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter />
+       <SidebarFooter>
+       <Button
+          variant="outline"
+          className="w-full text-red-600 flex items-center gap-2"
+          onClick={Handlelogout}
+        >
+          <LogOut className="h-4 w-4" />
+          {state === "expanded" && <span>Log out</span>}
+        </Button>
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

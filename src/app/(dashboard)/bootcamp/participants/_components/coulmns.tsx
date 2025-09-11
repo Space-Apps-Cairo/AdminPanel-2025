@@ -289,11 +289,11 @@ export const participantColumns: ColumnDef<Participant>[] = [
   { header: "National ID", accessorKey: "national_id" },
   { header: "Governorate", accessorKey: "governorate", enableHiding: false },
   { header: "Birth Date", accessorKey: "birth_date" },
-  {
-    header: "Occupation",
-    accessorKey: "current_occupation",
-    enableHiding: true,
+  { header: "Created At",
+    accessorKey:"created_at",
+   
   },
+
   { header: "Institute", accessorKey: "educational_institute" },
   {
     header: "Graduation Year",
@@ -306,6 +306,11 @@ export const participantColumns: ColumnDef<Participant>[] = [
     enableHiding: true,
   },
   { header: "Team", accessorKey: "is_have_team" },
+    {
+    header: "Occupation",
+    accessorKey: "current_occupation",
+    enableHiding: true,
+  },
   {
     header: "Details",
     cell: ({ row }) => (

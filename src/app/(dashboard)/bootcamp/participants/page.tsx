@@ -81,8 +81,8 @@ const workshopOptions: FieldOption[] =
 
   const searchConfig: SearchConfig = {
     enabled: true,
-    placeholder: "Filter by ID, National ID, Email or Phone",
-    searchKeys: ["id", "national_id", "email", "phone_number"],
+    placeholder: "Filter by Name, National ID, Email or Phone",
+    searchKeys: [ "national_id", "email", "phone_number","name_en","name_ar"],
   };
 
   const actionConfig: ActionConfig = {
@@ -100,6 +100,7 @@ const workshopOptions: FieldOption[] =
       "birth_date",
       "governorate",
       "graduation_year",
+      "current_occupation",
     ],
   };
   const [addParticipant] = useAddNewParticipantMutation();

@@ -132,7 +132,7 @@ export default function Workshops() {
 
   return (
     <React.Fragment>
-      <div className="container mx-auto py-6 flex flex-col gap-6">
+      <div className="container mx-auto py-6 flex flex-col gap-6 px-7">
 
         <div className='w-full flex flex-wrap item-center justify-between'>
 

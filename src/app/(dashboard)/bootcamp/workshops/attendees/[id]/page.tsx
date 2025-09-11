@@ -60,7 +60,7 @@ export default function Attendees() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 ">
 
             <Button variant="outline" className="mb-6" onClick={() => router.back()}>
                 <ChevronLeft />

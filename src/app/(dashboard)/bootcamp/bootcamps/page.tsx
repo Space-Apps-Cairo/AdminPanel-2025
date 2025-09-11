@@ -118,7 +118,7 @@ export default function Bootcamps() {
             />
         )}
 
-        <div className="container mx-auto py-6">
+        <div className="container mx-auto py-6 px-8">
 
             <h1 className="text-2xl font-bold mb-6">Bootcamps</h1>
 
