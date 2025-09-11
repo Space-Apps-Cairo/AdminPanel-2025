@@ -284,7 +284,7 @@ export const participantColumns: ColumnDef<Participant>[] = [
   { header: "ID", accessorKey: "id", size: 80, enableHiding: false },
   { header: "English Name", accessorKey: "name_en" },
   { header: "Arabic Name", accessorKey: "name_ar" },
-  { header: "Email", accessorKey: "email" },
+  { header: "Email", accessorKey: "email", size: 300 },
   { header: "Phone", accessorKey: "phone_number" },
   { header: "National ID", accessorKey: "national_id" },
   { header: "Governorate", accessorKey: "governorate", enableHiding: false },

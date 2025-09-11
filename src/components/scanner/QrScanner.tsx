@@ -4,7 +4,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import React, { useEffect, useRef, useCallback, useState, useId } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { X, Camera, RotateCcw } from "lucide-react";
+import { X, Camera, RotateCcw, SwitchCamera } from "lucide-react";
 import { ScannerProps } from "@/types/scanner";
 
 type TorchConstraints = MediaTrackConstraints & {
@@ -25,6 +25,9 @@ export default function QrScanner({
 
   const [isLoading, setIsLoading] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [isStarted, setIsStarted] = useState(false);
+  const [cameras, setCameras] = useState<{ id: string; label: string }[]>([]);
+  const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
 
   const turnOffTorchAndStop = useCallback(async () => {
     try {
@@ -62,6 +65,56 @@ export default function QrScanner({
     }
   }, [onClose, turnOffTorchAndStop]);
 
+  const switchCamera = useCallback(async () => {
+    if (
+      scannerRef.current &&
+      scannerRef.current.isScanning &&
+      cameras.length > 1 &&
+      selectedCameraId
+    ) {
+      setIsLoading(true);
+      try {
+        await scannerRef.current.stop(); // Stop scanning
+
+        const currentIndex = cameras.findIndex((c) => c.id === selectedCameraId);
+        const nextIndex = (currentIndex + 1) % cameras.length;
+        const nextCameraId = cameras[nextIndex].id;
+        setSelectedCameraId(nextCameraId);
+
+        // Restart with the new camera
+        await scannerRef.current.start(
+          { deviceId: { exact: nextCameraId } },
+          {
+            fps: 5,
+          },
+          async (decodedText) => {
+            await turnOffTorchAndStop();
+            onScanSuccess(decodedText);
+          },
+          (errorMessage) => {
+            if (
+              !errorMessage.includes("No QR code found") &&
+              !errorMessage.includes("NotFoundException")
+            ) {
+              console.warn("Scan error:", errorMessage);
+            }
+          },
+        );
+      } catch (err) {
+        console.error("Error switching camera:", err);
+        onError("Failed to switch camera.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  }, [
+    cameras,
+    selectedCameraId,
+    onScanSuccess,
+    onError,
+    turnOffTorchAndStop,
+  ]);
+
   const requestPermission = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -89,11 +142,19 @@ export default function QrScanner({
       }
 
       scannerRef.current = new Html5Qrcode(previewId);
-      const cameras = await Html5Qrcode.getCameras();
-      if (!cameras.length) throw new Error("No camera found");
+      const cameraList = await Html5Qrcode.getCameras();
+      if (!cameraList.length) throw new Error("No camera found");
+
+      setCameras(cameraList);
+
+      const rearCamera = cameraList.find((camera) =>
+        camera.label.toLowerCase().includes("back"),
+      );
+      const cameraId = rearCamera ? rearCamera.id : cameraList[0].id;
+      setSelectedCameraId(cameraId);
 
       await scannerRef.current.start(
-        { deviceId: { exact: cameras[0].id } },
+        { deviceId: { exact: cameraId } },
         {
           fps: 5,
         },
@@ -126,18 +187,11 @@ export default function QrScanner({
   ]);
 
   useEffect(() => {
-    let active = true;
-    const init = async () => {
-      await new Promise((r) => setTimeout(r, 500));
-      if (active) startScanner();
-    };
-    init();
-
+    // This effect now only handles cleanup when the component unmounts.
     return () => {
-      active = false;
       turnOffTorchAndStop();
     };
-  }, [startScanner, turnOffTorchAndStop]);
+  }, [turnOffTorchAndStop]);
 
   if (hasPermission === false) {
     return (
@@ -156,6 +210,38 @@ export default function QrScanner({
                 <Button onClick={startScanner} className="flex-1">
                   <RotateCcw className="w-4 h-4 mr-2" />
                   Try again
+                </Button>
+                <Button variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </React.Fragment>
+    );
+  }
+
+  if (!isStarted) {
+    return (
+      <React.Fragment>
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md">
+            <CardContent className="p-6 text-center space-y-4">
+              <Camera className="w-16 h-16 mx-auto text-gray-400" />
+              <h3 className="text-lg font-semibold">Ready to Scan</h3>
+              <p className="text-gray-600">
+                The app needs camera access to scan QR codes.
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    setIsStarted(true);
+                    startScanner();
+                  }}
+                  className="flex-1"
+                >
+                  Start Scanning
                 </Button>
                 <Button variant="outline" onClick={onClose}>
                   Cancel
@@ -191,6 +277,17 @@ export default function QrScanner({
           >
             <X className="h-4 w-4" />
           </Button>
+          {cameras.length > 1 && (
+            <Button
+              onClick={switchCamera}
+              size="icon"
+              variant="secondary"
+              className="absolute top-4 left-4 z-10 rounded-full"
+              disabled={isLoading}
+            >
+              <SwitchCamera className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </React.Fragment>
