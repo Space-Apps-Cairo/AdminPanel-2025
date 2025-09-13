@@ -1,12 +1,14 @@
 import { Field, FieldOption } from "@/app/interface";
-import { ParticipantPreference } from "@/types/preference";
+import { ParticipantPreference, ParticipantPreferenceRequest } from "@/types/preference";
 import { ColumnDef } from "@tanstack/react-table";
 import RowsActions from "../../../../../../../components/table/rows-actions";
 import {
   useUpdatePreferenceMutation,
   useDeletePreferenceMutation,
+  useGetPreferencesByParticipantQuery,
 } from "@/service/Api/preferences";
 import { ParticipantPreferenceSchema } from "@/validations/preference";
+import { toast } from "sonner";
 
 export const getPreferenceFields = (
   prefData?: ParticipantPreference,
@@ -67,18 +69,52 @@ function PreferenceRowActions({
   const [updatePreference] = useUpdatePreferenceMutation();
   const [deletePreference] = useDeletePreferenceMutation();
 
+ ;
+
+
   return (
     <RowsActions
       rowData={rowData}
       isDelete={true}
       fields={getPreferenceFields(rowData, workshopOptions)}
       validationSchema={ParticipantPreferenceSchema}
-      updateMutation={updatePreference}
+    updateMutation={(data: ParticipantPreference) => {
+        const formattedData = {
+          bootcamp_participant_id: String(data.participant.id),
+    workshop_id: data.workshop ? String(data.workshop.id) : "",
+    preference_order: String(data.preference_order),
+        };
+        return updatePreference({
+          id: rowData.id, 
+          data: formattedData ,
+        });
+      }}
+
       deleteMutation={deletePreference}
-      onUpdateSuccess={(result) => console.log("Preference updated:", result)}
-      onUpdateError={(error) => console.error("Update error:", error)}
-      onDeleteSuccess={(result) => console.log("Preference deleted:", result)}
-      onDeleteError={(error) => console.error("Delete error:", error)}
+       onUpdateSuccess={(result) => {
+            toast.success(
+              result.message || "Preferences updated successfully!"
+            );
+         
+          }}
+          onUpdateError={(error) => {
+            toast.error(
+              error.data?.message ||
+                "Failed to update Preference. Please try again."
+            );
+         console.log(error.message)
+          }}
+          onDeleteSuccess={(result) => {
+            toast.success(
+              result.message || "Preferences deleted successfully!"
+            );
+          }}
+          onDeleteError={(error) => {
+            toast.error(
+              error.data?.message ||
+                "Failed to delete Preference. Please try again."
+            );
+          }}
     />
   );
 }

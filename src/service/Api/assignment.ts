@@ -7,9 +7,7 @@ export const assignmentsApi = api.injectEndpoints({
       query: (participantId) =>
         `/participant-workshop-assignments/participant/${participantId}`,
       transformResponse: (response: any) => response.data ?? [],
-      providesTags: (result, error, id) => [
-        { type: "Assignment", id: id.toString() },
-      ],
+      providesTags:["Assignment"],
     }),
 
     addNewAssignment: build.mutation<
@@ -38,10 +36,7 @@ export const assignmentsApi = api.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, arg) => [
-        "Assignment",
-        { type: "Assignment", id: arg.id.toString() },
-      ],
+      invalidatesTags:["Assignment"],
     }),
 
     deleteAssignment: build.mutation<
@@ -52,10 +47,7 @@ export const assignmentsApi = api.injectEndpoints({
         url: `/participant-workshop-assignments/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, id) => [
-        "Assignment",
-        { type: "Assignment", id: id.toString() },
-      ],
+      invalidatesTags:["Assignment"],
     }),
   }),
 });

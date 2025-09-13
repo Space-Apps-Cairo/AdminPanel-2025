@@ -1,19 +1,26 @@
  import { Workshop , Schedule } from "./workshop";  
-import {ParticipantResponse} from "./participants"
+import {Participant} from "./participants"
 
-export type ParticipantPreference= {
+export type ParticipantPreference = {
   id: number;
-  preference_order:number;
-  participant:ParticipantResponse;
+  preference_order:string;
+  participant: Participant;
   workshop: Workshop | null;
-}
+};
 
-export type PreferencesResponse ={
+export type PreferencesResponse = {
   success: boolean;
   status: number;
   message: string;
   data: ParticipantPreference[];
-}
+};
+
+
+export type ParticipantPreferenceRequest = {
+  bootcamp_participant_id: string; 
+  workshop_id: string;             
+  preference_order: string;        
+};
 //Assignment tab
 export type Assignment = {
   bootcamp_participant_id:any;

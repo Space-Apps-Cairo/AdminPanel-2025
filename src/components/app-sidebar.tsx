@@ -18,14 +18,11 @@ import { logout } from "@/service/store/features/authSlice"
 import {
   HomeIcon,
   Building,
-  // Frame,
   GalleryVerticalEnd,
   Shapes,
   QrCode,
   ClipboardList,
   LogOut,
-  // PieChart,
-  // Map,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";

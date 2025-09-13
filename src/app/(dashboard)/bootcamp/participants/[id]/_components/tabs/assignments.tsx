@@ -5,7 +5,6 @@ import DataTable from "../../../../../../../components/table/data-table";
 import CrudForm from "../../../../../../../components/crud-form";
 import { AssignmentSchema } from "@/validations/assignment";
 import {
-  assignmentColumns,
   getAssignmentFields,
 } from "@/app/(dashboard)/bootcamp/participants/[id]/_components/columns/assignmentColumns";
 import { ColumnDef } from "@tanstack/react-table";
