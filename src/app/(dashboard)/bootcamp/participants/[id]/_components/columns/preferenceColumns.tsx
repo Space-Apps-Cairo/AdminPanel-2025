@@ -78,18 +78,7 @@ function PreferenceRowActions({
       isDelete={true}
       fields={getPreferenceFields(rowData, workshopOptions)}
       validationSchema={ParticipantPreferenceSchema}
-    updateMutation={(data: ParticipantPreference) => {
-        const formattedData = {
-          bootcamp_participant_id: String(data.participant.id),
-    workshop_id: data.workshop ? String(data.workshop.id) : "",
-    preference_order: String(data.preference_order),
-        };
-        return updatePreference({
-          id: rowData.id, 
-          data: formattedData ,
-        });
-      }}
-
+    updateMutation={(data) => updatePreference({ id: rowData.id, data })}
       deleteMutation={deletePreference}
        onUpdateSuccess={(result) => {
             toast.success(
