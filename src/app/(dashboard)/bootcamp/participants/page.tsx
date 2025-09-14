@@ -110,18 +110,7 @@ const workshopOptions: FieldOption[] =
     formData: FormData
   ) => {
     try {
-      // const formData = new FormData();
-
-      // Object.entries(data).forEach(([key, value]) => {
-      //   if (value !== undefined && value !== null) {
-      //     if (Array.isArray(value)) {
-      //       value.forEach((v) => formData.append(`${key}[]`, v));
-      //     } else {
-      //       formData.append(key, value);
-      //     }
-      //   }
-      // });
-
+     
       const result = await addParticipant(formData).unwrap();
 
       if (result.data) {

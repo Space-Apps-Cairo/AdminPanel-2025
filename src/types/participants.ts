@@ -20,34 +20,33 @@ export type Participant = {
   nationality: string; // e.g. "Egypt"
   governorate: string; // e.g. "Cairo"
   educational_institute: string;
-  graduation_year: string; // could be number if always numeric
+  graduation_year: number | string;
   current_occupation: string;
-  educational_level_id: string;
-  field_of_study_id: string;
+  educational_level_id: number | string;
+  field_of_study_id: number | string;
   national_id: string;
   is_have_team: "individual" | "team_not_complete" | "team_complete";
-  participation_status: string; // e.g. "ex_participant"
-  participated_years: string; // could also be string[] if multiple years
-  attend_workshop: number; // 0 | 1 maybe? could also be boolean if API allows
+  participation_status: "ex_participant" | "ex_volunteer" | "first_time";
+  participated_years: string | string[];
+  attend_workshop: number | boolean;
   why_this_workshop: string;
   comment: string;
-  year: string;
-  national_id_front: File | string; // file or URL
-  national_id_back: File | string;  // file or URL
-  personal_photo: File | string;    // file or URL
+  year: number | string;
+  national_id_front: File | string ;
+  national_id_back: File | string ;
+  personal_photo: File | string ;
   skills: Skill[];
   created_by: CreatedBy;
-   first_priority_id?: number;
+  first_priority_id?: number;
   second_priority_id?: number;
   third_priority_id?: number;
-  created_at?:string;
+  created_at?: string;
 };
 
 // Request type for sending to API (FormData)
 export type ParticipantRequest = Omit<
   Participant,
-  "id" | "uuid" | "skills" | "created_by"
-> & {
+  "id" | "uuid" | "skills" | "created_by"> & {
   skills: string[]; // send skill IDs instead of full objects
 };
 
