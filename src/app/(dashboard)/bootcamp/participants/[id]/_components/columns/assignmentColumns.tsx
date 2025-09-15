@@ -7,6 +7,8 @@ import {
   useDeleteAssignmentMutation,
   useUpdateAssignmentMutation,
 } from "@/service/Api/assignment";
+import { toast } from "sonner";
+import { useGetPreferencesByParticipantQuery } from "@/service/Api/preferences";
 
 export const getAssignmentFields = (assignmentData?: Assignment): Field[] => [
   {
@@ -86,22 +88,45 @@ function AssignmentRowActions({ rowData }: { rowData: Assignment }) {
   const [updateAssignment] = useUpdateAssignmentMutation();
   const [deleteAssignment] = useDeleteAssignmentMutation();
 
+
   return (
     <RowsActions
       rowData={rowData}
       isDelete={true}
       fields={getAssignmentFields(rowData)}
       validationSchema={AssignmentSchema}
-      updateMutation={updateAssignment}
+    updateMutation={(data: Assignment) => {
+        const formattedData = {
+          ...data,
+        };
+        return updateAssignment({
+          id: rowData.id, 
+          data: formattedData,
+        });
+      }}
       deleteMutation={deleteAssignment}
-      onUpdateSuccess={(result) => console.log("Assignment updated:", result)}
-      onUpdateError={(error) =>
-        console.error("Error updating assignment:", error)
-      }
-      onDeleteSuccess={(result) => console.log("Assignment deleted:", result)}
-      onDeleteError={(error) =>
-        console.error("Error deleting assignment:", error)
-      }
+          onUpdateSuccess={(result) => {
+            toast.success(
+              result.message || "Assignment updated successfully!"
+            );
+          }}
+          onUpdateError={(error) => {
+            toast.error(
+              error.data?.message ||
+                "Failed to update Assignment. Please try again."
+            );
+          }}
+          onDeleteSuccess={(result) => {
+            toast.success(
+              result.message || "Assignment deleted successfully!"
+            );
+          }}
+          onDeleteError={(error) => {
+            toast.error(
+              error.data?.message ||
+                "Failed to delete Assignment. Please try again."
+            );
+          }}
     />
   );
 }

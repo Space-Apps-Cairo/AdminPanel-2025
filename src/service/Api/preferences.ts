@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { ParticipantPreference } from "@/types/preference";
+import { ParticipantPreference, ParticipantPreferenceRequest } from "@/types/preference";
 
 export const preferencesApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -10,14 +10,16 @@ export const preferencesApi = api.injectEndpoints({
     }),
 
     getPreferencesByParticipant: build.query<ParticipantPreference[], number>({
-      query: (participantId) => `/participant-workshop-preferences/participant/${participantId}`,
+      query: (participantId) =>
+        `/participant-workshop-preferences/participant/${participantId}`,
       transformResponse: (response: any) => response.data ?? [],
-      providesTags: (result, error, id) => [
-        { type: "Preference", id: id.toString() },
-      ],
+      providesTags: ["Preference"],
     }),
 
-    addNewPreference:build.mutation<ParticipantPreference, { participant_id: number; workshop_id: number; preference_order: number }>({
+    addNewPreference: build.mutation<
+      ParticipantPreference,
+      { participant_id: number; workshop_id: number; preference_order: number }
+    >({
       query: (preferenceData) => ({
         url: "/participant-workshop-preferences",
         method: "POST",
@@ -28,17 +30,14 @@ export const preferencesApi = api.injectEndpoints({
 
     updatePreference: build.mutation<
       ParticipantPreference,
-      { id: number; data: Partial<Omit<ParticipantPreference, "id">> }
-      >({
+      { id: number; data: ParticipantPreferenceRequest }
+    >({
       query: ({ id, data }) => ({
         url: `/participant-workshop-preferences/${id}`,
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, arg) => [
-        "Preference",
-        { type: "Preference", id: arg.id.toString() },
-      ],
+      invalidatesTags: ["Preference" ],
     }),
 
     deletePreference: build.mutation<
@@ -49,10 +48,7 @@ export const preferencesApi = api.injectEndpoints({
         url: `/participant-workshop-preferences/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, id) => [
-        "Preference",
-        { type: "Preference", id: id.toString() },
-      ],
+      invalidatesTags:["Preference"],
     }),
   }),
 });
