@@ -133,6 +133,7 @@ export default function DataTable<TData extends DataTableRow>({
   columnVisibilityConfig,
 }: DataTableProps<TData>) {
   const id = useId();
+   
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
