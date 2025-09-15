@@ -86,6 +86,7 @@ export default function QrScanner({
           { deviceId: { exact: nextCameraId } },
           {
             fps: 5,
+            qrbox: { width: 288, height: 288 },
           },
           async (decodedText) => {
             await turnOffTorchAndStop();
@@ -157,6 +158,7 @@ export default function QrScanner({
         { deviceId: { exact: cameraId } },
         {
           fps: 5,
+          qrbox: { width: 288, height: 288 },
         },
         async (decodedText) => {
           await turnOffTorchAndStop();
@@ -256,9 +258,50 @@ export default function QrScanner({
 
   return (
     <React.Fragment>
+      <style>{`
+        #${previewId} video {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+        }
+        #${previewId} > div {
+          border: none !important;
+        }
+        @keyframes scan-line {
+          0% { top: 0; }
+          100% { top: 100%; }
+        }
+        .scanning-line {
+          position: absolute;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: #00ff00;
+          filter: drop-shadow(0 0 10px #00ff00);
+          animation: scan-line 2s linear infinite;
+        }
+      `}</style>
       <div className="fixed inset-0 bg-black z-50">
         <div className="relative w-full h-full">
           <div id={previewId} className="w-full h-full" />
+
+          {/* Scanning Box Overlay */}
+          {!isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div
+                className="w-72 h-72 relative"
+                style={{
+                  boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <div className="absolute -top-px -left-px w-10 h-10 border-t-4 border-l-4 border-green-500 rounded-tl-lg"></div>
+                <div className="absolute -top-px -right-px w-10 h-10 border-t-4 border-r-4 border-green-500 rounded-tr-lg"></div>
+                <div className="absolute -bottom-px -left-px w-10 h-10 border-b-4 border-l-4 border-green-500 rounded-bl-lg"></div>
+                <div className="absolute -bottom-px -right-px w-10 h-10 border-b-4 border-r-4 border-green-500 rounded-br-lg"></div>
+                <div className="scanning-line"></div>
+              </div>
+            </div>
+          )}
 
           {isLoading && (
             <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
