@@ -8,7 +8,6 @@ import {
   useUpdateAssignmentMutation,
 } from "@/service/Api/assignment";
 import { toast } from "sonner";
-import { useGetPreferencesByParticipantQuery } from "@/service/Api/preferences";
 
 export const getAssignmentFields = (assignmentData?: Assignment): Field[] => [
   {
@@ -88,45 +87,40 @@ function AssignmentRowActions({ rowData }: { rowData: Assignment }) {
   const [updateAssignment] = useUpdateAssignmentMutation();
   const [deleteAssignment] = useDeleteAssignmentMutation();
 
-
   return (
     <RowsActions
       rowData={rowData}
       isDelete={true}
       fields={getAssignmentFields(rowData)}
       validationSchema={AssignmentSchema}
-    updateMutation={(data: Assignment) => {
+      updateMutation={(data: Assignment) => {
         const formattedData = {
           ...data,
         };
         return updateAssignment({
-          id: rowData.id, 
+          id: rowData.id,
           data: formattedData,
         });
       }}
       deleteMutation={deleteAssignment}
-          onUpdateSuccess={(result) => {
-            toast.success(
-              result.message || "Assignment updated successfully!"
-            );
-          }}
-          onUpdateError={(error) => {
-            toast.error(
-              error.data?.message ||
-                "Failed to update Assignment. Please try again."
-            );
-          }}
-          onDeleteSuccess={(result) => {
-            toast.success(
-              result.message || "Assignment deleted successfully!"
-            );
-          }}
-          onDeleteError={(error) => {
-            toast.error(
-              error.data?.message ||
-                "Failed to delete Assignment. Please try again."
-            );
-          }}
+      onUpdateSuccess={(result) => {
+        toast.success(result.message || "Assignment updated successfully!");
+      }}
+      onUpdateError={(error) => {
+        toast.error(
+          error.data?.message ||
+            "Failed to update Assignment. Please try again."
+        );
+      }}
+      onDeleteSuccess={(result) => {
+        toast.success(result.message || "Assignment deleted successfully!");
+      }}
+      onDeleteError={(error) => {
+        toast.error(
+          error.data?.message ||
+            "Failed to delete Assignment. Please try again."
+        );
+      }}
     />
   );
 }
