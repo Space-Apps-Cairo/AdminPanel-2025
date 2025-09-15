@@ -58,7 +58,7 @@ export default function Page() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 px-8">
 
             <Button variant="outline" className="mb-6" onClick={() => router.back()}>
                 <ChevronLeft />

@@ -52,10 +52,10 @@ const data = {
       isActive: true,
       icon: Shapes,
       items: [
-        {
-          title: "Overview",
-          url: "/materials",
-        },
+        // {
+        //   title: "Overview",
+        //   url: "/materials",
+        // },
         {
           title: "Volunteers",
           url: "/materials/volunteers",
