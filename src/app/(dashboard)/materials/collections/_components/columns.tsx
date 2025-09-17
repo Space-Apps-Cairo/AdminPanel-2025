@@ -14,7 +14,6 @@ import {
   Material,
   MaterialsForCollections,
   MaterialsRes,
-  UpdateCollectionRequest,
 } from "@/types/materials";
 import { collectionValidationSchema } from "@/validations/collection";
 import { ColumnDef } from "@tanstack/react-table";
@@ -27,7 +26,6 @@ import Link from "next/link";
 
 export const useCollectionsFields = (
   collectionData?: Collection,
-  isUpdate: boolean = false
 ): Field[] => {
   const { data: materialsData } = useGetAllMaterialsQuery();
 
@@ -64,21 +62,6 @@ export const useCollectionsFields = (
       step: 1,
     },
 
-    ...(isUpdate
-      ? [
-          {
-            name: "used_quantity",
-            type: "number",
-            label: "Used Quantity",
-            placeholder: "Enter the used quantity",
-            ...(collectionData?.used_quantity !== undefined && {
-              defaultValue: collectionData.used_quantity,
-            }),
-            step: 1,
-          },
-        ]
-      : []),
-
     {
       name: "max_per_user",
       type: "number",
@@ -100,7 +83,10 @@ export const useCollectionsFields = (
             name: "id",
             type: "select",
             label: "Select material",
-            options: materialOptions,
+            options: materialOptions.map((option) => ({
+              ...option,
+              label: option.placeholder,
+            })),
           },
           {
             name: "quantity_used",
@@ -163,7 +149,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
     id: "actions",
     header: () => <span>Actions</span>,
     cell: ({ row }) => <CollectionRowActions rowData={row.original} />,
-    size: 180,
+    size: 200,
     enableHiding: false,
   },
 ];
@@ -193,7 +179,7 @@ function CollectionRowActions({ rowData }: { rowData: Collection }) {
           isDelete={true}
           isUpdate={true}
           isPreview={true}
-          fields={useCollectionsFields(rowData, true)}
+          fields={useCollectionsFields(rowData)}
           validationSchema={collectionValidationSchema}
           steps={[1, 2]}
           updateMutation={(data) => {

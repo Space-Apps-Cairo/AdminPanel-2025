@@ -10,43 +10,42 @@ import {
 } from "./ui/sidebar";
 
 import { TeamSwitcher } from "./team-switcher";
-import SearchBar from "./ui/search-bar";
+// import SearchBar from "./ui/search-bar";
 import { Button } from "@/components/ui/button";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logout } from "@/service/store/features/authSlice"
+import { useAppDispatch, useAppSelector } from "@/service/store/store";
 import {
-  HomeIcon,
   Building,
-  GalleryVerticalEnd,
-  Shapes,
+  Shapes, 
   QrCode,
   ClipboardList,
   LogOut,
+  HomeIcon,
+  ShieldUser,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
+import { UserRole } from "@/types/auth.types";
 
-const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-  ],
-  navMain: [
+// Define navigation items with role-based access
+const getNavigationItems = (userRole: UserRole) => {
+  const allItems = [
+
     {
       title: "Dashboard",
       url: "/",
       icon: HomeIcon,
       isActive: true,
+      roles: ['Admin', 'logistics', 'registeration', 'material'] as UserRole[],
+      items: [{title: 'Dashboard', url: '/'}],
     },
     {
       title: "Qr Code",
       url: "/qr-code",
       icon: QrCode,
       isActive: true,
+      roles: ['Admin', 'logistics', 'registeration', 'material'] as UserRole[],
       items: [{ title: "Scan QR Code", url: "/qr-code/scan" }],
     },
     {
@@ -54,11 +53,8 @@ const data = {
       url: "/materials",
       isActive: true,
       icon: Shapes,
+      roles: ['Admin', 'material'] as UserRole[],
       items: [
-        // {
-        //   title: "Overview",
-        //   url: "/materials",
-        // },
         {
           title: "Volunteers",
           url: "/materials/volunteers",
@@ -78,13 +74,12 @@ const data = {
       url: "/bootcamp",
       icon: Building,
       isActive: true,
-
+      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
       items: [
         {
           title: "Dashboard",
           url: "/bootcamp/dashboard",
         },
-       
         {
           title: "Bootcamps",
           url: "/bootcamp/bootcamps",
@@ -108,6 +103,7 @@ const data = {
       url: "/bootcamp/registerationDetails",
       isActive: true,
       icon: ClipboardList,
+      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
       items: [
         {
           title: "Skills",
@@ -135,30 +131,81 @@ const data = {
         },
       ],
     },
-  ],
+  ];
+
+  // Filter items based on user role
+  return allItems.filter(item => item.roles.includes(userRole));
+};
+
+// Function to get team data based on user role
+const getTeamData = (userRole: UserRole) => {
+  const roleConfig = {
+    Admin: {
+      name: "NSAC | Admins",
+      logo: ShieldUser,
+      plan: "admin"
+    },
+    material: {
+      name: "NSAC | Materials",
+      logo: Shapes,
+      plan: "material team"
+    },
+    logistics: {
+      name: "NSAC | Logistics",
+      logo: Building,
+      plan: "logistics team"
+    },
+    registeration: {
+      name: "NSAC | Registration",
+      logo: ClipboardList,
+      plan: "registration team"
+    }
+  };
+
+  const config = roleConfig[userRole] || roleConfig.Admin;
+
+  return {
+    teams: [
+      {
+        name: config.name,
+        logo: config.logo,
+        plan: config.plan,
+      },
+    ],
+  };
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const dispatch=useDispatch();
-  const router=useRouter();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const { state } = useSidebar();
-  const Handlelogout=()=>{
-dispatch(logout());
-toast.success("Logout Successfully");
+  
+  // Get user role from Redux store
+  const userRole = useAppSelector((state) => state.auth.role) as UserRole;
+  
+  // Get filtered navigation items based on user role
+  const navMain = getNavigationItems(userRole || 'Admin'); // Default to admin if no role
+  
+  // Get team data based on user role
+  const data = getTeamData(userRole || 'Admin');
 
- router.push("/login");
+  const Handlelogout = async () => {
+    dispatch(logout());
+    toast.success("Logout Successfully");
+    router.refresh();
+    router.push("/login");
   }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SearchBar />
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
-       <SidebarFooter>
-       <Button
+      <SidebarFooter>
+        <Button
           variant="outline"
           className="w-full text-red-600 flex items-center gap-2"
           onClick={Handlelogout}

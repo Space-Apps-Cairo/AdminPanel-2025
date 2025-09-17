@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/service/Api/login";
 import { setCredentials } from "@/service/store/features/authSlice";
 import { toast } from "sonner";
+import { LoginRequest } from "@/types/auth.types";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email" }),
@@ -34,10 +35,10 @@ export function LoginForm() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: LoginRequest) => {
     try {
       const res = await login(values).unwrap();
-      dispatch(setCredentials({ user: res.user, access_token: res.access_token }));
+      dispatch(setCredentials({ user: res.user, access_token: res.access_token, role: res.role }));
       toast.success("Login Successfully");
       router.push("/");
     } catch (err: any) {

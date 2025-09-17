@@ -6,6 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { X, Camera, RotateCcw, SwitchCamera } from "lucide-react";
 import { ScannerProps } from "@/types/scanner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type TorchConstraints = MediaTrackConstraints & {
   advanced?: Array<{ torch?: boolean }>;
@@ -26,6 +36,7 @@ export default function QrScanner({
   const [isLoading, setIsLoading] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [isStarted, setIsStarted] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [cameras, setCameras] = useState<{ id: string; label: string }[]>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
 
@@ -65,6 +76,13 @@ export default function QrScanner({
     }
   }, [onClose, turnOffTorchAndStop]);
 
+  const resumeScanner = useCallback(() => {
+    if (scannerRef.current) {
+      scannerRef.current.resume();
+    }
+    setIsPaused(false);
+  }, []);
+
   const switchCamera = useCallback(async () => {
     if (
       scannerRef.current &&
@@ -88,9 +106,12 @@ export default function QrScanner({
             fps: 5,
             qrbox: { width: 288, height: 288 },
           },
-          async (decodedText) => {
-            await turnOffTorchAndStop();
+          (decodedText) => {
+            if (scannerRef.current?.isScanning) {
+              scannerRef.current?.pause(true);
+            }
             onScanSuccess(decodedText);
+            setIsPaused(true);
           },
           (errorMessage) => {
             if (
@@ -113,7 +134,7 @@ export default function QrScanner({
     selectedCameraId,
     onScanSuccess,
     onError,
-    turnOffTorchAndStop,
+    // turnOffTorchAndStop,
   ]);
 
   const requestPermission = useCallback(async () => {
@@ -160,9 +181,12 @@ export default function QrScanner({
           fps: 5,
           qrbox: { width: 288, height: 288 },
         },
-        async (decodedText) => {
-          await turnOffTorchAndStop();
+        (decodedText) => {
+          if (scannerRef.current?.isScanning) {
+            scannerRef.current?.pause(true);
+          }
           onScanSuccess(decodedText);
+          setIsPaused(true);
         },
         (errorMessage) => {
           if (
@@ -185,7 +209,7 @@ export default function QrScanner({
     onError,
     requestPermission,
     previewId,
-    turnOffTorchAndStop,
+    // turnOffTorchAndStop,
   ]);
 
   useEffect(() => {
@@ -267,38 +291,34 @@ export default function QrScanner({
         #${previewId} > div {
           border: none !important;
         }
-        @keyframes scan-line {
-          0% { top: 0; }
-          100% { top: 100%; }
-        }
-        .scanning-line {
-          position: absolute;
-          left: 0;
-          width: 100%;
-          height: 2px;
-          background: #00ff00;
-          filter: drop-shadow(0 0 10px #00ff00);
-          animation: scan-line 2s linear infinite;
-        }
       `}</style>
       <div className="fixed inset-0 bg-black z-50">
         <div className="relative w-full h-full">
           <div id={previewId} className="w-full h-full" />
 
-          {/* Scanning Box Overlay */}
+          {/* Enhanced Scanning Box Overlay */}
           {!isLoading && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div
-                className="w-72 h-72 relative"
+                className="w-80 h-80 relative qr-scanner-box"
                 style={{
-                  boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5)",
+                  boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.85)",
                 }}
               >
-                <div className="absolute -top-px -left-px w-10 h-10 border-t-4 border-l-4 border-green-500 rounded-tl-lg"></div>
-                <div className="absolute -top-px -right-px w-10 h-10 border-t-4 border-r-4 border-green-500 rounded-tr-lg"></div>
-                <div className="absolute -bottom-px -left-px w-10 h-10 border-b-4 border-l-4 border-green-500 rounded-bl-lg"></div>
-                <div className="absolute -bottom-px -right-px w-10 h-10 border-b-4 border-r-4 border-green-500 rounded-br-lg"></div>
-                <div className="scanning-line"></div>
+                <div className="qr-scanner-corner qr-corner-tl"></div>
+                <div className="qr-scanner-corner qr-corner-tr"></div>
+                <div className="qr-scanner-corner qr-corner-bl"></div>
+                <div className="qr-scanner-corner qr-corner-br"></div>
+                <div className="qr-scanning-line"></div>
+                <div className="qr-scanning-overlay"></div>
+                
+                {/* Center crosshair */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-8 h-8 relative">
+                    <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent transform -translate-y-1/2"></div>
+                    <div className="absolute left-1/2 top-0 w-0.5 h-full bg-gradient-to-b from-transparent via-cyan-400 to-transparent transform -translate-x-1/2"></div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -333,6 +353,24 @@ export default function QrScanner({
           )}
         </div>
       </div>
+      <AlertDialog open={isPaused}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Scan Successful</AlertDialogTitle>
+            <AlertDialogDescription>
+              The QR code was scanned successfully. Would you like to scan another
+              one?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={stopScanner}>Close</AlertDialogCancel>
+            <AlertDialogAction onClick={resumeScanner}>
+              Scan Another
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </React.Fragment>
   );
 }
+

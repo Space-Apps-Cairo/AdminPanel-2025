@@ -28,6 +28,8 @@ import { Collection } from "@/types/materials";
 import { BootcampType } from "@/types/bootcamp";
 import Loading from "@/components/loading/loading";
 import Link from "next/link";
+import { useAppSelector } from "@/service/store/store";
+import { UserRole } from "@/types/auth.types";
 
 const QrScanner = dynamic(() => import("@/components/scanner/QrScanner"), {
   ssr: false,
@@ -52,10 +54,22 @@ export default function ScanQrCodePage() {
   const [isClient, setIsClient] = useState(false);
   const [scanFor, setScanFor] = useState<ScanType>(null);
 
+  // Get user role from Redux store
+  const userRole = useAppSelector((state) => state.auth.role) as UserRole;
+
+  // Conditionally fetch data based on user role
+  const shouldFetchCollections = userRole === 'Admin' || userRole === 'material';
+  const shouldFetchBootcamps = userRole === 'Admin' || userRole === 'logistics' || userRole === 'registeration';
+  const shouldShowWorkshops = userRole === 'Admin' || userRole === 'logistics' || userRole === 'registeration';
+
   const { data: collectionsData, isLoading: isLoadingCollections } =
-    useGetAllCollectionsQuery();
+    useGetAllCollectionsQuery(undefined, {
+      skip: !shouldFetchCollections
+    });
   const { data: bootcampsData, isLoading: isLoadingBootcamps } =
-    useGetBootcampsQuery();
+    useGetBootcampsQuery(undefined, {
+      skip: !shouldFetchBootcamps
+    });
 
   const [assignCollection] = useAssignCollectionMutation();
   const [registerBootcampAttendee] = useRegisterBootcampAttendeeMutation();
@@ -64,7 +78,6 @@ export default function ScanQrCodePage() {
   useEffect(() => setIsClient(true), []);
 
   const handleScanSuccess = async (scannedData: string) => {
-    setShowScanner(false);
     if (!scanFor) return;
 
     const participantUuid = String(scannedData).trim();
@@ -134,132 +147,136 @@ export default function ScanQrCodePage() {
     setShowScanner(true);
   };
 
-  const isLoading = isLoadingCollections || isLoadingBootcamps;
+  const isLoading = (shouldFetchCollections && isLoadingCollections) || (shouldFetchBootcamps && isLoadingBootcamps);
 
   if (isLoading) {
     return <Loading />;
   }
 
   const collections = collectionsData?.data ?? [];
-  const bootcamp = bootcampsData?.data?.[0];
 
   return (
     <div className="container mx-auto space-y-6 py-8 px-8">
-
       <h1 className="text-3xl font-bold mb-8">Scan QR Code</h1>
 
-      {/* Bootcamp Section */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Bootcamp</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Bootcamp Card */}
-          {bootcamp && (
+      {/* Bootcamp Section - Only for Admin, Logistics, Registration */}
+      {shouldFetchBootcamps && (
+        <section>
+          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Bootcamp</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Bootcamp Card */}
+            {bootcampsData?.data.map((bootcamp, idx) => (
+              <Card key={idx}>
+                <CardHeader>
+                  <CardTitle>Bootcamp</CardTitle>
+                  <CardDescription>{bootcamp.name}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>Total Capacity: {bootcamp.total_capacity}</p>
+                  <p>Date: {new Date(bootcamp.date).toLocaleDateString()}</p>
+                </CardContent>
+                <CardFooter className="grid grid-cols-2 gap-2 max-[450px]:grid-cols-1">
+                  <Button
+                    className="w-full"
+                    onClick={() => openScanner({ type: "bootcamp", bootcamp })}
+                  >
+                    <QrCode className="mr-2 h-4 w-4" /> Scan
+                  </Button>
+                  <Link
+                    className="w-full"
+                    href={`/bootcamp/bootcamps/${bootcamp.id}`}
+                  >
+                    <Button className="w-full" variant="outline">
+                      <User className="mr-2 h-4 w-4" />
+                      <p>Attendees</p>
+                      <ChevronRight />
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Workshops Section - Only for Admin, Logistics, Registration */}
+      {shouldShowWorkshops && (
+        <section>
+          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Workshops</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Workshop Card */}
             <Card>
               <CardHeader>
-                <CardTitle>Bootcamp</CardTitle>
-                <CardDescription>{bootcamp.name}</CardDescription>
+                <CardTitle>Workshop</CardTitle>
+                <CardDescription>
+                  Scan QR code for workshop attendance
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Total Capacity: {bootcamp.total_capacity}</p>
-                <p>Date: {new Date(bootcamp.date).toLocaleDateString()}</p>
-              </CardContent>
-              <CardFooter className="grid grid-cols-2 gap-2 max-[450px]:grid-cols-1">
-                <Button
-                  className="w-full"
-                  onClick={() => openScanner({ type: "bootcamp", bootcamp })}
-                >
-                  <QrCode className="mr-2 h-4 w-4" /> Scan
-                </Button>
-                <Link
-                  className="w-full"
-                  href={`/bootcamp/bootcamps/${bootcamp.id}`}
-                >
-                  <Button className="w-full" variant="outline">
-                    <User className="mr-2 h-4 w-4" />
-                    <p>Attendees</p>
-                    <ChevronRight />
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          )}
-        </div>
-      </section>
-
-      {/* Workshops Section */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Workshops</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Workshop Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Workshop</CardTitle>
-              <CardDescription>
-                Scan QR code for workshop attendance
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>
-                Click the button to start scanning participant QR codes for the
-                workshops.
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="w-full"
-                onClick={() => openScanner({ type: "workshop" })}
-              >
-                <QrCode className="mr-2 h-4 w-4" /> Scan
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-      </section>
-
-      {/* Collections Section */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-6 border-b pb-2">
-          Collections
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {collections.map((collection, idx) => (
-            <Card key={collection.id}>
-              <CardHeader>
-                <CardTitle>Collection {idx + 1}</CardTitle>
-                <CardDescription>{collection.collection_name}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>Total: {collection.total_quantity}</p>
-                <p>Max Per User: {collection.max_per_user}</p>
-                <p>Used: {collection.used_quantity}</p>
                 <p>
-                  Materials:{" "}
-                  {collection.materials.map((m) => m.material_name).join(", ")}
+                  Click the button to start scanning participant QR codes for the
+                  workshops.
                 </p>
               </CardContent>
-              <CardFooter className="grid grid-cols-2 gap-2 max-[450px]:grid-cols-1">
+              <CardFooter>
                 <Button
-                  onClick={() =>
-                    openScanner({ type: "collection", collection })
-                  }
+                  className="w-full"
+                  onClick={() => openScanner({ type: "workshop" })}
                 >
                   <QrCode className="mr-2 h-4 w-4" /> Scan
                 </Button>
-                <Link
-                  className="w-full"
-                  href={`/materials/collections/${collection.id}`}
-                >
-                  <Button className="w-full" variant="outline">
-                    <User className="mr-2 h-4 w-4" />
-                    <p>Registrants</p>
-                    <ChevronRight />
-                  </Button>
-                </Link>
               </CardFooter>
             </Card>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
+
+      {/* Collections Section - Only for Admin, Material */}
+      {shouldFetchCollections && (
+        <section>
+          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">
+            Collections
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {collections.map((collection, idx) => (
+              <Card key={collection.id}>
+                <CardHeader>
+                  <CardTitle>Collection {idx + 1}</CardTitle>
+                  <CardDescription>{collection.collection_name}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>Total: {collection.total_quantity}</p>
+                  <p>Max Per User: {collection.max_per_user}</p>
+                  <p>Used: {collection.used_quantity}</p>
+                  <p>
+                    Materials:{" "}
+                    {collection.materials.map((m) => m.material_name).join(", ")}
+                  </p>
+                </CardContent>
+                <CardFooter className="grid grid-cols-2 gap-2 max-[450px]:grid-cols-1">
+                  <Button
+                    onClick={() =>
+                      openScanner({ type: "collection", collection })
+                    }
+                  >
+                    <QrCode className="mr-2 h-4 w-4" /> Scan
+                  </Button>
+                  <Link
+                    className="w-full"
+                    href={`/materials/collections/${collection.id}`}
+                  >
+                    <Button className="w-full" variant="outline">
+                      <User className="mr-2 h-4 w-4" />
+                      <p>Registrants</p>
+                      <ChevronRight />
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
       {isClient && showScanner && (
         <QrScanner

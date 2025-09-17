@@ -604,16 +604,31 @@ export const getParticipantsFields = (
 
 // Columns --------------------
 export const participantColumns: ColumnDef<Participant>[] = [
-  { header: "ID", accessorKey: "id", size: 80, enableHiding: false },
-  { header: "English Name", accessorKey: "name_en" },
-  { header: "Arabic Name", accessorKey: "name_ar" },
+  { header: "ID", accessorKey: "id", size: 60, enableHiding: false },
+  // { header: "English Name", accessorKey: "name_en", size: 180 },
+  { 
+    header: "English Name", 
+    accessorKey: "name_en", 
+    cell: ({ row }) => (
+      <div className="break-all">{row.getValue("name_en")}</div>
+    ),
+    size: 180 
+  },
+  { 
+    header: "Arabic Name", 
+    accessorKey: "name_ar", 
+    cell: ({ row }) => (
+      <div className="break-all">{row.getValue("name_ar")}</div>
+    ),
+    size: 180 
+  },
   { header: "Email", accessorKey: "email", size: 300 },
   { header: "Phone", accessorKey: "phone_number" },
   { header: "National ID", accessorKey: "national_id" },
   { header: "Governorate", accessorKey: "governorate", enableHiding: false },
   { header: "Birth Date", accessorKey: "birth_date" },
   { header: "Created At", accessorKey: "created_at" },
-  { header: "Institute", accessorKey: "educational_institute" },
+  { header: "Institute", accessorKey: "educational_institute", size: 180 },
   { header: "Graduation Year", accessorKey: "graduation_year", enableHiding: true },
   { header: "Field of Study", accessorKey: "field_of_study_id", enableHiding: true },
   { header: "Team", accessorKey: "is_have_team" },

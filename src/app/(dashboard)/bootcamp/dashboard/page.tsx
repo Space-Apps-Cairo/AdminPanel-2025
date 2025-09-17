@@ -141,7 +141,7 @@ export default function AttendanceDashboard() {
   };
 
   return (
-    <div className="space-y-6 px-8">
+    <div className="space-y-6 px-8 h-fit overflow-hidden pb-10">
       {/* ---------- Section Cards ---------- */}
       <SectionCards data={cards} />
 
@@ -150,6 +150,7 @@ export default function AttendanceDashboard() {
         {/* Multi Bar Chart */}
         <div className="col-span-3">
           <MultiBarChart
+            // xKey="month"
             title="Workshop Attendance"
             description="Attendance summary for all workshops"
             data={chartData}
