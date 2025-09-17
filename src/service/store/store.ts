@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-
 import { authApi } from "../Api/login";
 import authSlice from "./features/authSlice";
+import emailReducer from "./features/emailSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authSlice,
+    email: emailReducer,
     [authApi.reducerPath]: authApi.reducer,
-
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware),

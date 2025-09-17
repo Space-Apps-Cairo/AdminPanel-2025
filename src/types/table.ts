@@ -31,6 +31,7 @@ export interface ActionConfig {
   onExport?: (type: "pdf" | "excel" | "csv") => void;
   customActions?: React.ReactNode;
 }
+
 export interface ColumnVisibilityConfig {
   enableColumnVisibility?: boolean;
   invisibleColumns?: string[];
@@ -44,6 +45,7 @@ export interface DataTableProps<TData extends DataTableRow> {
   actionConfig?: ActionConfig;
   // Legacy callback for backward compatibility
   onDeleteRows?: (data: TData[]) => void;
+  enableBulkEmail?: boolean;
   // Single delete mutation hook for bulk operations
   bulkDeleteMutation?: any; // RTK Query mutation hook
   error?: string;

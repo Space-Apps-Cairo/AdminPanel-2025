@@ -29,6 +29,7 @@ import {
   ListFilterIcon,
   PlusIcon,
   TrashIcon,
+  Mail as MailIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -90,6 +91,13 @@ import {
 import { DataTableRow, DataTableProps } from "@/types/table";
 import { exportToExcel, exportToPDF, exportToCSV } from "@/lib/exporter";
 import { toast } from "sonner";
+
+// NEW: RTK hooks for templates & sending emails
+import {
+  useGetEmailTemplatesQuery,
+  useSendEmailsMutation,
+} from "@/service/Api/emails/templates";
+
 // Create a global filter function for multi-column search
 const createGlobalFilterFn = <TData extends DataTableRow>(
   searchKeys: string[]
@@ -125,20 +133,20 @@ export default function DataTable<TData extends DataTableRow>({
   bulkDeleteMutation, // New: single delete mutation hook
   error,
   pageSize = 10,
-  // enableColumnVisibility = true,
   enableSorting = true,
   enableSelection = true,
   allowTrigger = false,
   className,
   columnVisibilityConfig,
-}: DataTableProps<TData>) {
+  enableBulkEmail = false,
+}: // NEW prop: enable bulk email flow
+DataTableProps<TData>) {
   const id = useId();
-   
+
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
   >(() => {
-    //initialize hidden columns from config
     const initial: Record<string, boolean> = {};
     columnVisibilityConfig?.invisibleColumns?.forEach((key) => {
       initial[key] = false;
@@ -154,6 +162,12 @@ export default function DataTable<TData extends DataTableRow>({
 
   // Add loading state for delete operation
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // NEW: bulk email dialog state
+  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>(
+    undefined
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -209,62 +223,6 @@ export default function DataTable<TData extends DataTableRow>({
     return cols;
   }, [baseColumns, enableSelection, statusConfig]);
 
-  const handleDeleteRows = async () => {
-    const selectedRows = table.getSelectedRowModel().rows;
-    const selectedIds = selectedRows.map((row) => row.original.id);
-    const selectedCount = selectedIds.length;
-
-    setIsDeleting(true);
-
-    try {
-      if (bulkDeleteMutation) {
-        // Use Promise.all to execute multiple delete operations
-        await Promise.all(
-          selectedIds.map((id) => bulkDeleteMutation(id).unwrap())
-        );
-
-        // Show success toast
-        toast.success(
-          selectedCount === 1
-            ? "Item deleted successfully"
-            : `${selectedCount} items deleted successfully`
-        );
-      } else if (onDeleteRows) {
-        // Legacy callback approach
-        const updatedData = data.filter(
-          (item) => !selectedRows.some((row) => row.original.id === item.id)
-        );
-        onDeleteRows(updatedData);
-
-        // Show success toast
-        toast.success(
-          selectedCount === 1
-            ? "Item deleted successfully"
-            : `${selectedCount} items deleted successfully`
-        );
-      }
-
-      table.resetRowSelection();
-    } catch (error) {
-      console.error("Bulk delete error:", error);
-
-      // Show error toast
-      toast.error(
-        selectedCount === 1
-          ? "Failed to delete item. Please try again."
-          : `Failed to delete ${selectedCount} items. Please try again.`
-      );
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  // Create global filter function
-  const globalFilterFn = useMemo<FilterFn<TData> | undefined>(() => {
-    if (!searchConfig.enabled) return undefined;
-    return createGlobalFilterFn(searchConfig.searchKeys ?? []);
-  }, [searchConfig.enabled, searchConfig.searchKeys]);
-
   const table = useReactTable<TData>({
     data,
     columns,
@@ -279,7 +237,9 @@ export default function DataTable<TData extends DataTableRow>({
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: globalFilterFn,
+    globalFilterFn: searchConfig.enabled
+      ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
+      : undefined,
     enableSorting,
     state: {
       sorting,
@@ -290,8 +250,27 @@ export default function DataTable<TData extends DataTableRow>({
     },
   });
 
-  //handle Export
+  // RTK: templates & send emails
+  const {
+    data: templatesResp,
+    isLoading: isLoadingTemplates,
+    isError: isTemplatesError,
+  } = useGetEmailTemplatesQuery(undefined, {
+    skip: !enableBulkEmail, // 👈 don't fetch until dialog is open
+  });
+  const [sendEmails, { isLoading: isSending }] = useSendEmailsMutation();
 
+  // helper: template options for Select
+  const templateOptions = useMemo(() => {
+    return (
+      templatesResp?.data?.map((t: any) => ({
+        value: String(t.id),
+        label: t.title ?? t.subject ?? `Template ${t.id}`,
+      })) ?? []
+    );
+  }, [templatesResp]);
+
+  //handle Export
   const handleExport = (type: string) => {
     const exportData = table.getFilteredRowModel().rows.map((r) => r.original);
     if (type === "excel") exportToExcel(exportData);
@@ -310,7 +289,6 @@ export default function DataTable<TData extends DataTableRow>({
 
   const statusCounts = useMemo(() => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return new Map();
-
     const statusColumn = table.getColumn(statusConfig.columnKey);
     if (!statusColumn) return new Map();
     return statusColumn.getFacetedUniqueValues();
@@ -318,7 +296,6 @@ export default function DataTable<TData extends DataTableRow>({
 
   const selectedStatuses = useMemo(() => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return [];
-
     const filterValue = table
       .getColumn(statusConfig.columnKey)
       ?.getFilterValue() as string[];
@@ -359,20 +336,11 @@ export default function DataTable<TData extends DataTableRow>({
       const threshold = 70;
       const scrollSpeed = 30;
 
-      // -------- Vertical scroll ----------
-      // if (e.clientY < top + threshold) {
-      //   container.scrollTop -= scrollSpeed;
-      // } else if (e.clientY > bottom - threshold) {
-      //   container.scrollTop += scrollSpeed;
-      // }
-
-      // -------- Horizontal scroll ----------
+      // horizontal scroll
       if (e.clientX < left + threshold) {
         container.scrollLeft -= scrollSpeed;
-        console.log("Scrolling left, scrollLeft:", container.scrollLeft);
       } else if (e.clientX > right - threshold) {
         container.scrollLeft += scrollSpeed;
-        console.log("Scrolling right, scrollLeft:", container.scrollLeft);
       }
     };
 
@@ -387,6 +355,41 @@ export default function DataTable<TData extends DataTableRow>({
       </div>
     );
   }
+
+  // Bulk send submit handler
+  const handleBulkSendConfirm = async () => {
+    const selectedRows = table.getSelectedRowModel().rows;
+    if (!selectedRows || selectedRows.length === 0) {
+      toast.error("No rows selected");
+      return;
+    }
+    if (!selectedTemplate) {
+      toast.error("Please choose a template");
+      return;
+    }
+
+    const ids = selectedRows.map((r) => r.original.id);
+    const payload = {
+      template_id: Number(selectedTemplate),
+      ids,
+    };
+
+    try {
+      await sendEmails(payload).unwrap();
+      toast.success(
+        ids.length === 1
+          ? "Email sent to 1 participant"
+          : `Emails sent to ${ids.length} participants`
+      );
+      setBulkDialogOpen(false);
+      table.resetRowSelection();
+    } catch (err: any) {
+      console.error("Bulk send error:", err);
+      toast.error("Failed to send emails", {
+        description: err?.data?.message ?? err?.message ?? "",
+      });
+    }
+  };
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -434,11 +437,7 @@ export default function DataTable<TData extends DataTableRow>({
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline">
-                  <FilterIcon
-                    className="-ms-1 opacity-60"
-                    size={16}
-                    aria-hidden="true"
-                  />
+                  <FilterIcon className="-ms-1 opacity-60" size={16} />
                   {statusConfig.title || "Status"}
                   {selectedStatuses.length > 0 && (
                     <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
@@ -484,11 +483,7 @@ export default function DataTable<TData extends DataTableRow>({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
-                  <Columns3Icon
-                    className="-ms-1 opacity-60"
-                    size={16}
-                    aria-hidden="true"
-                  />
+                  <Columns3Icon className="-ms-1 opacity-60" size={16} />
                   View
                 </Button>
               </DropdownMenuTrigger>
@@ -528,11 +523,7 @@ export default function DataTable<TData extends DataTableRow>({
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button className="ml-auto" variant="outline">
-                      <TrashIcon
-                        className="-ms-1 opacity-60"
-                        size={16}
-                        aria-hidden="true"
-                      />
+                      <TrashIcon className="-ms-1 opacity-60" size={16} />
                       Delete
                       <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
                         {table.getSelectedRowModel().rows.length}
@@ -547,7 +538,7 @@ export default function DataTable<TData extends DataTableRow>({
                       >
                         <CircleAlertIcon className="opacity-80" size={16} />
                       </div>
-                      <AlertDialogHeader>
+                      <div>
                         <AlertDialogTitle>
                           Are you absolutely sure?
                         </AlertDialogTitle>
@@ -560,14 +551,63 @@ export default function DataTable<TData extends DataTableRow>({
                             : "rows"}
                           .
                         </AlertDialogDescription>
-                      </AlertDialogHeader>
+                      </div>
                     </div>
                     <AlertDialogFooter>
                       <AlertDialogCancel disabled={isDeleting}>
                         Cancel
                       </AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={handleDeleteRows}
+                        onClick={() => {
+                          // call delete handler
+                          const handleDeleteRowsInternal = async () => {
+                            const selectedRows =
+                              table.getSelectedRowModel().rows;
+                            const selectedIds = selectedRows.map(
+                              (row) => row.original.id
+                            );
+                            const selectedCount = selectedIds.length;
+                            setIsDeleting(true);
+                            try {
+                              if (bulkDeleteMutation) {
+                                await Promise.all(
+                                  selectedIds.map((id) =>
+                                    bulkDeleteMutation(id).unwrap()
+                                  )
+                                );
+                                toast.success(
+                                  selectedCount === 1
+                                    ? "Item deleted successfully"
+                                    : `${selectedCount} items deleted successfully`
+                                );
+                              } else if (onDeleteRows) {
+                                const updatedData = data.filter(
+                                  (item) =>
+                                    !selectedRows.some(
+                                      (row) => row.original.id === item.id
+                                    )
+                                );
+                                onDeleteRows(updatedData);
+                                toast.success(
+                                  selectedCount === 1
+                                    ? "Item deleted successfully"
+                                    : `${selectedCount} items deleted successfully`
+                                );
+                              }
+                              table.resetRowSelection();
+                            } catch (err) {
+                              console.error("Bulk delete error:", err);
+                              toast.error(
+                                selectedCount === 1
+                                  ? "Failed to delete item. Please try again."
+                                  : `Failed to delete ${selectedCount} items. Please try again.`
+                              );
+                            } finally {
+                              setIsDeleting(false);
+                            }
+                          };
+                          handleDeleteRowsInternal();
+                        }}
                         disabled={isDeleting}
                         className="flex items-center gap-2"
                       >
@@ -583,6 +623,77 @@ export default function DataTable<TData extends DataTableRow>({
 
             {/* Action Buttons Row */}
             <div className="flex items-center gap-2 ml-auto">
+              {/* NEW: Bulk Send Button (shows when selection > 0 & feature enabled) */}
+              {enableBulkEmail &&
+                enableSelection &&
+                table.getSelectedRowModel().rows.length > 0 && (
+                  <div>
+                    <AlertDialog
+                      open={bulkDialogOpen}
+                      onOpenChange={setBulkDialogOpen}
+                    >
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" className="ml-2">
+                          <MailIcon className="-ms-1 opacity-60" size={16} />
+                          Send ({table.getSelectedRowModel().rows.length})
+                        </Button>
+                      </AlertDialogTrigger>
+
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Send Emails</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Choose a template to send to the selected
+                            participants.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <div className="mt-4">
+                          <Label>Template</Label>
+                          <Select
+                            value={selectedTemplate}
+                            onValueChange={(val) => setSelectedTemplate(val)}
+                            disabled={isLoadingTemplates}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue
+                                placeholder={
+                                  isLoadingTemplates
+                                    ? "Loading templates..."
+                                    : "Select a template"
+                                }
+                              />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {isLoadingTemplates ? (
+                                <div className="flex items-center justify-center py-6 text-sm text-gray-500">
+                                  <LoaderCircle className="animate-spin" />
+                                  Loading templates...
+                                </div>
+                              ) : (
+                                templateOptions.map((opt) => (
+                                  <SelectItem key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </SelectItem>
+                                ))
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleBulkSendConfirm}
+                            disabled={!selectedTemplate || isSending}
+                          >
+                            {isSending ? "Sending..." : "Confirm & Send"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
               {/* Export Button */}
               {actionConfig?.showExport && (
                 <DropdownMenu>
@@ -613,11 +724,7 @@ export default function DataTable<TData extends DataTableRow>({
                   variant="outline"
                   onClick={actionConfig.onAdd}
                 >
-                  <PlusIcon
-                    className="-ms-1 opacity-60"
-                    size={16}
-                    aria-hidden="true"
-                  />
+                  <PlusIcon className="-ms-1 opacity-60" size={16} />
                   {actionConfig.addButtonText || "Add"}
                 </Button>
               )}

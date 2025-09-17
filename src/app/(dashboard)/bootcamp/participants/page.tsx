@@ -69,20 +69,18 @@ export default function ParticipantsPage() {
       label: s.name,
     })) ?? [];
 
+  const { data: workshopsData } = useGetAllWorkshopsQuery();
 
-const { data: workshopsData } = useGetAllWorkshopsQuery();
-
-const workshopOptions: FieldOption[] =
-  workshopsData?.data?.map((w: any) => ({
-    value: w.id.toString(),
-    label: w.title,
-  })) ?? [];
-
+  const workshopOptions: FieldOption[] =
+    workshopsData?.data?.map((w: any) => ({
+      value: w.id.toString(),
+      label: w.title,
+    })) ?? [];
 
   const searchConfig: SearchConfig = {
     enabled: true,
     placeholder: "Filter by Name, National ID, Email or Phone",
-    searchKeys: [ "national_id", "email", "phone_number","name_en","name_ar"],
+    searchKeys: ["national_id", "email", "phone_number", "name_en", "name_ar"],
   };
 
   const actionConfig: ActionConfig = {
@@ -110,7 +108,6 @@ const workshopOptions: FieldOption[] =
     formData: FormData
   ) => {
     try {
-     
       const result = await addParticipant(formData).unwrap();
 
       if (result.data) {
@@ -149,6 +146,8 @@ const workshopOptions: FieldOption[] =
         searchConfig={searchConfig}
         actionConfig={actionConfig}
         onDataChange={setParticipants}
+        enableBulkEmail={true}
+        enableSelection={true}
         columnVisibilityConfig={columnVisibilityConfig}
       />
 
@@ -158,8 +157,8 @@ const workshopOptions: FieldOption[] =
             undefined,
             educationalLevelOptions,
             fieldOfStudyOptions,
-            skillsOptions
-            , workshopOptions
+            skillsOptions,
+            workshopOptions
           )}
           isOpen={isOpen}
           setIsOpen={setIsOpen}

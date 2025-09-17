@@ -4,19 +4,18 @@ import React, { useState } from "react";
 import { Eye, SquarePen, Trash, CircleAlertIcon } from "lucide-react";
 import { OperationType, RowsActionsProps } from "@/types/rows-actions";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import CrudForm from "@/components/crud-form";
 import { Button } from "@/components/ui/button";
-
 
 export default function RowsActions({
   steps,
@@ -101,59 +100,57 @@ export default function RowsActions({
           </Button>
         )}
 
-            {isUpdate && (
-                <Button
-                    onClick={() =>
-                      customEditHandler? customEditHandler(rowData) :
-                       handleButtonClick("edit")
-                      }
-                    variant="outline"
-                    size="sm"
+        {isUpdate && (
+          <Button
+            onClick={() =>
+              customEditHandler
+                ? customEditHandler(rowData)
+                : handleButtonClick("edit")
+            }
+            variant="outline"
+            size="sm"
+          >
+            <SquarePen size={16} />
+          </Button>
+        )}
+
+        {isDelete && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Trash size={16} />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+                <div
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+                  aria-hidden="true"
                 >
-                    <SquarePen size={16} />
-                </Button>
-            )}
-
-            {isDelete && (
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                            <Trash size={16} />
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
-                            <div
-                                className="flex size-9 shrink-0 items-center justify-center rounded-full border"
-                                aria-hidden="true"
-                            >
-                                <CircleAlertIcon className="opacity-80" size={16} />
-                            </div>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Are you absolutely sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete this row.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                        </div>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                                onClick={handleDeleteRow}
-                                disabled={isDeleting}
-                                className="bg-destructive text-white hover:bg-destructive/90"
-                            >
-                                {isDeleting ? "Deleting..." : "Delete"}
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            )}
-
-        </div>
-
+                  <CircleAlertIcon className="opacity-80" size={16} />
+                </div>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    this row.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteRow}
+                  disabled={isDeleting}
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </div>
     </React.Fragment>
   );
 }

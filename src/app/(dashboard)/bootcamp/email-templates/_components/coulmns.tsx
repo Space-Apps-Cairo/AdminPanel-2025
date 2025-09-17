@@ -1,51 +1,42 @@
-"use client"
+"use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { BootcampType } from "@/types/bootcamp";
 import RowsActions from "@/components/table/rows-actions";
-import { Field } from "@/app/interface";
-import { BootcampSchema } from "@/validations/bootcamp";
-import {
-  useDeleteBootcampMutation,
-  useUpdateBootcampMutation,
-} from "@/service/Api/bootcamp";
+import { Field, FieldOption } from "@/app/interface";
+
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { any } from "zod";
-export const getBootcampFields = (bootcampData?: BootcampType): Field[] => [
-  {
-    name: "name",
-    type: "text",
-    label: "Name",
-    placeholder: "Enter bootcamp name",
-    ...(bootcampData?.name && { defaultValue: bootcampData.name }),
-    // step: 1,
-  },
-  {
-    name: "date",
-    type: "date",
-    label: "Date",
-    placeholder: "Pick up a date",
-    ...(bootcampData?.date && { defaultValue: bootcampData.date }),
-    // step: 1,
-  },
-  
-];
+import { EmailTemplate } from "@/types/emails/templates";
+import { Badge } from "@/components/ui/badge";
 
-export const EmailColumns: ColumnDef<BootcampType>[] = [
-    { header: "ID", accessorKey: "id", size: 80, enableHiding: false },
+import CrudForm from "@/components/crud-form";
+import { useState } from "react";
+import { sendEmailSchema } from "@/validations/emails/templates";
+import {
+  useDeleteEmailTemplateMutation,
+  useGetEmailTemplatesQuery,
+  useSendEmailsMutation,
+} from "@/service/Api/emails/templates";
+import { Button } from "@/components/ui/button";
+import { Mail } from "lucide-react";
+import { withDefault } from "../../participants/_components/coulmns";
+
+export const EmailColumns: ColumnDef<EmailTemplate>[] = [
+  { header: "ID", accessorKey: "id", size: 80, enableHiding: false },
   {
-    header: "Name",
-    accessorKey: "name",
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
-    ),
+    header: "Title",
+    accessorKey: "title",
   },
   {
-    header: "Template",
-    accessorKey: "template",
-    cell: ({ row }) => <div>{row.getValue("template")}</div>,
+    header: "Subject",
+    accessorKey: "subject",
   },
- 
+  {
+    header: "Type",
+    accessorKey: "type",
+    cell: ({ row }) => <Badge>{row.getValue("type")}</Badge>,
+  },
+
   {
     id: "actions",
     header: () => <span>Actions</span>,
@@ -53,29 +44,73 @@ export const EmailColumns: ColumnDef<BootcampType>[] = [
   },
 ];
 
-function EmailRowActions({ rowData }: { rowData: BootcampType }) {
-    const router=useRouter();
-  
+function EmailRowActions({ rowData }: { rowData: EmailTemplate }) {
+  const router = useRouter();
+  const [deleteTemplate] = useDeleteEmailTemplateMutation();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const fields: Field[] = [
+    {
+      name: "template_id",
+      type: "select",
+      label: "Selected Template",
+      disabled: true,
+      options: [{ label: rowData.title, value: rowData.id.toString() }],
+      ...(rowData?.id.toString() && { defaultValue: rowData.id.toString() }),
+    },
+    {
+      name: "email",
+      type: "email",
+      label: "Enter your testing email",
+    },
+  ];
+  async function handleEmailSubmit(data) {
+    try {
+      const payload = {
+        template_id: data.template_id,
+        email: data.email,
+      };
+      // await sendEmail(payload).unwrap();
+      toast.success("Email sended successfully");
+    } catch (err) {
+      console.error(err);
+
+      toast.error("Something went wrong on send Email");
+    }
+  }
   return (
-    <RowsActions
-      rowData={rowData}
-      isDelete={true}
-      fields={getBootcampFields(rowData)}
-      validationSchema={any}
-      isPreview={false}
-      customEditHandler={(row) => router.push(`/bootcamp/email-templates/${row.id}`)}
-      onUpdateSuccess={(result) =>
-        toast.success("email updated successfully")
-      }
-      onUpdateError={(error) =>
-        toast.error("Falid to update email:", error?.data?.message)
-      }
-      onDeleteSuccess={(result) =>
-        toast.success("email deleted successfully")
-      }
-      onDeleteError={(error) =>
-        toast.error("Falid to delete email:", error?.data?.message)
-      }
-    />
+    <div className="flex items-center gap-3">
+      {isOpen && (
+        <CrudForm
+          fields={fields}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          operation={"add"}
+          asDialog={true}
+          validationSchema={sendEmailSchema}
+          onSubmit={handleEmailSubmit}
+        />
+      )}
+      <Button variant={"outline"} size={"sm"} onClick={() => setIsOpen(true)}>
+        <Mail />
+      </Button>
+      <RowsActions
+        rowData={rowData}
+        isDelete={true}
+        validationSchema={any}
+        isPreview={false}
+        deleteMutation={deleteTemplate}
+        customEditHandler={(row) => {
+          console.log("Edit IdL", row.id);
+          router.push(`/bootcamp/email-templates/${row.id}`);
+        }}
+        onDeleteSuccess={(result) =>
+          toast.success("Email deleted successfully")
+        }
+        onDeleteError={(error) =>
+          toast.error("Falid to delete email:", error?.data?.message)
+        }
+      />
+    </div>
   );
 }

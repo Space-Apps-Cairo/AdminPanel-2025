@@ -252,7 +252,7 @@ export default function CrudForm(props: {
                       control={control}
                       render={({ field: fld }) => (
                         <Select
-                          disabled={isDisabled}
+                          disabled={isDisabled || field.disabled}
                           value={fld.value}
                           onValueChange={fld.onChange}
                         >

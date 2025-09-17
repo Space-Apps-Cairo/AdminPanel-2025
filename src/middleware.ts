@@ -1,17 +1,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const roleAccessMap: Record<string, string[]> = {
+  "/admin": ["admin"],
+  "/editor": ["admin", "editor"],
+  "/reports": ["admin", "viewer"],
+};
+
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
+  const role = request.cookies.get("role")?.value;
   const { pathname } = request.nextUrl;
 
-  // If user is not logged in and tries to access a protected page
   if (!token && pathname !== "/login") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   if (token && pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  for (const [route, allowedRoles] of Object.entries(roleAccessMap)) {
+    if (pathname.startsWith(route)) {
+      if (!role || !allowedRoles.includes(role)) {
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
+      }
+    }
   }
 
   // if (token && pathname !== "/login") {
@@ -38,14 +52,7 @@ export async function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
 export const config = {
-  // Run for every path except Next.js internals and static assets
-  matcher: [
-    /*
-          Match all requests except:
-            - URLs starting with /_next/
-            - /favicon.ico
-        */
-    "/((?!_next|favicon.ico|images).*)",
-  ],
+  matcher: ["/((?!_next|favicon.ico|images).*)"],
 };

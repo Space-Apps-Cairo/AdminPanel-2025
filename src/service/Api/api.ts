@@ -37,6 +37,9 @@ export const api = createApi({
     "Nationalities",
     "TeamStatus",
     "ParticipationStatus",
+    "EmailTemplates",
+    "EmailVariables",
+    "EmailAudiences",
   ],
 
   endpoints: () => ({}), // start empty

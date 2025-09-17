@@ -3,41 +3,49 @@
 import { EmailColumns } from "./_components/coulmns";
 import DataTable from "../../../../components/table/data-table";
 
-import Loading from "../../../../components/loading/loading";
-
-import { toast } from "sonner";
-import { useState } from "react";
-import { any } from "zod";
 import { useRouter } from "next/navigation";
+import CrudForm from "@/components/crud-form";
+import { useState } from "react";
+import Loading from "@/components/loading/loading";
+
+import { useDispatch } from "react-redux";
+
+import { useGetEmailTemplatesQuery } from "@/service/Api/emails/templates";
 
 export default function EmailPage() {
   const router = useRouter();
-  const testData = [
-    { id: 1, name: "Welcome Email", template: "WelcomeTemplate" },
-    { id: 2, name: "Reminder Email", template: "ReminderTemplate" },
-    { id: 3, name: "Follow-up Email", template: "FollowUpTemplate" },
-  ];
-  return (
-    <div className="container mx-auto py-6 px-8">
-      <h1 className="text-2xl font-bold mb-6">Recent emails</h1>
+  const dispatch = useDispatch();
 
-      <DataTable<any>
-        data={testData}
-        columns={EmailColumns}
-        searchConfig={{
-          enabled: true,
-          placeholder: "Search by name or template",
-          searchKeys: ["name", "template"],
-        }}
-        actionConfig={{
-          enabled: true,
-          showAdd: true,
-          showDelete: true,
-          addButtonText: "Create an email",
-          onAdd: () => router.push("/bootcamp/email-templates/new"),
-        }}
-        // onDeleteRows={deleteBootcamp}
-      />
-    </div>
+  const [isOpen, setIsOpen] = useState(false);
+  const { data, isLoading } = useGetEmailTemplatesQuery();
+  if (isLoading) {
+    return <Loading />;
+  }
+  return (
+    <>
+      <div className=" px-8 py-6 ">
+        <h1 className="text-2xl font-bold mb-6">Email Templates</h1>
+
+        <DataTable<any>
+          data={data?.data ?? []}
+          columns={EmailColumns}
+          searchConfig={{
+            enabled: true,
+            placeholder: "Search by name or template",
+            searchKeys: ["name", "template"],
+          }}
+          actionConfig={{
+            enabled: true,
+            showAdd: true,
+            showDelete: true,
+            addButtonText: "Create Template",
+            onAdd: () => {
+              router.push("/bootcamp/email-templates/new");
+            },
+          }}
+          // onDeleteRows={deleteBootcamp}
+        />
+      </div>
+    </>
   );
 }

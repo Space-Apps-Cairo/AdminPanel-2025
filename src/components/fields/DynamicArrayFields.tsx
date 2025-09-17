@@ -36,12 +36,13 @@ const DynamicArrayField = ({
   simpleArray = false,
   itemName,
 }: DynamicArrayFieldProps) => {
-    const {
+  const {
     control,
     formState: { errors },
     getValues,
   } = useFormContext();
 
+  console.log("Entering:", fieldsConfig);
   const getDefaultItem = useCallback(() => {
     if (defaultItemValue) return defaultItemValue;
 
@@ -59,7 +60,7 @@ const DynamicArrayField = ({
     keyName: "id",
   });
 
-  console.log(fieldsConfig);
+  console.log("defaultItemValue:", getDefaultItem());
 
   const hasInitialized = useRef(false);
 
@@ -79,7 +80,15 @@ const DynamicArrayField = ({
         append(getDefaultItem());
       }
     }
-  }, [getValues, name, fields.length, append, replace, minItems, getDefaultItem]);
+  }, [
+    getValues,
+    name,
+    fields.length,
+    append,
+    replace,
+    minItems,
+    getDefaultItem,
+  ]);
 
   const addNewItem = () => {
     if (fields.length < maxItems) {
@@ -118,7 +127,9 @@ const DynamicArrayField = ({
             </div>
 
             {simpleArray ? (
-              <p className="text-sm text-gray-600 mt-2">{String(field) || "-"}</p>
+              <p className="text-sm text-gray-600 mt-2">
+                {String(field) || "-"}
+              </p>
             ) : (
               <div className="mt-2 grid grid-cols-1 gap-2">
                 {fieldsConfig.map((config) => (
@@ -126,15 +137,26 @@ const DynamicArrayField = ({
                     <p className="text-xs text-gray-500">{config.label}</p>
                     {(() => {
                       let displayValue = field[config.name];
-                      console.log(displayValue);
-                      
-                      if (config.type === "select" && config.options && Array.isArray(config.options)) {
+                      console.log("displayValue:", displayValue);
+                      console.log("field", field);
+                      console.log("options:", config?.options);
+                      console.log("-----------------------");
+
+                      if (
+                        config.type === "select" &&
+                        config.options &&
+                        Array.isArray(config.options)
+                      ) {
                         const found = config.options.find(
-                          (opt) => String(opt.value).toLowerCase() === String(displayValue).toLowerCase()
+                          (opt) =>
+                            String(opt.value).toLowerCase() ===
+                            String(displayValue).toLowerCase()
                         );
                         displayValue = found ? found.placeholder : displayValue;
                       }
-                      return <p className="text-sm">{String(displayValue) || "-"}</p>;
+                      return (
+                        <p className="text-sm">{String(displayValue) || "-"}</p>
+                      );
                     })()}
                   </div>
                 ))}
@@ -200,7 +222,10 @@ const DynamicArrayField = ({
             ) : (
               <div className="grid grid-cols-1  gap-4">
                 {fieldsConfig.map((config) => (
-                  <div key={`${field.id}-${config.name}`} className="space-y-2 ">
+                  <div
+                    key={`${field.id}-${config.name}`}
+                    className="space-y-2 "
+                  >
                     <label className="text-sm font-medium">
                       {config.label}
                     </label>
@@ -216,7 +241,9 @@ const DynamicArrayField = ({
                           return (
                             <>
                               <Select
-                                value={controllerField.value?.toString() ?? undefined}
+                                value={
+                                  controllerField.value?.toString() ?? undefined
+                                }
                                 onValueChange={controllerField.onChange}
                               >
                                 <SelectTrigger>
