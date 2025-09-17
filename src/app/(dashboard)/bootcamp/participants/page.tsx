@@ -87,6 +87,7 @@ export default function ParticipantsPage() {
     enabled: true,
     showAdd: true,
     addButtonText: "Add Participant",
+    showExport: true,
     onAdd: () => setIsOpen(true),
   };
 
@@ -149,6 +150,7 @@ export default function ParticipantsPage() {
         enableBulkEmail={true}
         enableSelection={true}
         columnVisibilityConfig={columnVisibilityConfig}
+        // allowTrigger={true}
       />
 
       {isOpen && (

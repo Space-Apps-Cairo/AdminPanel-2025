@@ -1,3 +1,5 @@
+export type UserRole = 'Admin' | 'material' | 'logistics' | 'registeration';
+
 export interface UserType {
   id: number;
   name: string;
@@ -8,6 +10,7 @@ export interface UserType {
   created_at: string;
   updated_at: string;
   deleted_at: string;
+  role: UserRole;
 }
 export interface LoginResponse {
   access_token: string;

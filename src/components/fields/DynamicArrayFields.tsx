@@ -152,7 +152,7 @@ const DynamicArrayField = ({
                             String(opt.value).toLowerCase() ===
                             String(displayValue).toLowerCase()
                         );
-                        displayValue = found ? found.placeholder : displayValue;
+                        displayValue = found ? found.label : displayValue;
                       }
                       return (
                         <p className="text-sm">{String(displayValue) || "-"}</p>

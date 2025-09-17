@@ -58,28 +58,6 @@ const renderValueInside = (props: any) => {
   );
 };
 
-// Label outside the slice
-const renderLabelOutside = (props: any) => {
-  const { cx, cy, midAngle, outerRadius, name } = props;
-  const RADIAN = Math.PI / 180;
-  const radius = outerRadius + 20; // outside distance
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="#333"
-      textAnchor={x > cx ? "start" : "end"}
-      dominantBaseline="central"
-      fontSize={12}
-    >
-      {name}
-    </text>
-  );
-};
-
 export function ReusablePieChart({
   title,
   description,
@@ -94,31 +72,29 @@ export function ReusablePieChart({
         <CardDescription className="text-sm">{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={450}>
           <PieChart>
             <Tooltip
               formatter={(value, name) => [`${value}`, `${name}`]}
               contentStyle={{ borderRadius: "8px" }}
             />
-            <Legend verticalAlign="bottom" height={30} />
+            <Legend verticalAlign="bottom" height={80} />
             <Pie
               data={data}
               dataKey={dataKey}
               nameKey={nameKey}
               cx="50%"
-              cy="50%"
-              outerRadius={100}
+              cy="42%"
+              outerRadius={150}
               labelLine={false}
-              label={(props) => (
-                <>
-                  {renderValueInside(props)}
-                  {renderLabelOutside(props)}
-                </>
-              )}
+              label={renderValueInside}
+              minAngle={12}
+              // paddingAngle={2}
             >
               {data.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
+                  cx="50%"
                   fill={COLORS[index % COLORS.length]}
                 />
               ))}

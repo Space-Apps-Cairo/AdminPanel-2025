@@ -70,11 +70,11 @@ export const workshopColumns: ColumnDef<Workshop>[] = [
     size: 180,
     enableHiding: false,
   },
-  {
-    header: "Description",
-    accessorKey: "description",
-    size: 220,
-  },
+  // {
+  //   header: "Description",
+  //   accessorKey: "description",
+  //   size: 220,
+  // },
   {
     header: "Instructions",
     accessorKey: "workshop_details",

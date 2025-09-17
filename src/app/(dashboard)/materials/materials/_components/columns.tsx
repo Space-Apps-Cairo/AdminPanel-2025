@@ -12,7 +12,6 @@ import { toast } from "sonner";
 
 export const getMaterialFields = (
   materialData?: Material,
-  isUpdate: boolean = false
 ): Field[] => [
   {
     name: "material_name",
@@ -33,21 +32,6 @@ export const getMaterialFields = (
     }),
     step: 1,
   },
-
-  ...(isUpdate || materialData?.used_quantity !== undefined
-    ? [
-        {
-          name: "used_quantity",
-          type: "number",
-          label: "Used Quantity",
-          placeholder: "Enter the used quantity",
-          ...(materialData?.used_quantity !== undefined && {
-            defaultValue: materialData.used_quantity,
-          }),
-          step: 1,
-        },
-      ]
-    : []),
 ];
 
 export const materialColumns: ColumnDef<Material>[] = [
@@ -91,7 +75,7 @@ function MaterialRowActions({ rowData }: { rowData: Material }) {
       isDelete={true}
       isUpdate={true}
       isPreview={true}
-      fields={getMaterialFields(rowData, true)}
+      fields={getMaterialFields(rowData)}
       validationSchema={materialValidationSchema}
       updateMutation={(data: Material) =>
         updateMaterial({ id: rowData.id, data })
