@@ -149,7 +149,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
     id: "actions",
     header: () => <span>Actions</span>,
     cell: ({ row }) => <CollectionRowActions rowData={row.original} />,
-    size: 200,
+    size: 150,
     enableHiding: false,
   },
 ];
@@ -178,7 +178,7 @@ function CollectionRowActions({ rowData }: { rowData: Collection }) {
           rowData={rowData}
           isDelete={true}
           isUpdate={true}
-          isPreview={true}
+          isPreview={false}
           fields={useCollectionsFields(rowData)}
           validationSchema={collectionValidationSchema}
           steps={[1, 2]}
