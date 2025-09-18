@@ -47,3 +47,11 @@ export function convertTo24Hour(time12h?: string): string | null {
     "0"
   )}:00`;
 }
+
+export function minifyHTML(html: string) {
+  return html
+    .replace(/\n/g, "") // remove line breaks
+    .replace(/\s+/g, " ") // collapse multiple spaces
+    .replace(/>\s+</g, "><") // remove spaces between tags
+    .trim();
+}

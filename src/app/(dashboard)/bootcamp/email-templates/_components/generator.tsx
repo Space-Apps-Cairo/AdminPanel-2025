@@ -36,6 +36,7 @@ import {
   useUpdateEmailTemplateMutation,
 } from "@/service/Api/emails/templates";
 import { EmailTemplate } from "@/types/emails/templates";
+import { minifyHTML } from "@/lib/utils";
 
 const defaultHtmlCode = `<!DOCTYPE html>
 <html>
@@ -97,8 +98,8 @@ export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
         ? [
             ...variablesResp.variables,
             {
-              key: "{qrcode}",
-              label: "Qr Code",
+              key: "{qrUrl}",
+              label: "Qr Url",
               type: "column",
               source:
                 "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg", // Example: generates QR using uuid
@@ -163,7 +164,7 @@ export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
       title,
       subject,
       type: selectedAudience,
-      body: htmlCode,
+      body: minifyHTML(htmlCode),
     };
 
     const parsed = emailTemplateSchema.safeParse(payload);
