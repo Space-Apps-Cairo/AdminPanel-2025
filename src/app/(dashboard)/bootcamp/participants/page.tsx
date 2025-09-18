@@ -79,8 +79,8 @@ export default function ParticipantsPage() {
 
   const searchConfig: SearchConfig = {
     enabled: true,
-    placeholder: "Filter by Name, National ID, Email or Phone",
-    searchKeys: ["national_id", "email", "phone_number", "name_en", "name_ar"],
+    placeholder: "Filter by Name, National ID, Email or Phone or UUID",
+    searchKeys: ["national_id", "email", "phone_number", "name_en", "name_ar", "uuid"],
   };
 
   const actionConfig: ActionConfig = {

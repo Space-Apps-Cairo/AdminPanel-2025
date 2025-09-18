@@ -1,6 +1,7 @@
 export interface FieldOption {
   value: string;
   label: string;
+  searchableText?: string; // For command input filtering
 }
 
 export type FieldType =
@@ -15,6 +16,7 @@ export type FieldType =
   | "select"
   | "date"
   | "checkbox"
+  | "command" // New command input type
   | "dynamicArrayField";
 export interface Field {
   name: string;

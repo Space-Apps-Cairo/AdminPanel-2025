@@ -48,6 +48,14 @@ import DynamicArrayField from "./fields/DynamicArrayFields";
 import { DateInput } from "@/components/ui/datefield-rac";
 import { TimeField } from "@/components/ui/datefield-rac";
 import { Textarea } from "./ui/textarea";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 export default function CrudForm(props: {
   operation: "add" | "edit" | "preview";
@@ -137,10 +145,10 @@ export default function CrudForm(props: {
 
   const FormBody = (
     <>
-      <div id="hello" className="mx-auto max-w-xl space-y-8 ">
+      <div id="hello" className="mx-auto w-full max-w-xl space-y-6 sm:space-y-8 px-1 sm:px-0">
         <DialogHeader className={`${!asDialog ? "!text-center" : ""}`}>
-          <DialogTitle>{operation.toUpperCase()} Form</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">{operation.toUpperCase()} Form</DialogTitle>
+          <DialogDescription className="text-sm sm:text-base">
             Fill out the fields and click save.
           </DialogDescription>
         </DialogHeader>
@@ -189,6 +197,90 @@ export default function CrudForm(props: {
                           ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                           : ""
                       }
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {field.type === "command" && (
+                  <div className="grid gap-3">
+                    <Label>{field.label}</Label>
+                    <Controller
+                      name={field.name}
+                      control={control}
+                      render={({ field: fld }) => (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className="w-full justify-between h-10 px-3 py-2 text-sm sm:text-base text-left font-normal"
+                              disabled={isDisabled || field.disabled}
+                            >
+                              <span className="truncate flex-1">
+                                {fld.value
+                                  ? field.options?.find((option) => option.value === fld.value)?.label
+                                  : field.placeholder}
+                              </span>
+                              <svg
+                                className="ml-2 h-4 w-4 shrink-0 opacity-50"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="m6 9 6 6 6-6" />
+                              </svg>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent 
+                            className="w-[var(--radix-popover-trigger-width)] p-0 max-w-[calc(100vw-2rem)] sm:max-w-none" 
+                            align="start"
+                            side="bottom"
+                            sideOffset={4}
+                          >
+                            <Command className="w-full">
+                              <CommandInput 
+                                placeholder={field.placeholder}
+                                className="h-9 text-sm sm:text-base"
+                              />
+                              <CommandList className="max-h-[200px] sm:max-h-[300px]">
+                                <CommandEmpty className="py-6 text-center text-sm">
+                                  No participant found.
+                                </CommandEmpty>
+                                <CommandGroup>
+                                  {field.options?.map((option) => (
+                                    <CommandItem
+                                      key={option.value}
+                                      value={(option as any).searchableText || option.label}
+                                      onSelect={() => {
+                                        fld.onChange(option.value);
+                                      }}
+                                      className="px-2 py-2 text-sm sm:text-base cursor-pointer"
+                                    >
+                                      <div className="flex flex-col w-full min-w-0">
+                                        <div className="truncate font-medium">
+                                          {option.label.split(' - ')[0]} {/* Name */}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground truncate">
+                                          {option.label.split(' - ').slice(1).join(' - ')} {/* Email and UUID */}
+                                        </div>
+                                      </div>
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      )}
                     />
                     {errors[field.name] && (
                       <p className="text-red-500 text-sm">
@@ -321,74 +413,6 @@ export default function CrudForm(props: {
                   </div>
                 )}
 
-                {/* {field.type === "time" && (
-                  <div className="grid gap-3">
-                    <Label>{field.label ?? field.placeholder}</Label>
-                    <Controller
-                      name={`${field.name}`}
-                      control={control}
-                      render={({ field: fld, fieldState: { error } }) => {
-                        const parseTimeString = (timeStr: string) => {
-                          if (!timeStr) return null;
-
-                          const [hours, minutes, seconds] = timeStr
-                            .split(":")
-                            .map(Number);
-                          return {
-                            hour: hours || 0,
-                            minute: minutes || 0,
-                            second: seconds || 0,
-                          };
-                        };
-
-                        // Helper function to convert Time object to string
-                        const formatTimeToString = (timeObj: any) => {
-                          if (!timeObj) return "";
-
-                          const hours = String(timeObj.hour || 0).padStart(
-                            2,
-                            "0"
-                          );
-                          const minutes = String(timeObj.minute || 0).padStart(
-                            2,
-                            "0"
-                          );
-                          const seconds = String(timeObj.second || 0).padStart(
-                            2,
-                            "0"
-                          );
-
-                          return `${hours}:${minutes}:${seconds}`;
-                        };
-
-                        return (
-                          <TimeField
-                            className="*:not-first:mt-2"
-                            aria-label={field.label ?? field.placeholder}
-                            value={parseTimeString(fld.value)} // Convert string to Time object
-                            onChange={(time) => {
-                              const timeString = formatTimeToString(time);
-                              fld.onChange(timeString); // Send string back to form
-                            }}
-                          >
-                            <div className="relative">
-                              <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 z-10 flex items-center justify-center ps-3">
-                                <ClockIcon size={16} aria-hidden="true" />
-                              </div>
-                              <DateInput className="ps-9" />
-                            </div>
-                          </TimeField>
-                        );
-                      }}
-                    />
-                    {errors[field.name] && (
-                      <p className="text-red-500 text-sm">
-                        {errors[field.name]?.message as string}
-                      </p>
-                    )}
-                  </div>
-                )} */}
-
                 {field.type === "checkbox" && (
                   <div className="flex items-center space-x-2">
                     <Controller
@@ -479,7 +503,7 @@ export default function CrudForm(props: {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className={`sm:max-w-[425px] !max-h-[95dvh] overflow-y-auto form-scroll ${
+        className={`w-[95vw] max-w-md sm:max-w-lg lg:max-w-2xl !max-h-[95dvh] overflow-y-auto form-scroll ${
           !asDialog ? fullPageStyle : ""
         }`}
       >

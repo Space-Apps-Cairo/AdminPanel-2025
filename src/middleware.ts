@@ -113,31 +113,31 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check token validity
-  if (token) {
-    try {
-      const authCheckResponse = await fetch(
-        `https://staging.spaceappscairo.com/api/v1/isTokenExpired`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  // if (token) {
+  //   try {
+  //     const authCheckResponse = await fetch(
+  //       `https://staging.spaceappscairo.com/api/v1/isTokenExpired`,
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
 
-      if (!authCheckResponse.ok) {
-        const res = NextResponse.redirect(new URL("/login", request.url));
-        res.cookies.delete("token");
-        res.cookies.delete("role");
-        res.cookies.delete("user");
-        return res;
-      }
+  //     if (!authCheckResponse.ok) {
+  //       const res = NextResponse.redirect(new URL("/login", request.url));
+  //       res.cookies.delete("token");
+  //       res.cookies.delete("role");
+  //       res.cookies.delete("user");
+  //       return res;
+  //     }
 
-      console.log("Token is valid");
-    } catch (error) {
-      console.error("Auth check failed:", error);
-      console.log(
-        "Network error during auth check, allowing request to continue"
-      );
-    }
-  }
+  //     console.log("Token is valid");
+  //   } catch (error) {
+  //     console.error("Auth check failed:", error);
+  //     console.log(
+  //       "Network error during auth check, allowing request to continue"
+  //     );
+  //   }
+  // }
 
   // Role-based route protection
   if (role && pathname !== "/login") {

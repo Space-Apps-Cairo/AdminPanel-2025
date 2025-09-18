@@ -46,7 +46,10 @@ const getNavigationItems = (userRole: UserRole) => {
       icon: QrCode,
       isActive: true,
       roles: ['Admin', 'logistics', 'registeration', 'material'] as UserRole[],
-      items: [{ title: "Scan QR Code", url: "/qr-code/scan" }],
+      items: [
+        { title: "Scan QR Code", url: "/qr-code/scan" },
+        { title: "Manual Attending", url: "/qr-code/manual-attending" }
+      ],
     },
     {
       title: "Materials Management",

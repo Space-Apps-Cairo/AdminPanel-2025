@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../../../../../components/ui/button";
 import Link from "next/link";
-import { ChevronRight, Mail } from "lucide-react";
+import { ChevronRight, Mail, UserPlus } from "lucide-react";
 import RowsActions from "../../../../../components/table/rows-actions";
 import {
   useDeleteParticipantMutation,
@@ -21,6 +21,19 @@ import {
   sendEmailSchema,
   sendEmailTemplateSchema,
 } from "@/validations/emails/templates";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  useGetBootcampsQuery,
+  useRegisterBootcampAttendeeMutation,
+} from "@/service/Api/bootcamp";
+import { useCheckInWorkshopParticipantMutation } from "@/service/Api/workshops";
 
 //  helper موحد لإضافة defaultValue
 export const withDefault = (value?: Field["defaultValue"]): Partial<Field> =>
@@ -307,7 +320,7 @@ export const participantColumns: ColumnDef<Participant>[] = [
     id: "actions",
     header: () => <span>Actions</span>,
     cell: ({ row }) => <ParticipantRowActions rowData={row.original} />,
-    size: 150,
+    size: 270,
     enableHiding: false,
   },
 ];
@@ -318,12 +331,20 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
   const [sendEmail] = useSendEmailsMutation();
   const { data, isLoading } = useGetEmailTemplatesQuery();
 
+  // Registration mutations and queries
+  const [registerBootcampAttendee] = useRegisterBootcampAttendeeMutation();
+  const [checkInWorkshopParticipant] = useCheckInWorkshopParticipantMutation();
+  const { data: bootcampsData } = useGetBootcampsQuery();
+
   const templateOptions: FieldOption[] =
     data?.data?.map((template) => ({
       value: template.id.toString(),
       label: template.title, // or subject if you prefer
     })) ?? [];
+
   const [isOpen, setIsOpen] = useState(false);
+  const [isRegistrationDialogOpen, setIsRegistrationDialogOpen] = useState(false);
+
   const fields: Field[] = [
     {
       name: "template_id",
@@ -341,6 +362,7 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
       defaultValue: rowData.id.toString(),
     },
   ];
+
   async function handleEmailSubmit(data) {
     try {
       const payload = {
@@ -351,10 +373,55 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
       toast.success("Email sended successfully");
     } catch (err) {
       console.error(err);
-
       toast.error("Something went wrong on send Email");
     }
   }
+
+  async function handleBootcampRegistration() {
+    try {
+      if (!bootcampsData?.data || bootcampsData.data.length === 0) {
+        toast.error("No bootcamps available");
+        return;
+      }
+
+      const firstBootcamp = bootcampsData.data[0];
+      await registerBootcampAttendee({
+        bootcamp_details_id: Number(firstBootcamp.id),
+        bootcamp_participant_uuid: rowData.uuid,
+        category: "1",
+        attendance_status: "attended",
+      }).unwrap();
+      
+      toast.success("Bootcamp registration successful", {
+        description: "Participant has been registered for the bootcamp.",
+      });
+      setIsRegistrationDialogOpen(false);
+    } catch (err: any) {
+      const errorMessage = err?.data?.msg || err?.data?.message || "Registration failed";
+      toast.error("Bootcamp Registration Failed", {
+        description: errorMessage,
+      });
+    }
+  }
+
+  async function handleWorkshopRegistration() {
+    try {
+      await checkInWorkshopParticipant({
+        bootcamp_participant_uuid: rowData.uuid,
+      }).unwrap();
+      
+      toast.success("Workshop registration successful", {
+        description: "Participant has been registered for the workshop.",
+      });
+      setIsRegistrationDialogOpen(false);
+    } catch (err: any) {
+      const errorMessage = err?.data?.msg || err?.data?.message || "Registration failed";
+      toast.error("Workshop Registration Failed", {
+        description: errorMessage,
+      });
+    }
+  }
+
   return (
     <div className="flex items-center gap-3">
       {isOpen && (
@@ -368,9 +435,42 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
           onSubmit={handleEmailSubmit}
         />
       )}
+      
       <Button variant={"outline"} size={"sm"} onClick={() => setIsOpen(true)}>
         <Mail />
       </Button>
+
+      <Dialog open={isRegistrationDialogOpen} onOpenChange={setIsRegistrationDialogOpen}>
+        <DialogTrigger asChild>
+          <Button variant={"outline"} size={"sm"}>
+            <UserPlus />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Registration Options</DialogTitle>
+            <DialogDescription>
+              Choose the registration type for {rowData.name_en}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-2 py-4">
+            <Button 
+              onClick={handleBootcampRegistration}
+              className="w-full"
+            >
+              Bootcamp Registration
+            </Button>
+            <Button 
+              onClick={handleWorkshopRegistration}
+              variant={"outline"}
+              className="w-full"
+            >
+              Workshop Registration
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <RowsActions
         rowData={rowData}
         isDelete={true}
