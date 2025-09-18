@@ -31,6 +31,8 @@ import { useGetEmailAudiencesQuery } from "@/service/Api/emails/audience";
 import { useGetEmailTemplateVariablesQuery } from "@/service/Api/emails/variables";
 import { emailTemplateSchema } from "@/validations/emails/templates";
 import { toast } from "sonner";
+import beautify from "js-beautify"; // install with: npm install js-beautify
+
 import {
   useAddEmailTemplateMutation,
   useUpdateEmailTemplateMutation,
@@ -55,11 +57,17 @@ type EmailGeneratorProps = {
 export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
   const router = useRouter();
   const storedAudience = useSelector(selectEmailAudience);
+  const initialHtml = email?.body
+    ? beautify.html(email.body, {
+        indent_size: 2,
+        wrap_line_length: 120,
+        end_with_newline: true,
+      })
+    : defaultHtmlCode;
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [htmlCode, setHtmlCode] = useState<string>(
-    email?.body || defaultHtmlCode
-  );
+
+  const [htmlCode, setHtmlCode] = useState<string>(initialHtml);
   const [, setCursorPos] = useState<number>(0);
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
