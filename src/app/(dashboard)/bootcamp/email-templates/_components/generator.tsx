@@ -92,21 +92,21 @@ export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
   useEffect(() => {
     if (!selectedAudience && variablesResp) return;
 
-    // setVariables(
-    //   variablesResp?.variables
-    //     ? [
-    //         ...variablesResp.variables,
-    //         {
-    //           key: "{qr_code}",
-    //           label: "Qr Code",
-    //           type: "column",
-    //           source:
-    //             "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg", // Example: generates QR using uuid
-    //         },
-    //       ]
-    //     : []
-    // );
-    setVariables(variablesResp?.variables ?? []);
+    setVariables(
+      variablesResp?.variables
+        ? [
+            ...variablesResp.variables,
+            {
+              key: "{qrcode}",
+              label: "Qr Code",
+              type: "column",
+              source:
+                "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg", // Example: generates QR using uuid
+            },
+          ]
+        : []
+    );
+    // setVariables(variablesResp?.variables ?? []);
   }, [selectedAudience, variablesResp]);
 
   const previewHtml = generatePreviewCode(htmlCode, variables);

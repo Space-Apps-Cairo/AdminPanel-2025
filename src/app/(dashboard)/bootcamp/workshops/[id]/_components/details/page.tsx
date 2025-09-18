@@ -1,7 +1,12 @@
 // Workshop Details Tab Component
 "use client";
 
-import { Card, CardTitle, CardContent, CardHeader } from "../../../../../../../components/ui/card";
+import {
+  Card,
+  CardTitle,
+  CardContent,
+  CardHeader,
+} from "../../../../../../../components/ui/card";
 
 import { format } from "date-fns";
 import { Badge } from "../../../../../../../components/ui/badge";
@@ -16,9 +21,6 @@ export default function WorkshopDetailsTab({ workshop }: { workshop: any }) {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Workshop Information</CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
