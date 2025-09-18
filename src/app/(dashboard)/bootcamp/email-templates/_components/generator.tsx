@@ -98,7 +98,7 @@ export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
         ? [
             ...variablesResp.variables,
             {
-              key: "{qrUrl}",
+              key: "{qrcode}",
               label: "Qr Url",
               type: "column",
               source:
