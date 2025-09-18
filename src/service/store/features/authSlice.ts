@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   token: cookieService.get("token"),
-  role: cookieService.get("role") || null ,
+  role: cookieService.get("role") || null,
   user: cookieService.get("user"),
 };
 

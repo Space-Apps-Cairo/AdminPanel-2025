@@ -1,135 +1,161 @@
 "use client";
-
 import React, { useState } from "react";
 import { toast } from "sonner";
-import CrudForm from "@/components/crud-form";
-import { z } from "zod";
-import { Field } from "@/app/interface";
-import {
-  useGetAllParticipantsQuery,
-} from "@/service/Api/participants";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { UserCheck, Calendar, Loader2 } from "lucide-react";
 import {
   useGetBootcampsQuery,
   useRegisterBootcampAttendeeMutation,
 } from "@/service/Api/bootcamp";
 import { useCheckInWorkshopParticipantMutation } from "@/service/Api/workshops";
-import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
-
-// Validation schema
-const manualAttendingSchema = z.object({
-  participant_uuid: z.string().min(1, "Please select a participant"),
-  registration_type: z.string().min(1, "Please select registration type"),
-});
 
 export default function ManualAttendingPage() {
-  const [isFormOpen, setIsFormOpen] = useState(false); // Closed by default
-
-  // Queries and mutations
-  const { data: participantsData } = useGetAllParticipantsQuery();
+  const [participantUUID, setParticipantUUID] = useState("");
+  const [loading, setLoading] = useState(false);
   const { data: bootcampsData } = useGetBootcampsQuery();
   const [registerBootcampAttendee] = useRegisterBootcampAttendeeMutation();
   const [checkInWorkshopParticipant] = useCheckInWorkshopParticipantMutation();
 
-  // Form fields
-  const fields: Field[] = [
-    {
-      name: "participant_uuid",
-      type: "command" as any,
-      label: "Select Participant",
-      placeholder: "Search by UUID...",
-      options: participantsData?.data?.map((participant) => ({
-        value: participant.uuid,
-        label: `${participant.name_en}`,
-        searchableText: participant.uuid, // Search by UUID only
-      })) || [],
-    },
-    {
-      name: "registration_type",
-      type: "select",
-      label: "Registration Type",
-      placeholder: "Select registration type",
-      options: [
-        { value: "bootcamp", label: "Bootcamp Registration" },
-        { value: "workshop", label: "Workshop Registration" },
-      ],
-    },
-  ];
+  const handleBootcamp = async () => {
+    if (!participantUUID.trim()) {
+      toast.error("Please enter participant UUID");
+      return;
+    }
 
-  const handleFormSubmit = async (data: any) => {
+    setLoading(true);
     try {
-      const { participant_uuid, registration_type } = data;
+      // Simulate API call
+      const firstBootcamp = bootcampsData?.data[0];
+      await registerBootcampAttendee({
+        bootcamp_details_id: Number(firstBootcamp?.id),
+        bootcamp_participant_uuid: participantUUID,
+        category: "1",
+        attendance_status: "attended",
+      }).unwrap();
 
-      if (registration_type === "bootcamp") {
-        // Bootcamp registration
-        if (!bootcampsData?.data || bootcampsData.data.length === 0) {
-          toast.error("No bootcamps available");
-          return;
-        }
-
-        const firstBootcamp = bootcampsData.data[0];
-        await registerBootcampAttendee({
-          bootcamp_details_id: Number(firstBootcamp.id),
-          bootcamp_participant_uuid: participant_uuid,
-          category: "1",
-          attendance_status: "attended",
-        }).unwrap();
-
-        toast.success("Bootcamp registration successful", {
-          description: "Participant has been registered for the bootcamp.",
-        });
-      } else if (registration_type === "workshop") {
-        // Workshop registration
-        await checkInWorkshopParticipant({
-          bootcamp_participant_uuid: participant_uuid,
-        }).unwrap();
-
-        toast.success("Workshop registration successful", {
-          description: "Participant has been registered for the workshop.",
-        });
-      }
-    } catch (err: any) {
-      const errorMessage = err?.data?.msg || err?.data?.message || "Registration failed";
-      toast.error("Registration Failed", {
-        description: errorMessage,
+      toast.success("Bootcamp registration successful", {
+        description: `Participant ${participantUUID} has been registered for the bootcamp.`,
       });
-      throw err; // Re-throw to prevent form from closing
+      setParticipantUUID("");
+    } catch (err: any) {
+      const errorMessage =
+        err?.data?.msg ||
+        err?.data?.message ||
+        err?.message ||
+        "Registration failed";
+      toast.error("Registration Failed", { description: errorMessage });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWorkshop = async () => {
+    if (!participantUUID.trim()) {
+      toast.error("Please enter participant UUID");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Simulate API call
+      await checkInWorkshopParticipant({
+        bootcamp_participant_uuid: participantUUID,
+      }).unwrap();
+
+      toast.success("Workshop registration successful", {
+        description: `Participant ${participantUUID} has been registered for the workshop.`,
+      });
+      setParticipantUUID("");
+    } catch (err: any) {
+      const errorMessage =
+        err?.data?.msg || err?.data?.message || "Registration failed";
+      toast.error("Registration Failed", { description: errorMessage });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Simple Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          Manual Attending
-        </h1>
-        <p className="text-muted-foreground">
-          Search for a participant by UUID and select registration type
-        </p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-12 max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="p-3 bg-primary/10 rounded-full">
+              <UserCheck className="h-8 w-8 text-primary" />
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Manual Attending
+          </h1>
+          <p className="text-muted-foreground">
+            Enter the participant UUID and select registration type
+          </p>
+        </div>
 
-      {/* Manual Attendee Button */}
-      <div className="mb-6">
-        <Button 
-          onClick={() => setIsFormOpen(true)}
-          className="flex items-center gap-2"
-        >
-          <UserPlus className="h-4 w-4" />
-          Manual Attendee
-        </Button>
-      </div>
+        {/* Form Card */}
+        <Card className="p-6 shadow-lg">
+          <div className="space-y-6">
+            {/* Input Field */}
+            <div className="space-y-2">
+              <label
+                htmlFor="uuid"
+                className="text-sm font-medium text-foreground"
+              >
+                Participant UUID
+              </label>
+              <Input
+                id="uuid"
+                placeholder="Enter UUID (e.g., 3064)"
+                value={participantUUID}
+                onChange={(e) => setParticipantUUID(e.target.value)}
+                className="text-center font-mono"
+                disabled={loading}
+              />
+            </div>
 
-      {/* Form */}
-      <CrudForm
-        fields={fields}
-        isOpen={isFormOpen}
-        setIsOpen={setIsFormOpen}
-        operation="add"
-        asDialog={true} // Show as dialog
-        validationSchema={manualAttendingSchema}
-        onSubmit={handleFormSubmit}
-      />
+            {/* Action Buttons */}
+            <div className="grid grid-cols-1 gap-3">
+              <Button
+                onClick={handleBootcamp}
+                disabled={loading}
+                className="h-12 text-base"
+                variant="default"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Calendar className="h-4 w-4 mr-2" />
+                )}
+                Register for Bootcamp
+              </Button>
+
+              <Button
+                onClick={handleWorkshop}
+                disabled={loading}
+                className="h-12 text-base"
+                variant="secondary"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <UserCheck className="h-4 w-4 mr-2" />
+                )}
+                Register for Workshop
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Help Text */}
+        <div className="mt-6 text-center">
+          <p className="text-xs text-muted-foreground">
+            Make sure the participant UUID is correct before registration
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
