@@ -4,6 +4,7 @@ import {
   EmailTemplateRequest,
   EmailTemplateResponse,
   EmailTemplatesResponse,
+  EmailTestRequest,
 } from "@/types/emails/templates";
 import { api } from "../api";
 
@@ -59,6 +60,13 @@ export const emailTemplateApi = api.injectEndpoints({
         body: data,
       }),
     }),
+    sendTestEmail: builder.mutation<EmailTemplate, EmailTestRequest>({
+      query: (data) => ({
+        url: "/send-test-mail",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -68,5 +76,6 @@ export const {
   useAddEmailTemplateMutation,
   useUpdateEmailTemplateMutation,
   useDeleteEmailTemplateMutation,
-  useSendEmailsMutation
+  useSendEmailsMutation,
+  useSendTestEmailMutation,
 } = emailTemplateApi;

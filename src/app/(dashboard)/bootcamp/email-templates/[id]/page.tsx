@@ -3,6 +3,7 @@
 import React from "react";
 import EmailGenerator from "../_components/generator";
 import { useGetEmailTemplateByIdQuery } from "@/service/Api/emails/templates";
+import Loading from "@/components/loading/loading";
 
 export default function EditEmailTemplate({
   params,
@@ -14,7 +15,7 @@ export default function EditEmailTemplate({
   const { data, isLoading } = useGetEmailTemplateByIdQuery(id);
 
   if (isLoading) {
-    return <div>Loading template...</div>;
+    return <Loading />;
   }
 
   return (

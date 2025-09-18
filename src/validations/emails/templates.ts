@@ -12,3 +12,8 @@ export const sendEmailSchema = z.object({
   // ids: z.array(z.coerce.number().min(1)).min(1, "At least one ID is required"),
   ids: z.any(),
 });
+
+export const sendTestEmailSchema = z.object({
+  template_id: z.coerce.number().min(1, "Template ID is required"),
+  email: z.string().email("Invalid email address"),
+});

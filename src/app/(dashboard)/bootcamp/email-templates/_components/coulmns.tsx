@@ -6,20 +6,18 @@ import { Field, FieldOption } from "@/app/interface";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { any } from "zod";
-import { EmailTemplate } from "@/types/emails/templates";
+import { EmailTemplate, EmailTestRequest } from "@/types/emails/templates";
 import { Badge } from "@/components/ui/badge";
 
 import CrudForm from "@/components/crud-form";
 import { useState } from "react";
-import { sendEmailSchema } from "@/validations/emails/templates";
+import { sendTestEmailSchema } from "@/validations/emails/templates";
 import {
   useDeleteEmailTemplateMutation,
-  useGetEmailTemplatesQuery,
-  useSendEmailsMutation,
+  useSendTestEmailMutation,
 } from "@/service/Api/emails/templates";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
-import { withDefault } from "../../participants/_components/coulmns";
 
 export const EmailColumns: ColumnDef<EmailTemplate>[] = [
   { header: "ID", accessorKey: "id", size: 80, enableHiding: false },
@@ -47,6 +45,7 @@ export const EmailColumns: ColumnDef<EmailTemplate>[] = [
 function EmailRowActions({ rowData }: { rowData: EmailTemplate }) {
   const router = useRouter();
   const [deleteTemplate] = useDeleteEmailTemplateMutation();
+  const [sendTestEmail] = useSendTestEmailMutation();
 
   const [isOpen, setIsOpen] = useState(false);
   const fields: Field[] = [
@@ -61,16 +60,17 @@ function EmailRowActions({ rowData }: { rowData: EmailTemplate }) {
     {
       name: "email",
       type: "email",
-      label: "Enter your testing email",
+      label: "Email",
+      placeholder: "Enter your testing email",
     },
   ];
   async function handleEmailSubmit(data) {
     try {
-      const payload = {
+      const payload: EmailTestRequest = {
         template_id: data.template_id,
         email: data.email,
       };
-      // await sendEmail(payload).unwrap();
+      await sendTestEmail(payload).unwrap();
       toast.success("Email sended successfully");
     } catch (err) {
       console.error(err);
@@ -87,7 +87,7 @@ function EmailRowActions({ rowData }: { rowData: EmailTemplate }) {
           setIsOpen={setIsOpen}
           operation={"add"}
           asDialog={true}
-          validationSchema={sendEmailSchema}
+          validationSchema={sendTestEmailSchema}
           onSubmit={handleEmailSubmit}
         />
       )}
