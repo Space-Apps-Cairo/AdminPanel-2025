@@ -23,9 +23,9 @@ export const authSlice = createSlice({
       state.user = user;
     },
     logout: (state) => {
-      cookieService.remove("role");
-      cookieService.remove("token");
-      cookieService.remove("user");
+      cookieService.remove("token", { path: "/" });
+      cookieService.remove("role", { path: "/" });
+      cookieService.remove("user", { path: "/" });
 
       state.token = null;
       state.role = null;
