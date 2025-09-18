@@ -119,13 +119,28 @@ function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
       window.location.href = `/bootcamp/workshops/${rowData.id}`;
     }
   };
+  // helper to format ISO string -> YYYY-MM-DD
+  const formatDate = (isoDate: string) => {
+    if (!isoDate) return isoDate;
+    return new Date(isoDate).toISOString().split("T")[0];
+  };
+
   return (
     <RowsActions
       rowData={rowData}
       isDelete={true}
       fields={getWorkshopsFields(rowData)}
       validationSchema={workshopValidationSchema}
-      updateMutation={(data) => updateWorkshop({ id: rowData.id, data })}
+      updateMutation={(data) =>
+        updateWorkshop({
+          id: rowData.id.toString(),
+          data: {
+            ...data,
+            start_date: formatDate(data.start_date),
+            end_date: formatDate(data.end_date),
+          },
+        })
+      }
       deleteMutation={deleteWorkshop}
       customPreviewHandler={customPreviewHandler}
       onUpdateSuccess={() => {
