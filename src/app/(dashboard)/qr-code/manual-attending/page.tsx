@@ -36,7 +36,7 @@ export default function ManualAttendingPage() {
       }).unwrap();
 
       toast.success("Bootcamp registration successful", {
-        description: `Participant ${participantUUID} has been registered for the bootcamp.`,
+        description: `Participant ${participantUUID} has been attended for the bootcamp.`,
       });
       setParticipantUUID("");
     } catch (err: any) {
@@ -65,7 +65,7 @@ export default function ManualAttendingPage() {
       }).unwrap();
 
       toast.success("Workshop registration successful", {
-        description: `Participant ${participantUUID} has been registered for the workshop.`,
+        description: `Participant ${participantUUID} has been attended for the workshop.`,
       });
       setParticipantUUID("");
     } catch (err: any) {
@@ -132,7 +132,7 @@ export default function ManualAttendingPage() {
                 Register for Bootcamp
               </Button>
 
-              <Button
+              {/* <Button
                 onClick={handleWorkshop}
                 disabled={loading}
                 className="h-12 text-base"
@@ -144,7 +144,7 @@ export default function ManualAttendingPage() {
                   <UserCheck className="h-4 w-4 mr-2" />
                 )}
                 Register for Workshop
-              </Button>
+              </Button> */}
             </div>
           </div>
         </Card>
