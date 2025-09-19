@@ -132,7 +132,7 @@ export default function ManualAttendingPage() {
                 Register for Bootcamp
               </Button>
 
-              {/* <Button
+              <Button
                 onClick={handleWorkshop}
                 disabled={loading}
                 className="h-12 text-base"
@@ -144,7 +144,7 @@ export default function ManualAttendingPage() {
                   <UserCheck className="h-4 w-4 mr-2" />
                 )}
                 Register for Workshop
-              </Button> */}
+              </Button>
             </div>
           </div>
         </Card>
