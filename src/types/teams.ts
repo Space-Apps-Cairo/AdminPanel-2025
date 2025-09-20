@@ -19,6 +19,22 @@ export type TeamLeader = {
 	created_at: string;
 }
 
+export type TeamMember = {
+	id: number;
+	uuid: string;
+	name: string;
+	email: string;
+	phone_number: string;
+	age: number;
+	organization: string;
+	national: string;
+	is_new: boolean;
+	member_role: 'team_lead' | 'member';
+	participation_type: string | null;
+	extra_field: string | null;
+	notes: string | null;
+}
+
 export type Challenge = {
 	id: number;
 	title: string;
@@ -37,6 +53,11 @@ export type MentorshipNeeded = {
 	extra_field: string;
 }
 
+export type TeamPhoto = {
+	url: string;
+	alt?: string;
+}
+
 export type Team = {
 	id: number;
 	uuid: string;
@@ -53,11 +74,14 @@ export type Team = {
 	comment: string | null;
 	nots: string | null;
 	description: string | null;
+	actual_solution: string | null;
 	team_leader: TeamLeader | null;
 	challenge: Challenge | null;
-	actual_solution: string | null;
 	mentorship_needed: MentorshipNeeded | null;
 	participation_method: ParticipationMethod;
+	members: TeamMember[];
+	members_count: number;
+	team_photo: TeamPhoto | null;
 	created_at: string;
 }
 
@@ -75,6 +99,6 @@ export type SingleTeamRes = {
 	data: Team;
 }
 
-export type CreateTeamRequest = Omit<Team, 'id' | 'uuid' | 'created_at' | 'team_leader' | 'challenge' | 'mentorship_needed' | 'participation_method'>;
+export type CreateTeamRequest = Omit<Team, 'id' | 'uuid' | 'created_at' | 'team_leader' | 'challenge' | 'mentorship_needed' | 'participation_method' | 'members' | 'members_count' | 'team_photo'>;
 
 export type UpdateTeamRequest = Partial<CreateTeamRequest>;
