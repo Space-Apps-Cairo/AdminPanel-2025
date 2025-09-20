@@ -40,6 +40,8 @@ export const api = createApi({
     "EmailTemplates",
     "EmailVariables",
     "EmailAudiences",
+    "Teams",
+    "Challenges",
   ],
 
   endpoints: () => ({}), // start empty

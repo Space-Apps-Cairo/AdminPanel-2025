@@ -28,6 +28,9 @@ const getRoutePermissions = () => {
       "/bootcamp/registerationDetails/participation-status",
       "/forms",
       "/form-builder",
+      "/hackathon",
+      "/hackathon/teams",
+      "/hackathon/formDetails",
     ],
 
     material: [
@@ -59,6 +62,9 @@ const getRoutePermissions = () => {
       "/bootcamp/registerationDetails/nationality",
       "/bootcamp/registerationDetails/team-status",
       "/bootcamp/registerationDetails/participation-status",
+      "/hackathon",
+      "/hackathon/teams",
+      "/hackathon/formDetails",
     ],
 
     registeration: [
@@ -79,6 +85,9 @@ const getRoutePermissions = () => {
       "/bootcamp/registerationDetails/nationality",
       "/bootcamp/registerationDetails/team-status",
       "/bootcamp/registerationDetails/participation-status",
+      "/hackathon",
+      "/hackathon/teams",
+      "/hackathon/formDetails",
     ],
   };
 };

@@ -23,6 +23,8 @@ import {
   LogOut,
   HomeIcon,
   ShieldUser,
+  Flag,
+  FileText,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -44,7 +46,7 @@ const getNavigationItems = (userRole: UserRole) => {
       title: "Qr Code",
       url: "/qr-code",
       icon: QrCode,
-      isActive: true,
+      isActive: false,
       roles: ['Admin', 'logistics', 'registeration', 'material'] as UserRole[],
       items: [
         { title: "Scan QR Code", url: "/qr-code/scan" },
@@ -54,7 +56,7 @@ const getNavigationItems = (userRole: UserRole) => {
     {
       title: "Materials Management",
       url: "/materials",
-      isActive: true,
+      isActive: false,
       icon: Shapes,
       roles: ['Admin', 'material'] as UserRole[],
       items: [
@@ -76,7 +78,7 @@ const getNavigationItems = (userRole: UserRole) => {
       title: "Bootcamp Management",
       url: "/bootcamp",
       icon: Building,
-      isActive: true,
+      isActive: false,
       roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
       items: [
         {
@@ -104,7 +106,7 @@ const getNavigationItems = (userRole: UserRole) => {
     {
       title: "Registeration Details ",
       url: "/bootcamp/registerationDetails",
-      isActive: true,
+      isActive: false,
       icon: ClipboardList,
       roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
       items: [
@@ -132,6 +134,32 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Participation Status",
           url: "/bootcamp/registerationDetails/participation-status",
         },
+      ],
+    },
+    {
+      title: "Hackathon Management",
+      url: "/hackathon",
+      icon: Flag,
+      isActive: true,
+      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
+      items: [
+        {
+          title: "Teams",
+          url: "/hackathon/teams",
+        }
+      ],
+    },
+    {
+      title: "Hackathon Form Options ",
+      url: "/hackathon/form-options",
+      isActive: true,
+      icon: FileText,
+      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
+      items: [
+        {
+          title: "Challenges",
+          url: "/hackathon/form-options/challenges",
+        }
       ],
     },
   ];
