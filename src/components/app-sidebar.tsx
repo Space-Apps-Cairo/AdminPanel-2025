@@ -23,8 +23,8 @@ import {
   LogOut,
   HomeIcon,
   ShieldUser,
-  Flag,
   FileText,
+  Trophy,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -100,47 +100,48 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Email Templates",
           url: "/bootcamp/email-templates",
         },
-      ],
-    },
-    {
-      title: "Registeration Details ",
-      url: "/bootcamp/registerationDetails",
-      isActive: false,
-      icon: ClipboardList,
-      roles: ["Admin", "logistics", "registeration"] as UserRole[],
-      items: [
         {
-          title: "Skills",
-          url: "/bootcamp/registerationDetails/skills",
-        },
-        {
-          title: "Education Levels",
-          url: "/bootcamp/registerationDetails/education-levels",
-        },
-        {
-          title: "Field Of Study",
-          url: "/bootcamp/registerationDetails/field-of-study",
-        },
-        {
-          title: "Nationality",
-          url: "/bootcamp/registerationDetails/nationality",
-        },
-        {
-          title: "Team Status",
-          url: "/bootcamp/registerationDetails/team-status",
-        },
-        {
-          title: "Participation Status",
-          url: "/bootcamp/registerationDetails/participation-status",
+          title: "Registeration Details ",
+          url: "/bootcamp/registerationDetails",
+          isActive: false,
+          icon: ClipboardList,
+          roles: ["Admin", "logistics", "registeration"] as UserRole[],
+          items: [
+            {
+              title: "Skills",
+              url: "/bootcamp/registerationDetails/skills",
+            },
+            {
+              title: "Education Levels",
+              url: "/bootcamp/registerationDetails/education-levels",
+            },
+            {
+              title: "Field Of Study",
+              url: "/bootcamp/registerationDetails/field-of-study",
+            },
+            {
+              title: "Nationality",
+              url: "/bootcamp/registerationDetails/nationality",
+            },
+            {
+              title: "Team Status",
+              url: "/bootcamp/registerationDetails/team-status",
+            },
+            {
+              title: "Participation Status",
+              url: "/bootcamp/registerationDetails/participation-status",
+            },
+          ],
         },
       ],
     },
     {
       title: "Hackathon Management",
       url: "/hackathon",
-      icon: Flag,
+      icon: Trophy,
       isActive: true,
       roles: ["Admin", "logistics", "registeration"] as UserRole[],
+
       items: [
         {
           title: "Teams",
@@ -150,22 +151,36 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Members",
           url: "/hackathon/members",
         },
-      ],
-    },
-    {
-      title: "Hackathon Form Options ",
-      url: "/hackathon/form-options",
-      isActive: true,
-      icon: FileText,
-      roles: ["Admin", "logistics", "registeration"] as UserRole[],
-      items: [
         {
-          title: "Challenges",
-          url: "/hackathon/form-options/challenges",
-        },
-        {
-          title: "Majors",
-          url: "/hackathon/form-options/majors",
+          title: " Form Options",
+          url: "/hackathon/form-options",
+          isActive: false,
+          items: [
+            {
+              title: "Tshirt Sizes",
+              url: "/hackathon/form-options/tshirt-size",
+            },
+            {
+              title: "Study Levels",
+              url: "/hackathon/form-options/study-levels",
+            },
+            {
+              title: "Participation",
+              url: "/hackathon/form-options/participationMethod",
+            },
+            {
+              title: "Mentorship",
+              url: "/hackathon/form-options/mentorship",
+            },
+            {
+              title: "Challenges",
+              url: "/hackathon/form-options/challenges",
+            },
+            {
+              title: "Majors",
+              url: "/hackathon/form-options/majors",
+            },
+          ],
         },
       ],
     },

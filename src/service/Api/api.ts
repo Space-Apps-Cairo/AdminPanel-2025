@@ -44,6 +44,10 @@ export const api = createApi({
     "Challenges",
     "Major",
     "Member",
+    "Tshirts",
+    "StudyLevel",
+    "MentorShipNeeded",
+    "ParticipationMethod",
   ],
 
   endpoints: () => ({}), // start empty
