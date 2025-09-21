@@ -699,6 +699,64 @@ function SidebarMenuSubButton({
   );
 }
 
+
+// إضافة تحت بقية الدوال داخل نفس الملف (قبل export {...})
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+/**
+ * AppSidebar — Instance من sidebar مع روابط Hackathon
+ * الصق هذا الـ component قبل قائمة الـ export النهائية.
+ */
+export function AppSidebar() {
+  const pathname = usePathname();
+
+  const isActive = (p: string) => pathname?.startsWith(p);
+
+  return (
+    <Sidebar>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Hackathon Management</SidebarGroupLabel>
+
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuSub>
+                <SidebarMenuSubItem>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={Boolean(
+                      isActive("/Hackathon-management/formOptions/member-roles")
+                    )}
+                  >
+                    <Link href="/Hackathon-management/formOptions/member-roles">
+                      Member Roles
+                    </Link>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+
+                <SidebarMenuSubItem>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={Boolean(
+                      isActive("/Hackathon-management/formOptions/actual-solutions")
+                    )}
+                  >
+                    <Link href="/Hackathon-management/formOptions/actual-solutions">
+                      Actual Solutions
+                    </Link>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              </SidebarMenuSub>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
+}
+
+
 export {
   Sidebar,
   SidebarContent,

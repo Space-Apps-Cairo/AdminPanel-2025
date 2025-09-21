@@ -1,13 +1,26 @@
 "use client";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
-import {
-  Sidebar,
+  import {
   SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
+
+  Sidebar,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
    useSidebar,
-} from "./ui/sidebar";
+
+} from "@/components/ui/sidebar";
+
+
 
 import { TeamSwitcher } from "./team-switcher";
 // import SearchBar from "./ui/search-bar";
@@ -27,7 +40,7 @@ import {
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
 import { UserRole } from "@/types/auth.types";
-
+ 
 // Define navigation items with role-based access
 const getNavigationItems = (userRole: UserRole) => {
   const allItems = [
@@ -134,6 +147,28 @@ const getNavigationItems = (userRole: UserRole) => {
         },
       ],
     },
+
+
+
+
+    {
+  title: "Hackathon Management",
+  url: "/Hackathon-management",
+  icon: Building,
+  isActive: true,
+  roles: ["Admin"],
+  items: [
+    {
+      title: "Member Roles",
+      url: "/Hackathon-management/formOptions/member-roles",
+    },
+    {
+      title: "Form Options",
+      url: "/Hackathon-management/formOptions",
+    },
+  ],
+},
+
   ];
 
   // Filter items based on user role
@@ -188,7 +223,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   
   // Get filtered navigation items based on user role
   const navMain = getNavigationItems(userRole || 'Admin'); // Default to admin if no role
-  
+  const pathname = usePathname();
+  const isActive = (path: string) => pathname?.startsWith(path);
   // Get team data based on user role
   const data = getTeamData(userRole || 'Admin');
 
@@ -206,6 +242,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
+        
+  
+
+  {/* Hackathon Management Section */}
+  <SidebarGroup>
+    <SidebarGroupLabel>Hackathon Management</SidebarGroupLabel>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuSub>
+          <SidebarMenuSubItem>
+              <SidebarMenuSubButton asChild data-active={isActive("/Hackathon-management/formOptions/member-roles") ? "true" : undefined}>
+                 <Link href="/Hackathon-management/formOptions/member-roles">
+                   Member Roles
+                      </Link>
+                       </SidebarMenuSubButton>
+
+
+          </SidebarMenuSubItem>
+          <SidebarMenuSubItem>
+            <SidebarMenuSubButton asChild data-active={isActive("/Hackathon-management/formOptions/actual-solutions") ? "true" : undefined}
+  >
+             <Link href="/Hackathon-management/formOptions/actual-solutions">
+               Actual Solutions
+               </Link>
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
+        </SidebarMenuSub>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  </SidebarGroup>
+
+
       </SidebarContent>
       <SidebarFooter>
         <Button
