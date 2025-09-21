@@ -10,6 +10,6 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Participants", "Workshops", "Bootcamps", "MemberRole","ActualSolutions",""],
+  tagTypes: ["Participants", "Workshops", "Bootcamps", "MemberRole","ActualSolutions","MemberRoles"],
   endpoints: () => ({}),
 });

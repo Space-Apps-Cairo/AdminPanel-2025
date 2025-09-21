@@ -153,18 +153,18 @@ const getNavigationItems = (userRole: UserRole) => {
 
     {
   title: "Hackathon Management",
-  url: "/Hackathon-management",
+  url: "/hackathon",
   icon: Building,
   isActive: true,
   roles: ["Admin"],
   items: [
     {
       title: "Member Roles",
-      url: "/Hackathon-management/formOptions/member-roles",
+      url: "/hackathon/form-options/memberRole",
     },
     {
-      title: "Form Options",
-      url: "/Hackathon-management/formOptions",
+      title: "Actual Solutions",
+      url: "/hackathon/form-options/actualSolutions",
     },
   ],
 },
@@ -245,15 +245,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         
   
 
-  {/* Hackathon Management Section */}
+  {/* Hackathon Management Section
   <SidebarGroup>
     <SidebarGroupLabel>Hackathon Management</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuSub>
           <SidebarMenuSubItem>
-              <SidebarMenuSubButton asChild data-active={isActive("/Hackathon-management/formOptions/member-roles") ? "true" : undefined}>
-                 <Link href="/Hackathon-management/formOptions/member-roles">
+              <SidebarMenuSubButton asChild data-active={isActive("/hackathon/form-options/memberRole") ? "true" : undefined}>
+                 <Link href="/hackathon/form-options/memberRole">
                    Member Roles
                       </Link>
                        </SidebarMenuSubButton>
@@ -261,9 +261,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
           </SidebarMenuSubItem>
           <SidebarMenuSubItem>
-            <SidebarMenuSubButton asChild data-active={isActive("/Hackathon-management/formOptions/actual-solutions") ? "true" : undefined}
+            <SidebarMenuSubButton asChild data-active={isActive("/hackathon/form-options/actualSolutions") ? "true" : undefined}
   >
-             <Link href="/Hackathon-management/formOptions/actual-solutions">
+             <Link href="/hackathon/form-options/actualSolutions">
                Actual Solutions
                </Link>
             </SidebarMenuSubButton>
@@ -271,7 +271,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenuSub>
       </SidebarMenuItem>
     </SidebarMenu>
-  </SidebarGroup>
+  </SidebarGroup> */}
 
 
       </SidebarContent>
