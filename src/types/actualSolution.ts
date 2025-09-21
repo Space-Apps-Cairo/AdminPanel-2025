@@ -1,8 +1,9 @@
 export interface ActualSolution {
   id: number;
   title: string;
-  description?: string;
+  description: string;
   teamId: number;
+  [key: string]: unknown;
 }
 
 export interface ActualSolutionsResponse {

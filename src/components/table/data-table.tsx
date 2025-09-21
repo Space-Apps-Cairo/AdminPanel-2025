@@ -123,7 +123,7 @@ const createStatusFilterFn = <
   };
 };
 
-export default function DataTable<TData extends DataTableRow  & { id: string | number }>({
+export default function DataTable<TData extends DataTableRow  >({
   data,
   columns: baseColumns,
   
