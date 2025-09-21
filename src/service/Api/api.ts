@@ -40,6 +40,10 @@ export const api = createApi({
     "EmailTemplates",
     "EmailVariables",
     "EmailAudiences",
+    "Tshirts",
+    "StudyLevel",
+    "MentorShipNeeded",
+    "ParticipationMethod",
   ],
 
   endpoints: () => ({}), // start empty

@@ -23,6 +23,7 @@ import {
   LogOut,
   HomeIcon,
   ShieldUser,
+  Trophy,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -99,6 +100,39 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Email Templates",
           url: "/bootcamp/email-templates",
         },
+      ],
+    }, 
+    {
+      title: "Hackathon Management",
+      url: "/hackathon",
+      icon: Trophy,
+      isActive: true,
+      roles: ['Admin', 'logistics', ] as UserRole[],
+      items: [
+        {
+          title: " Form Options",
+          url: "/hackathon/form-options", 
+         isActive: true,
+          items: [
+        {
+          title: "Tshirt Sizes",
+          url: "/hackathon/form-options/tshirt-size",
+        },
+        {
+          title: "Study Levels",
+          url: "/hackathon/form-options/study-levels",
+        },
+         {
+          title: "Participation",
+          url: "/hackathon/form-options/participationMethod",
+        },
+        {
+          title: "Mentorship",
+          url: "/hackathon/form-options/mentorship",
+        },
+      ],
+        },
+       
       ],
     },
     {
