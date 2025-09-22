@@ -1,5 +1,5 @@
 import { MemberRole, MemberRolesResponse } from "@/types/memberRole";
-import { api } from "./api";
+import { api } from "../Api/api";
 
 export const MemberRoleApi = api.injectEndpoints({
   endpoints: (build) => ({

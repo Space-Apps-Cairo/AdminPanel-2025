@@ -29,10 +29,11 @@ export default function MemberRoles() {
   const [isOpen, setIsOpen] = useState(false);
   const [addMemberRole] = useAddMemberRoleMutation();
 
+  //  search by title instead of old "name"
   const searchConfig: SearchConfig = {
     enabled: true,
-    placeholder: "Filter by role name",
-    searchKeys: ["name"],
+    placeholder: "Filter by role title",
+    searchKeys: ["title", "description", "extra_field"],
   };
 
   const statusConfig: StatusConfig = {

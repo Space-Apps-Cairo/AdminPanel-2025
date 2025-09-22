@@ -11,16 +11,42 @@ import { memberRoleValidationSchema } from "@/validations/memberRole";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 
+
 export const getMemberRoleFields = (role?: MemberRole): Field[] => [
   {
-    name: "name",
+    name: "title",
     type: "text",
-    label: "Role Name",
-    placeholder: "Enter role name",
-    ...(role?.name && { defaultValue: role.name }),
+    label: "Role Title",
+    placeholder: "Enter role title",
+    ...(role?.title && { defaultValue: role.title }),
+    step: 1,
+  },
+  {
+    name: "extra_field",
+    type: "text",
+    label: "Extra Field",
+    placeholder: "Enter extra info",
+    ...(role?.extra_field && { defaultValue: role.extra_field }),
+    step: 1,
+  },
+  {
+    name: "description",
+    type: "text",
+    label: "Description",
+    placeholder: "Enter role description",
+    ...(role?.description && { defaultValue: role.description }),
+    step: 1,
+  },
+  {
+    name: "created_by_id",
+    type: "number",
+    label: "Created By ID",
+    placeholder: "Enter creator user ID",
+    ...(role?.created_by_id && { defaultValue: role.created_by_id }),
     step: 1,
   },
 ];
+
 
 export const memberRoleColumns: ColumnDef<MemberRole>[] = [
   {
@@ -30,10 +56,52 @@ export const memberRoleColumns: ColumnDef<MemberRole>[] = [
     enableHiding: false,
   },
   {
-    header: "Role Name",
-    accessorKey: "name",
-    size: 200,
+    header: "Title",
+    accessorKey: "title",
+    size: 150,
     enableHiding: false,
+  },
+  {
+    header: "Extra Field",
+    accessorKey: "extra_field",
+    size: 200,
+    enableHiding: true,
+  },
+  {
+    header: "Description",
+    accessorKey: "description",
+    size: 300,
+    enableHiding: true,
+  },
+  {
+    header: "Created At",
+    accessorKey: "created_at",
+    size: 180,
+    enableHiding: true,
+  },
+  {
+    header: "Updated At",
+    accessorKey: "updated_at",
+    size: 180,
+    enableHiding: true,
+  },
+  {
+    header: "Deleted At",
+    accessorKey: "deleted_at",
+    size: 180,
+    enableHiding: true,
+  },
+  {
+    header: "Created By ID",
+    accessorKey: "created_by_id",
+    size: 120,
+    enableHiding: true,
+  },
+  {
+    header: "Created By",
+    accessorKey: "created_by",
+    size: 200,
+    enableHiding: true,
   },
   {
     id: "actions",
@@ -43,6 +111,7 @@ export const memberRoleColumns: ColumnDef<MemberRole>[] = [
     enableHiding: false,
   },
 ];
+
 
 function MemberRoleRowActions({ rowData }: { rowData: MemberRole }) {
   const [updateRole] = useUpdateMemberRoleMutation();
