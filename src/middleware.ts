@@ -31,6 +31,12 @@ const getRoutePermissions = () => {
       "/hackathon",
       "/hackathon/teams",
       "/hackathon/formDetails",
+      "/hackathon",
+      "/hackathon/form-options",
+      "/hackathon/form-options/tshirt-size",
+      "/hackathon/form-options/study-levels",
+      "/hackathon/form-options/participationMethod",
+      "/hackathon/form-options/mentorship",
     ],
 
     material: [
@@ -42,6 +48,7 @@ const getRoutePermissions = () => {
       "/materials/volunteers",
       "/materials/materials",
       "/materials/collections",
+  
     ],
 
     logistics: [
@@ -65,6 +72,10 @@ const getRoutePermissions = () => {
       "/hackathon",
       "/hackathon/teams",
       "/hackathon/formDetails",
+      "/hackathon",
+      "/hackathon/form-options",
+      "/hackathon/form-options/tshirt-size",
+      "/hackathon/form-options/study-levels"
     ],
 
     registeration: [
@@ -88,6 +99,7 @@ const getRoutePermissions = () => {
       "/hackathon",
       "/hackathon/teams",
       "/hackathon/formDetails",
+      
     ],
   };
 };

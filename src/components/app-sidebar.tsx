@@ -6,25 +6,25 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-   useSidebar,
+  useSidebar,
 } from "./ui/sidebar";
 
 import { TeamSwitcher } from "./team-switcher";
 // import SearchBar from "./ui/search-bar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { logout } from "@/service/store/features/authSlice"
+import { logout } from "@/service/store/features/authSlice";
 import { useAppDispatch, useAppSelector } from "@/service/store/store";
 import {
   Building,
-  Shapes, 
+  Shapes,
   QrCode,
   ClipboardList,
   LogOut,
   HomeIcon,
   ShieldUser,
-  Flag,
   FileText,
+  Trophy,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -33,24 +33,23 @@ import { UserRole } from "@/types/auth.types";
 // Define navigation items with role-based access
 const getNavigationItems = (userRole: UserRole) => {
   const allItems = [
-
     {
       title: "Dashboard",
       url: "/",
       icon: HomeIcon,
       isActive: true,
-      roles: ['Admin', 'logistics', 'registeration', 'material'] as UserRole[],
-      items: [{title: 'Dashboard', url: '/'}],
+      roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
+      items: [{ title: "Dashboard", url: "/" }],
     },
     {
       title: "Qr Code",
       url: "/qr-code",
       icon: QrCode,
       isActive: false,
-      roles: ['Admin', 'logistics', 'registeration', 'material'] as UserRole[],
+      roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
       items: [
         { title: "Scan QR Code", url: "/qr-code/scan" },
-        { title: "Manual Attending", url: "/qr-code/manual-attending" }
+        { title: "Manual Attending", url: "/qr-code/manual-attending" },
       ],
     },
     {
@@ -58,7 +57,7 @@ const getNavigationItems = (userRole: UserRole) => {
       url: "/materials",
       isActive: false,
       icon: Shapes,
-      roles: ['Admin', 'material'] as UserRole[],
+      roles: ["Admin", "material"] as UserRole[],
       items: [
         {
           title: "Volunteers",
@@ -79,7 +78,7 @@ const getNavigationItems = (userRole: UserRole) => {
       url: "/bootcamp",
       icon: Building,
       isActive: false,
-      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
+      roles: ["Admin", "logistics", "registeration"] as UserRole[],
       items: [
         {
           title: "Dashboard",
@@ -101,71 +100,94 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Email Templates",
           url: "/bootcamp/email-templates",
         },
-      ],
-    },
-    {
-      title: "Registeration Details ",
-      url: "/bootcamp/registerationDetails",
-      isActive: false,
-      icon: ClipboardList,
-      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
-      items: [
         {
-          title: "Skills",
-          url: "/bootcamp/registerationDetails/skills",
-        },
-        {
-          title: "Education Levels",
-          url: "/bootcamp/registerationDetails/education-levels",
-        },
-        {
-          title: "Field Of Study",
-          url: "/bootcamp/registerationDetails/field-of-study",
-        },
-        {
-          title: "Nationality",
-          url: "/bootcamp/registerationDetails/nationality",
-        },
-        {
-          title: "Team Status",
-          url: "/bootcamp/registerationDetails/team-status",
-        },
-        {
-          title: "Participation Status",
-          url: "/bootcamp/registerationDetails/participation-status",
+          title: "Registeration Details ",
+          url: "/bootcamp/registerationDetails",
+          isActive: false,
+          icon: ClipboardList,
+          roles: ["Admin", "logistics", "registeration"] as UserRole[],
+          items: [
+            {
+              title: "Skills",
+              url: "/bootcamp/registerationDetails/skills",
+            },
+            {
+              title: "Education Levels",
+              url: "/bootcamp/registerationDetails/education-levels",
+            },
+            {
+              title: "Field Of Study",
+              url: "/bootcamp/registerationDetails/field-of-study",
+            },
+            {
+              title: "Nationality",
+              url: "/bootcamp/registerationDetails/nationality",
+            },
+            {
+              title: "Team Status",
+              url: "/bootcamp/registerationDetails/team-status",
+            },
+            {
+              title: "Participation Status",
+              url: "/bootcamp/registerationDetails/participation-status",
+            },
+          ],
         },
       ],
     },
     {
       title: "Hackathon Management",
       url: "/hackathon",
-      icon: Flag,
+      icon: Trophy,
       isActive: true,
-      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
+      roles: ["Admin", "logistics", "registeration"] as UserRole[],
+
       items: [
         {
           title: "Teams",
           url: "/hackathon/teams",
-        }
-      ],
-    },
-    {
-      title: "Hackathon Form Options ",
-      url: "/hackathon/form-options",
-      isActive: true,
-      icon: FileText,
-      roles: ['Admin', 'logistics', 'registeration'] as UserRole[],
-      items: [
+        },
         {
-          title: "Challenges",
-          url: "/hackathon/form-options/challenges",
-        }
+          title: "Members",
+          url: "/hackathon/members",
+        },
+        {
+          title: " Form Options",
+          url: "/hackathon/form-options",
+          isActive: false,
+          items: [
+            {
+              title: "Tshirt Sizes",
+              url: "/hackathon/form-options/tshirt-size",
+            },
+            {
+              title: "Study Levels",
+              url: "/hackathon/form-options/study-levels",
+            },
+            {
+              title: "Participation",
+              url: "/hackathon/form-options/participationMethod",
+            },
+            {
+              title: "Mentorship",
+              url: "/hackathon/form-options/mentorship",
+            },
+            {
+              title: "Challenges",
+              url: "/hackathon/form-options/challenges",
+            },
+            {
+              title: "Majors",
+              url: "/hackathon/form-options/majors",
+            },
+          ],
+        },
       ],
     },
   ];
 
   // Filter items based on user role
-  return allItems.filter(item => item.roles.includes(userRole));
+  return allItems.filter((item) => item.roles.includes(userRole));
 };
 
 // Function to get team data based on user role
@@ -174,23 +196,23 @@ const getTeamData = (userRole: UserRole) => {
     Admin: {
       name: "NSAC | Admins",
       logo: ShieldUser,
-      plan: "admin"
+      plan: "admin",
     },
     material: {
       name: "NSAC | Materials",
       logo: Shapes,
-      plan: "material team"
+      plan: "material team",
     },
     logistics: {
       name: "NSAC | Logistics",
       logo: Building,
-      plan: "logistics team"
+      plan: "logistics team",
     },
     registeration: {
       name: "NSAC | Registration",
       logo: ClipboardList,
-      plan: "registration team"
-    }
+      plan: "registration team",
+    },
   };
 
   const config = roleConfig[userRole] || roleConfig.Admin;
@@ -210,22 +232,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { state } = useSidebar();
-  
+
   // Get user role from Redux store
   const userRole = useAppSelector((state) => state.auth.role) as UserRole;
-  
+
   // Get filtered navigation items based on user role
-  const navMain = getNavigationItems(userRole || 'Admin'); // Default to admin if no role
-  
+  const navMain = getNavigationItems(userRole || "Admin"); // Default to admin if no role
+
   // Get team data based on user role
-  const data = getTeamData(userRole || 'Admin');
+  const data = getTeamData(userRole || "Admin");
 
   const Handlelogout = async () => {
     dispatch(logout());
     toast.success("Logout Successfully");
     router.refresh();
     router.push("/login");
-  }
+  };
 
   return (
     <Sidebar collapsible="icon" {...props}>
