@@ -29,26 +29,9 @@ export default function ParticipationStatusPage() {
     error: participationStatusesError,
   } = useGetAllParticipationStatusesQuery();
 
-  const [participationStatuses, setParticipationStatuses] = useState<
-    ParticipationStatus[]
-  >([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const [deleteParticipationStatus] = useDeleteParticipationStatusMutation();
-
-  useEffect(() => {
-    if (
-      participationStatusesData &&
-      !isLoadingParticipationStatuses &&
-      !participationStatusesError
-    ) {
-      setParticipationStatuses(participationStatusesData.data);
-    }
-  }, [
-    participationStatusesData,
-    isLoadingParticipationStatuses,
-    participationStatusesError,
-  ]);
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -116,7 +99,7 @@ export default function ParticipationStatusPage() {
         <h1 className="text-2xl font-bold mb-6">Participation Statuses</h1>
 
         <DataTable<ParticipationStatus>
-          data={participationStatuses}
+          data={participationStatusesData?.data || []}
           columns={participationStatusColumns}
           actionConfig={actionConfig}
           searchConfig={searchConfig}

@@ -5,7 +5,7 @@ import DataTable from '@/components/table/data-table';
 import { useAddCollectionMutation, useGetAllCollectionsQuery, useDeleteCollectionMutation } from '@/service/Api/materials';
 import { Collection, CreateCollectionRequest, MaterialsForCollections } from '@/types/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { collectionColumns, useCollectionsFields } from './_components/columns';
 import CrudForm from '@/components/crud-form';
 import { collectionValidationSchema } from '@/validations/collection';
@@ -20,7 +20,6 @@ export default function Collections() {
         error: collectionsError,
     } = useGetAllCollectionsQuery();
 
-    const [collections, setCollections] = useState<Collection[]>([]);
     const [isOpen, setIsOpen] = useState(false);
 
     const fields = useCollectionsFields();
@@ -28,15 +27,6 @@ export default function Collections() {
     // Delete mutation for bulk operations
     const [deleteCollection] = useDeleteCollectionMutation();
 
-    useEffect(() => {
-        if (
-        collectionsData &&
-        !isLoadingCollections &&
-        !collectionsError
-        ) {
-            setCollections(collectionsData.data);
-        }
-    }, [collectionsData, isLoadingCollections, collectionsError]);
 
     const searchConfig: SearchConfig = {
         enabled: true,
@@ -128,7 +118,7 @@ export default function Collections() {
             <h1 className="text-2xl font-bold mb-6">Collections</h1>
 
             <DataTable<Collection>
-                data={collections}
+                data={collectionsData?.data || []}
                 columns={collectionColumns}
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}

@@ -15,20 +15,9 @@ export default function TeamsPage() {
         error: teamsError,
     } = useGetAllTeamsQuery();
 
-    const [teams, setTeams] = useState<Team[]>([]);
 
     // Delete mutation for bulk operations
     const [deleteTeam] = useDeleteTeamMutation();
-
-    useEffect(() => {
-        if (
-            teamsData &&
-            !isLoadingTeams &&
-            !teamsError
-        ) {
-            setTeams(teamsData.data);
-        }
-    }, [teamsData, isLoadingTeams, teamsError]);
 
     const searchConfig: SearchConfig = {
         enabled: true,
@@ -66,7 +55,7 @@ export default function TeamsPage() {
             <h1 className="text-2xl font-bold mb-6">Hackathon Teams</h1>
 
             <DataTable<Team>
-                data={teams}
+                data={teamsData?.data || []}
                 columns={teamColumns}
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}

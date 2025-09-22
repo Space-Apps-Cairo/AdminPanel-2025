@@ -23,20 +23,10 @@ export default function NationalitiesPage() {
     error: nationalitiesError,
   } = useGetAllNationalitiesQuery();
 
-  const [nationalities, setNationalities] = useState<Nationality[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const [deleteNationality] = useDeleteNationalityMutation();
 
-  useEffect(() => {
-    if (
-      nationalitiesData &&
-      !isLoadingNationalities &&
-      !nationalitiesError
-    ) {
-      setNationalities(nationalitiesData.data);
-    }
-  }, [nationalitiesData, isLoadingNationalities, nationalitiesError]);
 
     const searchConfig: SearchConfig = {
         enabled: true,
@@ -102,7 +92,7 @@ export default function NationalitiesPage() {
         <h1 className="text-2xl font-bold mb-6">Nationalities</h1>
 
         <DataTable<Nationality>
-            data={nationalities}
+            data={nationalitiesData?.data || []}
             columns={nationalityColumns}
             actionConfig={actionConfig}
             searchConfig={searchConfig}

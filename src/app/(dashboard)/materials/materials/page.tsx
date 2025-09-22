@@ -5,7 +5,7 @@ import DataTable from '@/components/table/data-table';
 import { useAddMaterialMutation, useGetAllMaterialsQuery, useDeleteMaterialMutation } from '@/service/Api/materials';
 import { Material } from '@/types/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { getMaterialFields, materialColumns } from './_components/columns';
 import { FieldValues } from 'react-hook-form';
 import CrudForm from '@/components/crud-form';
@@ -20,21 +20,11 @@ export default function Materials() {
         error: materialsError,
     } = useGetAllMaterialsQuery();
 
-    const [materials, setMaterials] = useState<Material[]>([]);
     const [isOpen, setIsOpen] = useState(false);
 
     // Delete mutation for bulk operations
     const [deleteMaterial] = useDeleteMaterialMutation();
 
-    useEffect(() => {
-        if (
-            materialsData &&
-            !isLoadingMaterials &&
-            !materialsError
-        ) {
-            setMaterials(materialsData.data);
-        }
-    }, [materialsData, isLoadingMaterials, materialsError]);
 
     const searchConfig: SearchConfig = {
         enabled: true,
@@ -115,7 +105,7 @@ export default function Materials() {
             <h1 className="text-2xl font-bold mb-6">Materials</h1>
 
             <DataTable<Material>
-                data={materials}
+                data={materialsData?.data || []}
                 columns={materialColumns}
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}

@@ -14,7 +14,7 @@ export type Workshop = {
   id: number | string;
   title: string;
   name: string;
-  description: string;
+  description: string; // This will contain the HTML format from server
   start_date: string;
   end_date: string;
   workshop_details: string;

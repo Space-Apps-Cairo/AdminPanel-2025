@@ -4,7 +4,6 @@ import { Workshop } from "@/types/workshop";
 import React, { useEffect, useState } from "react";
 import {
   ActionConfig,
-  ColumnVisibilityConfig,
   SearchConfig,
   StatusConfig,
 } from "@/types/table";
@@ -25,6 +24,30 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import QrScanner from "@/components/scanner/QrScanner";
 
+// Helper function to convert array of strings to HTML
+const descriptionArrayToHtml = (descriptionArray: string[]): string => {
+  if (!Array.isArray(descriptionArray) || descriptionArray.length === 0) {
+    return '';
+  }
+  
+  const listItems = descriptionArray
+    .filter(item => item && item.trim())
+    .map(item => {
+      // Escape HTML entities
+      const escapedItem = item
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+      
+      return `<li style="margin-bottom:8px;">${escapedItem}</li>`;
+    })
+    .join('');
+  
+  return `<ul style="margin:10px 0 10px 20px;padding:0;font-size:15px;color:#333;line-height:1.6;">${listItems}</ul>`;
+};
+
 export default function Workshops() {
   const {
     data: workshopsData,
@@ -32,7 +55,6 @@ export default function Workshops() {
     error: workshopsError,
   } = useGetAllWorkshopsQuery();
 
-  const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -43,16 +65,24 @@ export default function Workshops() {
     setIsClient(true);
   }, []);
 
-  useEffect(() => {
-    if (
-      workshopsData &&
-      workshopsData.data &&
-      !isLoadingWorkshops &&
-      !workshopsError
-    ) {
-      setWorkshops(workshopsData.data);
+  const handleQrScan = async (uuid: string) => {
+    try {
+      const result = await checkInParticipant({
+        bootcamp_participant_uuid: uuid,
+      }).unwrap();
+
+      if (result.success) {
+        toast.success("Participant checked in successfully");
+      } else {
+        toast.error("Failed to check in participant");
+      }
+    } catch (error: any) {
+      console.error("Check-in error:", error);
+      toast.error(
+        error?.data?.message || "An error occurred during check-in"
+      );
     }
-  }, [workshopsData, isLoadingWorkshops, workshopsError]);
+  };
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -91,7 +121,7 @@ export default function Workshops() {
 
       const workshopData: Omit<Workshop, "id" | "created_at" | "schedules"> = {
         title: data.title,
-        description: data.description,
+        description: descriptionArrayToHtml(data.description),
         workshop_details: data.workshop_details,
         start_date:
           data.start_date instanceof Date
@@ -105,12 +135,8 @@ export default function Workshops() {
 
       const result = await addWorkshop(workshopData as Workshop).unwrap();
 
-      toast.success("Workshop created successfully");
+      toast.success(result.message || "Workshop created successfully");
 
-      // Update local state with new workshop
-      if (result.data) {
-        setWorkshops((prev) => [...prev, result.data]);
-      }
     } catch (error) {
       const err = error as any;
       toast.error("Failed to add workshop. Please try again.", {
@@ -150,12 +176,11 @@ export default function Workshops() {
         </div>
 
         <DataTable<Workshop>
-          data={workshops}
+          data={workshopsData?.data || []}
           columns={workshopColumns}
           searchConfig={searchConfig}
           statusConfig={statusConfig}
           actionConfig={actionConfig}
-          onDataChange={setWorkshops}
           allowTrigger={true}
         />
 
@@ -166,6 +191,7 @@ export default function Workshops() {
             setIsOpen={setIsOpen}
             operation={"add"}
             asDialog={true}
+            steps={[1, 2]}
             validationSchema={workshopValidationSchema}
             onSubmit={handleAddWorkshopSubmit}
           />
@@ -177,16 +203,10 @@ export default function Workshops() {
               try {
                 setShowScanner(false);
                 const participantUuid = String(res).trim();
-                const result = await checkInParticipant({
-                  bootcamp_participant_uuid: participantUuid,
-                }).unwrap();
-
-                toast.success("Check-in successful", {
-                  description: result.message || `Participant checked in successfully`,
-                });
+                await handleQrScan(participantUuid);
               } catch (err: unknown) {
                 const apiErr = err as { data?: { message?: string } };
-                toast.error("Check-in failed", {
+                toast.error("Scan error", {
                   description: apiErr?.data?.message || "An error occurred while checking in the participant.",
                 });
               }

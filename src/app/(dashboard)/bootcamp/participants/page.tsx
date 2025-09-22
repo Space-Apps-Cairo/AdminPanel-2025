@@ -38,14 +38,8 @@ export default function ParticipantsPage() {
     error,
   } = useGetAllParticipantsQuery();
 
-  const [participants, setParticipants] = useState<Participant[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (participantsData?.data) {
-      setParticipants(participantsData.data);
-    }
-  }, [participantsData]);
 
   const { data: eduLevelsData } = useGetAllEducationalLevelsQuery();
   const { data: fieldsData } = useGetAllFieldsOfStudyQuery();
@@ -142,11 +136,10 @@ export default function ParticipantsPage() {
       <h1 className="text-2xl font-bold mb-6">Participants</h1>
 
       <DataTable<Participant>
-        data={participants}
+        data={participantsData?.data || []}
         columns={participantColumns}
         searchConfig={searchConfig}
         actionConfig={actionConfig}
-        onDataChange={setParticipants}
         enableBulkEmail={true}
         enableSelection={true}
         columnVisibilityConfig={columnVisibilityConfig}

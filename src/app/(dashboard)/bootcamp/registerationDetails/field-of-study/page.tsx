@@ -20,9 +20,8 @@ import {
 } from "./_components/coulmns";
 
 export default function FieldOfStudyPage() {
-  const { data, isLoading, error } = useGetAllFieldsOfStudyQuery();
+  const { data: fieldsOfStudyData, isLoading, error } = useGetAllFieldsOfStudyQuery();
   const [isOpen, setIsOpen] = useState(false);
-  const fieldsOfStudy = data?.data ?? [];
 
   const [addFieldOfStudy] = useAddNewFieldOfStudyMutation();
   const [deleteFieldOfStudy] = useDeleteFieldOfStudyMutation();
@@ -65,7 +64,7 @@ export default function FieldOfStudyPage() {
       <h1 className="text-2xl font-bold mb-6">Fields of Study</h1>
 
       <DataTable<FieldOfStudyType>
-        data={fieldsOfStudy}
+        data={fieldsOfStudyData?.data || []}
         columns={fieldOfStudyColumns}
         searchConfig={{
           enabled: true,

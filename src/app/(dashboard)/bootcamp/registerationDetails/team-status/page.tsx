@@ -23,16 +23,9 @@ export default function TeamStatusPage() {
     error: teamStatusesError,
   } = useGetAllTeamStatusesQuery();
 
-  const [teamStatuses, setTeamStatuses] = useState<TeamStatus[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const [deleteTeamStatus] = useDeleteTeamStatusMutation();
-
-  useEffect(() => {
-    if (teamStatusesData && !isLoadingTeamStatuses && !teamStatusesError) {
-      setTeamStatuses(teamStatusesData.data);
-    }
-  }, [teamStatusesData, isLoadingTeamStatuses, teamStatusesError]);
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -97,7 +90,7 @@ export default function TeamStatusPage() {
         <h1 className="text-2xl font-bold mb-6">Team Statuses</h1>
 
         <DataTable<TeamStatus>
-          data={teamStatuses}
+          data={teamStatusesData?.data || []}
           columns={teamStatusColumns}
           actionConfig={actionConfig}
           searchConfig={searchConfig}

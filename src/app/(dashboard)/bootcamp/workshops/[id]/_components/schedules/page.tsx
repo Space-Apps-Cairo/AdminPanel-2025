@@ -65,7 +65,6 @@ export default function SchedulesTab({
         searchConfig={searchConfig}
         statusConfig={statusConfig}
         actionConfig={actionConfig}
-        // onDataChange={setSchedules}
       />
 
       {isOpen && (
