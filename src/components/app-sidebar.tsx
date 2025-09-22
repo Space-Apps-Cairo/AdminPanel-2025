@@ -1,13 +1,22 @@
 "use client";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 import {
-  Sidebar,
   SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
+  Sidebar,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
   useSidebar,
-} from "./ui/sidebar";
+} from "@/components/ui/sidebar";
 
 import { TeamSwitcher } from "./team-switcher";
 // import SearchBar from "./ui/search-bar";
@@ -180,6 +189,14 @@ const getNavigationItems = (userRole: UserRole) => {
               title: "Majors",
               url: "/hackathon/form-options/majors",
             },
+            {
+              title: "Member Roles",
+              url: "/hackathon/form-options/memberRole",
+            },
+            {
+              title: "Actual Solutions",
+              url: "/hackathon/form-options/actualSolutions",
+            },
           ],
         },
       ],
@@ -256,6 +273,34 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
+
+        {/* Hackathon Management Section
+  <SidebarGroup>
+    <SidebarGroupLabel>Hackathon Management</SidebarGroupLabel>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuSub>
+          <SidebarMenuSubItem>
+              <SidebarMenuSubButton asChild data-active={isActive("/hackathon/form-options/memberRole") ? "true" : undefined}>
+                 <Link href="/hackathon/form-options/memberRole">
+                   Member Roles
+                      </Link>
+                       </SidebarMenuSubButton>
+
+
+          </SidebarMenuSubItem>
+          <SidebarMenuSubItem>
+            <SidebarMenuSubButton asChild data-active={isActive("/hackathon/form-options/actualSolutions") ? "true" : undefined}
+  >
+             <Link href="/hackathon/form-options/actualSolutions">
+               Actual Solutions
+               </Link>
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
+        </SidebarMenuSub>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  </SidebarGroup> */}
       </SidebarContent>
       <SidebarFooter>
         <Button

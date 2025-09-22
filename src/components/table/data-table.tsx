@@ -123,9 +123,10 @@ const createStatusFilterFn = <
   };
 };
 
-export default function DataTable<TData extends DataTableRow>({
+export default function DataTable<TData extends DataTableRow  >({
   data,
   columns: baseColumns,
+  
   searchConfig = { enabled: false, searchKeys: [] },
   statusConfig = { enabled: false, columnKey: "" },
   actionConfig = { enabled: false },

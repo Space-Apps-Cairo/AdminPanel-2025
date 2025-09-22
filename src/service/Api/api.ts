@@ -1,9 +1,9 @@
+// src/service/api.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import cookieService from "../cookies/cookieService";
 
 export const api = createApi({
   reducerPath: "api",
-
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: (headers) => {
@@ -48,6 +48,8 @@ export const api = createApi({
     "StudyLevel",
     "MentorShipNeeded",
     "ParticipationMethod",
+    "MemberRoles",
+    "ActualSolutions",
   ],
 
   endpoints: () => ({}), // start empty

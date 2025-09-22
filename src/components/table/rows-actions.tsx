@@ -58,7 +58,8 @@ export default function RowsActions({
     if (deleteMutation && rowData?.id) {
       try {
         setIsDeleting(true);
-        const result = await deleteMutation(rowData.id).unwrap();
+       const result = await deleteMutation(rowData.id).unwrap;
+
         onDeleteSuccess?.(result);
       } catch (error) {
         onDeleteError?.(error);
