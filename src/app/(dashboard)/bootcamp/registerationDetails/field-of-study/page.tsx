@@ -49,7 +49,7 @@ export default function FieldOfStudyPage() {
     );
 
   return (
-    <div className="container mx-auto py-6 px-8">
+    <div className="mx-auto py-6 px-8">
       {isOpen && (
         <CrudForm
           fields={getFieldOfStudyFields()}

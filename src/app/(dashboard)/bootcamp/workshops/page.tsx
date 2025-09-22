@@ -124,7 +124,7 @@ export default function Workshops() {
 
   if (workshopsError) {
     return (
-      <div className="container mx-auto py-6">
+      <div className="mx-auto py-6">
         <div className="text-red-500">Error loading workshops</div>
       </div>
     );
@@ -132,7 +132,7 @@ export default function Workshops() {
 
   return (
     <React.Fragment>
-      <div className="container mx-auto py-6 flex flex-col gap-6 px-7">
+      <div className="mx-auto py-6 flex flex-col gap-6 px-7">
 
         <div className='w-full flex flex-wrap item-center justify-between'>
 

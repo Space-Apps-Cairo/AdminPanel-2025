@@ -76,7 +76,7 @@ export default function NationalitiesPage() {
 
   if (nationalitiesError) {
     return (
-      <div className="container mx-auto py-6">
+      <div className="mx-auto py-6">
         <div className="text-red-500">Error loading nationalities</div>
       </div>
     );
@@ -97,7 +97,7 @@ export default function NationalitiesPage() {
         />
       )}
 
-      <div className="container mx-auto py-6 px-8">
+      <div className="mx-auto py-6 px-8">
 
         <h1 className="text-2xl font-bold mb-6">Nationalities</h1>
 

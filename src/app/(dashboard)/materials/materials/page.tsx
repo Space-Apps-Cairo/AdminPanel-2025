@@ -88,7 +88,7 @@ export default function Materials() {
 
     if (materialsError) {
         return (
-            <div className="container mx-auto py-6">
+            <div className="mx-auto py-6">
                 <div className="text-red-500">
                 Error loading materials
                 </div>
@@ -110,7 +110,7 @@ export default function Materials() {
             />
         )}
 
-        <div className="container mx-auto py-6 px-8">
+        <div className="mx-auto py-6 px-8">
 
             <h1 className="text-2xl font-bold mb-6">Materials</h1>
 

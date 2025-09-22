@@ -90,7 +90,7 @@ export default function ChallengesPage() {
 
     if (challengesError) {
         return (
-            <div className="container mx-auto py-6">
+            <div className="mx-auto py-6">
                 <div className="text-red-500">
                     Error loading challenges
                 </div>
@@ -112,7 +112,7 @@ export default function ChallengesPage() {
             />
         )}
 
-        <div className="container mx-auto py-6 px-7">
+        <div className="mx-auto py-6 px-7">
             <h1 className="text-2xl font-bold mb-6">Hackathon Challenges</h1>
 
             <DataTable<Challenge>

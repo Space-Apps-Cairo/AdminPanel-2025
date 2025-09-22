@@ -53,7 +53,7 @@ export default function TeamsPage() {
 
     if (teamsError) {
         return (
-            <div className="container mx-auto py-6">
+            <div className="mx-auto py-6">
                 <div className="text-red-500">
                     Error loading teams
                 </div>
@@ -62,7 +62,7 @@ export default function TeamsPage() {
     }
 
     return <React.Fragment>
-        <div className="container mx-auto py-6 px-7">
+        <div className="mx-auto py-6 px-7">
             <h1 className="text-2xl font-bold mb-6">Hackathon Teams</h1>
 
             <DataTable<Team>

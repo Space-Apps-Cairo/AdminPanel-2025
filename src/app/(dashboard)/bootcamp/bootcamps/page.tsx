@@ -96,7 +96,7 @@ export default function Bootcamps() {
 
     if (bootcampsError) {
         return (
-            <div className="container mx-auto py-6">
+            <div className="mx-auto py-6">
                 <div className="text-red-500">
                 Error loading bootcamps
                 </div>
@@ -118,7 +118,7 @@ export default function Bootcamps() {
             />
         )}
 
-        <div className="container mx-auto py-6 px-8">
+        <div className="mx-auto py-6 px-8">
 
             <h1 className="text-2xl font-bold mb-6">Bootcamps</h1>
 

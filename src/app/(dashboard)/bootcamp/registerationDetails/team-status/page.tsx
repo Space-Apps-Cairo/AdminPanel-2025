@@ -72,7 +72,7 @@ export default function TeamStatusPage() {
 
   if (teamStatusesError) {
     return (
-      <div className="container mx-auto py-6">
+      <div className="mx-auto py-6">
         <div className="text-red-500">Error loading team statuses</div>
       </div>
     );
@@ -93,7 +93,7 @@ export default function TeamStatusPage() {
         />
       )}
 
-      <div className="container mx-auto py-6 px-8">
+      <div className="mx-auto py-6 px-8">
         <h1 className="text-2xl font-bold mb-6">Team Statuses</h1>
 
         <DataTable<TeamStatus>
