@@ -16,9 +16,9 @@ import {
 import {
   useGetActualSolutionsQuery,
   useAddActualSolutionMutation,
-} from "@/service/Api/actualSolutions";
-import { ActualSolution } from "@/types/actualSolution";
-import { actualSolutionValidationSchema } from "@/validations/actualSolution";
+} from "@/service/Api/hackthon/form-options/actualSolutions";
+import { ActualSolution } from "@/types/hackthon/form-options/actualSolution";
+import { actualSolutionValidationSchema } from "@/validations/hackthon/form-options/actualSolution";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import Error from "@/components/Error/page";
 

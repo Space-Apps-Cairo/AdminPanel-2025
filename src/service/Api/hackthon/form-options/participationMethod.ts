@@ -1,5 +1,5 @@
-import { ParticipationMethod, ParticipationMethodResponse } from "@/types/participationMethod";
-import { api } from "./api";
+import { ParticipationMethod, ParticipationMethodResponse } from "@/types/hackthon/form-options/participationMethod";
+import { api } from "../../api";
 
 export const ParticipationMethodApi=api.injectEndpoints({
 endpoints:(build)=>({

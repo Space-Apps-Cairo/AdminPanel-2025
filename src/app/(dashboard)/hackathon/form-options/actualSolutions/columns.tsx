@@ -5,9 +5,9 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteActualSolutionMutation,
   useUpdateActualSolutionMutation,
-} from "@/service/Api/actualSolutions";
-import { ActualSolution } from "@/types/actualSolution";
-import { actualSolutionValidationSchema } from "@/validations/actualSolution";
+} from "@/service/Api/hackthon/form-options/actualSolutions";
+import { ActualSolution } from "@/types/hackthon/form-options/actualSolution";
+import { actualSolutionValidationSchema } from "@/validations/hackthon/form-options/actualSolution";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 

@@ -5,9 +5,9 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteTShirtMutation,
   useUpdateTShirtSizeMutation,
-} from "@/service/Api/tshirt";
-import { TShirtSize } from "@/types/tshritSize";
-import { tshirtValidationSchema } from "@/validations/tshirtSize";
+} from "@/service/Api/hackthon/form-options/tshirt";
+import { TShirtSize } from "@/types/hackthon/form-options/tshritSize";
+import { tshirtValidationSchema } from "@/validations/hackthon/form-options/tshirtSize";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 import { toast } from "sonner";

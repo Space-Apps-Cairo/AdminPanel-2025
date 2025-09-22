@@ -1,6 +1,6 @@
 
-import { StudyLevel, StudyLevelResponse } from "@/types/studyLevels";
-import { api } from "./api";
+import { StudyLevel, StudyLevelResponse } from "@/types/hackthon/form-options/studyLevels";
+import { api } from "../../api";
 
 export const StudyLevelApi=api.injectEndpoints({
     endpoints:(build)=>({

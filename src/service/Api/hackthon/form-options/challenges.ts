@@ -5,8 +5,8 @@ import {
 	CreateChallengeResponse,
 	UpdateChallengeRequest,
 	UpdateChallengeResponse,
-} from "@/types/challenges";
-import { api } from "./api";
+} from "@/types/hackthon/form-options/challenges";
+import { api } from "../../api";
 
 export const challengesApi = api.injectEndpoints({
 	endpoints: (build) => ({

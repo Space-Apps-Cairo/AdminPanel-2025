@@ -5,9 +5,9 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteMemberRoleMutation,
   useUpdateMemberRoleMutation,
-} from "@/service/Api/memberRole";
-import { MemberRole } from "@/types/memberRole";
-import { memberRoleValidationSchema } from "@/validations/memberRole";
+} from "@/service/Api/hackthon/form-options/memberRole";
+import { MemberRole } from "@/types/hackthon/form-options/memberRole";
+import { memberRoleValidationSchema } from "@/validations/hackthon/form-options/memberRole";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 

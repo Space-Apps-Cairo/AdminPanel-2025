@@ -1,12 +1,11 @@
-// participationMethodColumns.tsx
 import { Field } from "@/app/interface";
 import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteParticipationMethodMutation,
   useUpdateParticipationMethodMutation,
-} from "@/service/Api/participationMethod";
-import { ParticipationMethod } from "@/types/participationMethod";
-import { participationMethodValidationSchema } from "@/validations/participationMethod";
+} from "@/service/Api/hackthon/form-options/participationMethod";
+import { ParticipationMethod } from "@/types/hackthon/form-options/participationMethod";
+import { participationMethodValidationSchema } from "@/validations/hackthon/form-options/participationMethod";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 import { toast } from "sonner";

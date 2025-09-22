@@ -1,5 +1,5 @@
-import { api } from "./api";
-import { TShirtSize, TShirtSizesResponse } from "@/types/tshritSize";
+import { api } from "../../api";
+import { TShirtSize, TShirtSizesResponse } from "@/types/hackthon/form-options/tshritSize";
 
 export const TShirtApi = api.injectEndpoints({
   endpoints: (build) => ({

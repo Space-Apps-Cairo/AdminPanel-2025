@@ -11,9 +11,9 @@ import CrudForm from "@/components/crud-form";
 import { mentorshipColumns, getMentorshipFields } from "./columns";
 import {
   useAddMentorShipMutation,useGetMentorShipQuery,
-} from "@/service/Api/mentorShipNeeded";
-import { MentorShipNeeded } from "@/types/mentorShipNeeded";
-import { mentorshipValidationSchema } from "@/validations/mentorship";
+} from "@/service/Api/hackthon/form-options/mentorShipNeeded";
+import { MentorShipNeeded } from "@/types/hackthon/form-options/mentorShipNeeded";
+import { mentorshipValidationSchema } from "@/validations/hackthon/form-options/mentorship";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import Error from "@/components/Error/page";
 

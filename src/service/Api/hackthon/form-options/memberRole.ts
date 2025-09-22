@@ -1,5 +1,5 @@
-import { MemberRole, MemberRolesResponse } from "@/types/memberRole";
-import { api } from "./api";
+import { MemberRole, MemberRolesResponse } from "@/types/hackthon/form-options/memberRole";
+import { api } from "../../api";
 
 export const MemberRoleApi = api.injectEndpoints({
   endpoints: (build) => ({
