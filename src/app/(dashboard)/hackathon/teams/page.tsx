@@ -1,15 +1,12 @@
-"use client";
+"use client"
 
-import Loading from "@/components/loading/loading";
-import DataTable from "@/components/table/data-table";
-import {
-  useGetAllTeamsQuery,
-  useDeleteTeamMutation,
-} from "@/service/Api/teams";
-import { Team } from "@/types/teams";
-import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
-import React from "react";
-import { teamColumns } from "./_components/columns";
+import Loading from '@/components/loading/loading';
+import DataTable from '@/components/table/data-table';
+import { useGetAllTeamsQuery, useDeleteTeamMutation } from '@/service/Api/teams';
+import { Team } from '@/types/teams';
+import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
+import React, { useEffect, useState } from 'react';
+import { teamColumns } from './_components/columns';
 
 export default function TeamsPage() {
     const {
@@ -22,26 +19,26 @@ export default function TeamsPage() {
     // Delete mutation for bulk operations
     const [deleteTeam] = useDeleteTeamMutation();
 
-  const searchConfig: SearchConfig = {
-    enabled: true,
-    placeholder: "Filter by team name, team leader name, uuid",
-    searchKeys: ["team_name", "team_leader.name", "uuid"],
-  };
+    const searchConfig: SearchConfig = {
+        enabled: true,
+        placeholder: "Filter by team name, team leader name, uuid",
+        searchKeys: ["team_name", "team_leader.name", "uuid"],
+    };
 
-  const statusConfig: StatusConfig = {
-    enabled: false,
-  };
+    const statusConfig: StatusConfig = {
+        enabled: false,
+    };
 
-  const actionConfig: ActionConfig = {
-    enabled: true,
-    showAdd: false, // Since teams are created by participants, not admins
-    showDelete: true,
-    addButtonText: "Add Team",
-  };
+    const actionConfig: ActionConfig = {
+        enabled: true,
+        showAdd: false, // Since teams are created by participants, not admins
+        showDelete: true,
+        addButtonText: "Add Team",
+    };
 
-  // ====== status ====== //
+    // ====== status ====== //
 
-  if (isLoadingTeams) return <Loading />;
+    if (isLoadingTeams) return <Loading />;
 
     if (teamsError) {
         return (
@@ -67,5 +64,4 @@ export default function TeamsPage() {
             />
         </div>
     </React.Fragment>
-  );
 }
