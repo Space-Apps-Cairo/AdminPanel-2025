@@ -5,7 +5,7 @@ import DataTable from '@/components/table/data-table';
 import { useAddVolunteerMutation, useGetAllVolunteersQuery, useImportVolunteersFileMutation, useDeleteVolunteerMutation } from '@/service/Api/materials';
 import { Volunteer } from '@/types/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { getVolunteerFields, volunteerColumns } from './_components/columns';
 import { FieldValues } from 'react-hook-form';
 import CrudForm from '@/components/crud-form';
@@ -30,7 +30,6 @@ export default function Volunteers() {
         error: VolunteersError,
     } = useGetAllVolunteersQuery();
 
-    const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
@@ -52,15 +51,6 @@ export default function Volunteers() {
     // Delete mutation for bulk operations
     const [deleteVolunteer] = useDeleteVolunteerMutation();
 
-    useEffect(() => {
-        if (
-            volunteersData &&
-            !isLoadingVolunteers &&
-            !VolunteersError
-        ) {
-            setVolunteers(volunteersData.data);
-        }
-    }, [volunteersData, VolunteersError, isLoadingVolunteers]);
 
     const searchConfig: SearchConfig = {
         enabled: true,
@@ -451,7 +441,7 @@ export default function Volunteers() {
 
             </Dialog>
 
-            <div className="container mx-auto py-6 px-8">
+            <div className="mx-auto py-6 px-8">
 
                 <div className='w-full flex flex-wrap item-center justify-between'>
 
@@ -464,7 +454,7 @@ export default function Volunteers() {
                 </div>
 
                 <DataTable<Volunteer>
-                    data={volunteers}
+                    data={volunteersData?.data || []}
                     columns={volunteerColumns}
                     searchConfig={searchConfig}
                     statusConfig={statusConfig}

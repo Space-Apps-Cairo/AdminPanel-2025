@@ -12,14 +12,15 @@ import React from "react";
 import { teamColumns } from "./_components/columns";
 
 export default function TeamsPage() {
-  const {
-    data: teamsData,
-    isLoading: isLoadingTeams,
-    error: teamsError,
-  } = useGetAllTeamsQuery();
+    const {
+        data: teamsData,
+        isLoading: isLoadingTeams,
+        error: teamsError,
+    } = useGetAllTeamsQuery();
 
-  // Delete mutation for bulk operations
-  const [deleteTeam] = useDeleteTeamMutation();
+
+    // Delete mutation for bulk operations
+    const [deleteTeam] = useDeleteTeamMutation();
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -42,28 +43,29 @@ export default function TeamsPage() {
 
   if (isLoadingTeams) return <Loading />;
 
-  if (teamsError) {
-    return (
-      <div className="container mx-auto py-6">
-        <div className="text-red-500">Error loading teams</div>
-      </div>
-    );
-  }
+    if (teamsError) {
+        return (
+            <div className="mx-auto py-6">
+                <div className="text-red-500">
+                    Error loading teams
+                </div>
+            </div>
+        );
+    }
 
-  return (
-    <React.Fragment>
-      <div className="container mx-auto py-6 px-7">
-        <h1 className="text-2xl font-bold mb-6">Hackathon Teams</h1>
+    return <React.Fragment>
+        <div className="mx-auto py-6 px-7">
+            <h1 className="text-2xl font-bold mb-6">Hackathon Teams</h1>
 
-        <DataTable<Team>
-          data={teamsData?.data}
-          columns={teamColumns}
-          searchConfig={searchConfig}
-          statusConfig={statusConfig}
-          actionConfig={actionConfig}
-          bulkDeleteMutation={deleteTeam}
-        />
-      </div>
+            <DataTable<Team>
+                data={teamsData?.data || []}
+                columns={teamColumns}
+                searchConfig={searchConfig}
+                statusConfig={statusConfig}
+                actionConfig={actionConfig}
+                bulkDeleteMutation={deleteTeam}
+            />
+        </div>
     </React.Fragment>
   );
 }

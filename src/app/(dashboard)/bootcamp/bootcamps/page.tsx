@@ -24,21 +24,10 @@ export default function Bootcamps() {
         error: bootcampsError,
     } = useGetAllBootcampDetailsQuery();
 
-    const [bootcamps, setBootcamps] = useState<BootcampDetailsType[]>([]);
     const [isOpen, setIsOpen] = useState(false);
 
     // Delete mutation for bulk operations
     const [deleteBootcampDetails] = useDeleteBootcampDetailsMutation();
-
-    useEffect(() => {
-        if (
-            bootcampsData &&
-            !isLoadingBootcamps &&
-            !bootcampsError
-        ) {
-            setBootcamps(bootcampsData.data);
-        }
-    }, [bootcampsData, isLoadingBootcamps, bootcampsError]);
 
     const searchConfig: SearchConfig = {
         enabled: true,
@@ -96,7 +85,7 @@ export default function Bootcamps() {
 
     if (bootcampsError) {
         return (
-            <div className="container mx-auto py-6">
+            <div className="mx-auto py-6">
                 <div className="text-red-500">
                 Error loading bootcamps
                 </div>
@@ -118,12 +107,12 @@ export default function Bootcamps() {
             />
         )}
 
-        <div className="container mx-auto py-6 px-8">
+        <div className="mx-auto py-6 px-8">
 
             <h1 className="text-2xl font-bold mb-6">Bootcamps</h1>
 
             <DataTable<BootcampDetailsType>
-                data={bootcamps}
+                data={bootcampsData?.data || []}
                 columns={bootcampDetailsColumns}
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}

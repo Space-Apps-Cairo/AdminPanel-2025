@@ -22,12 +22,12 @@ export default function Forms() {
     error: formsError,
     refetch,
   } = useGetAllFormsQuery();
-const { data:formabledata, isLoading } = useGetFormModelByIdQuery();
-const [selectedFormableType, setSelectedFormableType] = useState<number | null>(null);
-const filteredFormableIds = selectedFormableType
-  ? formabledata?.data.find((fd: { formable_type_id: { toString: () => number; }; }) => fd.formable_type_id.toString() === selectedFormableType)?.data ?? []
-  : [];
-  const [isOpen, setIsOpen] = useState(false);
+  const { data:formabledata, isLoading } = useGetFormModelByIdQuery();
+  const [selectedFormableType, setSelectedFormableType] = useState<number | null>(null);
+  const filteredFormableIds = selectedFormableType
+    ? formabledata?.data.find((fd: { formable_type_id: { toString: () => number; }; }) => fd.formable_type_id.toString() === selectedFormableType)?.data ?? []
+    : [];
+    const [isOpen, setIsOpen] = useState(false);
 
   const searchConfig: SearchConfig = {
     enabled: true,
