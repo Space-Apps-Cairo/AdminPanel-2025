@@ -5,7 +5,7 @@ export const api = createApi({
   reducerPath: "api",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://staging.spaceappscairo.com/api/v1",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: (headers) => {
       headers.set("Accept", "application/json");
       const token = cookieService.get("token");
