@@ -38,10 +38,11 @@ export default function MembersPage() {
   };
 
   const actionConfig: ActionConfig = {
-    enabled: false,
+    enabled: true,
     showAdd: true, // allow admin to add members
     showDelete: true,
     addButtonText: "Add Member",
+    showExport: true
   };
   const columnVisibilityConfig: ColumnVisibilityConfig = {
     enableColumnVisibility: true,

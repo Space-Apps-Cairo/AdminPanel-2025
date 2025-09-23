@@ -952,11 +952,11 @@ DataTableProps<TData>) {
               <SelectValue placeholder="Select number of results" />
             </SelectTrigger>
             <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
-              {[5, 10, 25, 50].map((size) => (
-                <SelectItem key={size} value={size.toString()}>
-                  {size}
-                </SelectItem>
-              ))}
+               {[5, 10, 25, 50, data.length].map((size) => (
+               <SelectItem key={size} value={size.toString()}>
+                 {size === data.length ? "All" : size}
+                  </SelectItem>
+                   ))}
             </SelectContent>
           </Select>
         </div>
