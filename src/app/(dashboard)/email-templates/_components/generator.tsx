@@ -197,7 +197,7 @@ export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
       toast.success("Email template created successfully");
 
       // redirect after success
-      router.push("/bootcamp/email-templates");
+      router.push("/email-templates");
     } catch (err) {
       console.error("Submission failed:", err);
       toast.error("Something went wrong while submitting.");
@@ -367,7 +367,7 @@ export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
           <DialogFooter className="flex justify-between">
             <Button
               variant="outline"
-              onClick={() => router.push("/bootcamp/email-templates")}
+              onClick={() => router.push("/email-templates")}
             >
               ← Back to templates page
             </Button>

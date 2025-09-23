@@ -495,6 +495,7 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
           })
         }
         steps={[1, 2, 3]}
+        
       />
     </div>
   );

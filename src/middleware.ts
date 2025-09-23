@@ -34,6 +34,9 @@ const getRoutePermissions = () => {
       "/form-builder",
       "/hackathon",
       "/hackathon/teams",
+      "/hackathon/teams/All",
+      "/hackathon/teams/onsite",
+      "/hackathon/teams/virtual",
       "/hackathon/formDetails",
       "/hackathon",
       "/hackathon/form-options",
@@ -44,7 +47,7 @@ const getRoutePermissions = () => {
       "/hackathon/form-options/memberRole",
       "/hackathon/form-options/actualSolutions",
       "/hackathon/form-options/study-levels",
-           "/email-templates",
+      "/email-templates",
     ],
 
     material: [

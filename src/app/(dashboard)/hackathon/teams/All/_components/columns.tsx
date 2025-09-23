@@ -83,7 +83,7 @@ function TeamRowActions({ rowData }: { rowData: Team }) {
   return (
     <div className="flex items-center gap-3">
 
-        <Link href={`/hackathon/teams/${rowData.id}`}>
+        <Link href={`/hackathon/teams/All/${rowData.id}`}>
             <Button variant={"outline"} size={"sm"}>
                 <Eye size={16} />
             </Button>

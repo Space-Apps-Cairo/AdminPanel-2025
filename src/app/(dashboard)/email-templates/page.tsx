@@ -40,7 +40,7 @@ export default function EmailPage() {
             showDelete: true,
             addButtonText: "Create Template",
             onAdd: () => {
-              router.push("/bootcamp/email-templates/new");
+              router.push("/email-templates/new");
             },
           }}
           // onDeleteRows={deleteBootcamp}

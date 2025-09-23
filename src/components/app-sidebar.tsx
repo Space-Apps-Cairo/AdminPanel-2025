@@ -65,7 +65,7 @@ const getNavigationItems = (userRole: UserRole) => {
 
     {
       title: "Qr Code Hackathon",
-      url: "/qr-code",
+      url: "/qr-hackathon",
       icon: QrCode,
       isActive: false,
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
@@ -169,6 +169,20 @@ const getNavigationItems = (userRole: UserRole) => {
         {
           title: "Teams",
           url: "/hackathon/teams",
+           items: [
+            {
+              title: "All Teams",
+              url: "/hackathon/teams/All",
+            },
+            {
+              title: "Onsite Teams",
+              url: "/hackathon/teams/onsite",
+            },
+             {
+              title: "Virtual Teams",
+              url: "/hackathon/teams/virtual",
+            },
+          ],
         },
         {
           title: "Members",
