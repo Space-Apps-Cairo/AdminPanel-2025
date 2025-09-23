@@ -14,8 +14,8 @@ import {
   Material,
   MaterialsForCollections,
   MaterialsRes,
-} from "@/types/materials";
-import { collectionValidationSchema } from "@/validations/collection";
+} from "@/types/material/materials";
+import { collectionValidationSchema } from "@/validations/material/collection";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight, QrCode } from "lucide-react";
 import React, { useEffect, useState } from "react";

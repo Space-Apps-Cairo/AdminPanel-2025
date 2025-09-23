@@ -5,8 +5,8 @@ import {
   useDeleteMaterialMutation,
   useUpdateMaterialMutation,
 } from "@/service/Api/materials";
-import { Material } from "@/types/materials";
-import { materialValidationSchema } from "@/validations/material";
+import { Material } from "@/types/material/materials";
+import { materialValidationSchema } from "@/validations/material/material";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 

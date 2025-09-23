@@ -2,13 +2,13 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useAddCollectionMutation, useGetAllCollectionsQuery, useDeleteCollectionMutation } from '@/service/Api/materials';
-import { Collection, CreateCollectionRequest, MaterialsForCollections } from '@/types/materials';
+import { useAddCollectionMutation, useGetAllCollectionsQuery, useDeleteCollectionMutation } from '@/service/Api/material/materials';
+import { Collection, CreateCollectionRequest, MaterialsForCollections } from '@/types/material/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useState } from 'react';
 import { collectionColumns, useCollectionsFields } from './_components/columns';
 import CrudForm from '@/components/crud-form';
-import { collectionValidationSchema } from '@/validations/collection';
+import { collectionValidationSchema } from '@/validations/material/collection';
 import { FieldValues } from 'react-hook-form';
 import { toast } from 'sonner';
 

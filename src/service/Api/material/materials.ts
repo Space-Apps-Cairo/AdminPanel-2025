@@ -10,8 +10,8 @@ import {
 	SingleCollectionRes,
 	UpdateCollectionRequest,
 	CollectionUsersRes,
-} from "@/types/materials";
-import { api } from "./api";
+} from "@/types/material/materials";
+import { api } from "../api";
 
 export const materialsApi = api.injectEndpoints({
 

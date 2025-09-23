@@ -1,6 +1,6 @@
 "use client";
 
-import { CollectionUser } from "@/types/materials";
+import { CollectionUser } from "@/types/material/materials";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<CollectionUser>[] = [
