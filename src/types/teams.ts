@@ -98,6 +98,14 @@ export type SingleTeamRes = {
 	message: string;
 	data: Team;
 }
+export type TeamMutationRes = {
+  status: number;
+  success: boolean;
+  message: string;
+  data: Team;
+};
+
+
 
 export type CreateTeamRequest = Omit<Team, 'id' | 'uuid' | 'created_at' | 'team_leader' | 'challenge' | 'mentorship_needed' | 'participation_method' | 'members' | 'members_count' | 'team_photo'>;
 

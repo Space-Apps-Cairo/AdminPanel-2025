@@ -156,8 +156,8 @@ function MemberRowActions({ rowData }: { rowData: Member }) {
       <RowsActions
         rowData={rowData}
         isDelete={true}
-        isUpdate={false}
-        isPreview={false}
+        isUpdate={true}
+        isPreview={true}
         fields={[
           { name: "name", label: "Name", type: "text" },
           { name: "email", label: "Email", type: "email" },
