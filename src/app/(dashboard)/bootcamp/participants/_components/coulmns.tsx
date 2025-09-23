@@ -357,7 +357,7 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
       name: "ids",
       type: "select",
       label: "Select Participants",
-      // ✅ Example: single participant
+      //  Example: single participant
       options: [{ value: rowData.id.toString(), label: rowData.name_en }],
       defaultValue: rowData.id.toString(),
     },

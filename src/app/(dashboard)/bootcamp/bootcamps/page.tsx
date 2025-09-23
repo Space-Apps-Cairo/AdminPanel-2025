@@ -43,6 +43,7 @@ export default function Bootcamps() {
         enabled: true,
         showAdd: true,
         showDelete: true,
+            showExport: true,
         addButtonText: "Add Bootcamp",
         onAdd: () => {
             setIsOpen(true);

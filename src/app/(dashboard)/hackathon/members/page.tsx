@@ -42,6 +42,7 @@ export default function MembersPage() {
     showAdd: true, // allow admin to add members
     showDelete: true,
     addButtonText: "Add Member",
+    showExport: true
   };
   const columnVisibilityConfig: ColumnVisibilityConfig = {
     enableColumnVisibility: true,

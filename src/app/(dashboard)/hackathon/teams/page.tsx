@@ -34,6 +34,7 @@ export default function TeamsPage() {
         showAdd: true, // Since teams are created by participants, not admins
         showDelete: true,
         addButtonText: "Add Team",
+        showExport: true
     };
 
     // ====== status ====== //
