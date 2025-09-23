@@ -34,6 +34,7 @@ import {
   ShieldUser,
   FileText,
   Trophy,
+  Mail,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -51,7 +52,7 @@ const getNavigationItems = (userRole: UserRole) => {
       items: [{ title: "Dashboard", url: "/" }],
     },
     {
-      title: "Qr Code",
+      title: "Qr Code Bootcamp",
       url: "/qr-code",
       icon: QrCode,
       isActive: false,
@@ -59,6 +60,19 @@ const getNavigationItems = (userRole: UserRole) => {
       items: [
         { title: "Scan QR Code", url: "/qr-code/scan" },
         { title: "Manual Attending", url: "/qr-code/manual-attending" },
+      ],
+    },
+
+    {
+      title: "Qr Code Hackathon",
+      url: "/qr-code",
+      icon: QrCode,
+      isActive: false,
+      roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
+      items: [
+        { title: "Scan QR Code", url: "/qr-hackathon/scan" },
+        { title: "Manual Attending", url: "/qr-hackathon/manual-attending" },
+        { title: "Special Cases", url: "/qr-hackathon/special-cases" },
       ],
     },
     {
@@ -201,6 +215,19 @@ const getNavigationItems = (userRole: UserRole) => {
         },
       ],
     },
+     {
+      title: "Email System ",
+      url: "/",
+      isActive: false,
+      icon: Mail,
+      roles: ["Admin", "material"] as UserRole[],
+      items: [
+        {
+          title: "Email Templates",
+          url: "/email-templates",
+        },
+      ],
+    },
   ];
 
   // Filter items based on user role
@@ -273,8 +300,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
-
-        
       </SidebarContent>
       <SidebarFooter>
         <Button

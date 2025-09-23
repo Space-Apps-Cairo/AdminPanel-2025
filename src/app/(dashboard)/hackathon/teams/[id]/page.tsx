@@ -248,7 +248,48 @@ export default function TeamDetailsPage() {
                 </DialogClose>
               </div>
             </DialogContent>
-          </Dialog>
+          </Dialog> 
+             
+
+     {/* Project Links Card - Mobile Friendly */}
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <FileText className="w-5 h-5 text-primary flex-shrink-0" />
+                Project Resources
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <Button 
+                  variant="outline" 
+                  className="h-auto p-3 sm:p-4 justify-start text-left"
+                  onClick={() => window.open(team.project_proposal_url, '_blank')}
+                >
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-blue-600 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium text-sm sm:text-base">Project Proposal</div>
+                    <div className="text-xs text-muted-foreground">View document</div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-auto p-3 sm:p-4 justify-start text-left"
+                  onClick={() => window.open(team.project_video_url, '_blank')}
+                >
+                  <Video className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-red-600 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium text-sm sm:text-base">Project Video</div>
+                    <div className="text-xs text-muted-foreground">Watch presentation</div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
 
           {/* Team Members Card */}
           <Card>
@@ -379,45 +420,7 @@ export default function TeamDetailsPage() {
             </Card>
           )}
 
-          {/* Project Links Card - Mobile Friendly */}
-          <Card>
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                <FileText className="w-5 h-5 text-primary flex-shrink-0" />
-                Project Resources
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <Button 
-                  variant="outline" 
-                  className="h-auto p-3 sm:p-4 justify-start text-left"
-                  onClick={() => window.open(team.project_proposal_url, '_blank')}
-                >
-                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-blue-600 flex-shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <div className="font-medium text-sm sm:text-base">Project Proposal</div>
-                    <div className="text-xs text-muted-foreground">View document</div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="h-auto p-3 sm:p-4 justify-start text-left"
-                  onClick={() => window.open(team.project_video_url, '_blank')}
-                >
-                  <Video className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-red-600 flex-shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <div className="font-medium text-sm sm:text-base">Project Video</div>
-                    <div className="text-xs text-muted-foreground">Watch presentation</div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
+     
           {/* Solution Card */}
           <Card>
             <CardHeader className="pb-4">

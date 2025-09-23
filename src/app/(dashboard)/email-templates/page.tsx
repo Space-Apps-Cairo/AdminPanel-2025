@@ -1,7 +1,7 @@
 "use client";
 
 import { EmailColumns } from "./_components/coulmns";
-import DataTable from "../../../../components/table/data-table";
+import DataTable from "../../../../src/components/table/data-table";
 
 import { useRouter } from "next/navigation";
 import CrudForm from "@/components/crud-form";
