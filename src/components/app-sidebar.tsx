@@ -35,7 +35,7 @@ import { UserRole } from "@/types/auth.types";
 const getNavigationItems = (userRole: UserRole) => {
   const allItems = [
     {
-      title: "Dashboard",
+      title: "Home",
       url: "/",
       icon: HomeIcon,
       isActive: true,
