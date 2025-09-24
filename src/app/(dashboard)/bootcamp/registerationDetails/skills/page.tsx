@@ -16,9 +16,8 @@ import { getSkillFields, skillColumns } from "./_components/coulmns";
 import DataTable from "@/components/table/data-table";
 
 export default function SkillsPage() {
-  const { data, isLoading, error } = useGetAllSkillsQuery();
+  const { data: skillsData, isLoading, error } = useGetAllSkillsQuery();
   const [isOpen, setIsOpen] = useState(false);
-  const skills = data?.data ?? [];
 
   const [addSkill] = useAddNewSkillMutation();
   const [deleteSkill] = useDeleteSkillMutation();
@@ -57,7 +56,7 @@ export default function SkillsPage() {
 
       <DataTable<Skill>
 
-        data={skills}
+        data={skillsData?.data || []}
         columns={skillColumns}
         searchConfig={{
           enabled: true,

@@ -10,11 +10,10 @@ export const workshopValidationSchema = z
       .trim(),
 
     description: z
-      .string()
-      .min(1, "Description is required")
-      .min(10, "Description must be at least 10 characters")
-      .max(1000, "Description must not exceed 500 characters")
-      .trim(),
+      .array(z.string().min(1, "Description point cannot be empty"))
+      .min(1, "At least one description point is required")
+      .max(20, "Maximum 20 description points allowed"),
+
     workshop_details: z
       .string()
       .min(1, "Workshop Instructions is required")

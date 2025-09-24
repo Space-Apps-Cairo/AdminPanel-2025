@@ -264,7 +264,7 @@ export const getParticipantsFields = (
 
 // Columns --------------------
 export const participantColumns: ColumnDef<Participant>[] = [
-  { header: "ID", accessorKey: "id", size: 60, enableHiding: false },
+  { header: "UUID", accessorKey: "uuid", size: 80, enableHiding: false },
   // { header: "English Name", accessorKey: "name_en", size: 180 },
   {
     header: "English Name",

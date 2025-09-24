@@ -1,4 +1,7 @@
-import { MemberRole, MemberRolesResponse } from "@/types/memberRole";
+import {
+  MemberRole,
+  MemberRolesResponse,
+} from "@/types/hackthon/form-options/memberRole";
 import { api } from "./api";
 
 export const MemberRoleApi = api.injectEndpoints({
@@ -8,7 +11,6 @@ export const MemberRoleApi = api.injectEndpoints({
       providesTags: ["MemberRoles"],
     }),
 
-    
     getMemberRoleById: build.query<MemberRole, string | number>({
       query: (id) => `/member-roles/${id}`,
       providesTags: (result, error, id) => [{ type: "MemberRoles", id }],

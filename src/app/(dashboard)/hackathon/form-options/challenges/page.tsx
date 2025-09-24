@@ -5,7 +5,7 @@ import DataTable from '@/components/table/data-table';
 import { useGetAllChallengesQuery, useDeleteChallengeMutation, useAddChallengeMutation } from '@/service/Api/challenges';
 import { Challenge, CreateChallengeRequest } from '@/types/challenges';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { challengeColumns, getChallengeFields } from './_components/columns';
 import CrudForm from '@/components/crud-form';
 import { challengeValidationSchema } from '@/validations/challenges';
@@ -19,7 +19,7 @@ export default function ChallengesPage() {
         error: challengesError,
     } = useGetAllChallengesQuery();
 
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
+
     const [isOpen, setIsOpen] = useState(false);
 
     const fields = getChallengeFields();
@@ -27,15 +27,7 @@ export default function ChallengesPage() {
     // Delete mutation for bulk operations
     const [deleteChallenge] = useDeleteChallengeMutation();
 
-    useEffect(() => {
-        if (
-            challengesData &&
-            !isLoadingChallenges &&
-            !challengesError
-        ) {
-            setChallenges(challengesData.data);
-        }
-    }, [challengesData, isLoadingChallenges, challengesError]);
+
 
     const searchConfig: SearchConfig = {
         enabled: true,
@@ -90,7 +82,7 @@ export default function ChallengesPage() {
 
     if (challengesError) {
         return (
-            <div className="container mx-auto py-6">
+            <div className="mx-auto py-6">
                 <div className="text-red-500">
                     Error loading challenges
                 </div>
@@ -112,11 +104,11 @@ export default function ChallengesPage() {
             />
         )}
 
-        <div className="container mx-auto py-6 px-7">
+        <div className="mx-auto py-6 px-7">
             <h1 className="text-2xl font-bold mb-6">Hackathon Challenges</h1>
 
             <DataTable<Challenge>
-                data={challenges}
+                data={challengesData?.data || []}
                 columns={challengeColumns}
                 searchConfig={searchConfig}
                 statusConfig={statusConfig}

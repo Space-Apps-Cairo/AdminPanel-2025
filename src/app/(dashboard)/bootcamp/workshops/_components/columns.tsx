@@ -14,6 +14,54 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
+// Helper function to convert HTML to array of strings
+const htmlToDescriptionArray = (htmlString: string): string[] => {
+  if (!htmlString || typeof htmlString !== 'string') return [];
+  
+  // Extract text content from <li> tags
+  const liRegex = /<li[^>]*>(.*?)<\/li>/g;
+  const matches = [];
+  let match;
+  
+  while ((match = liRegex.exec(htmlString)) !== null) {
+    // Remove HTML entities and decode them
+    const text = match[1]
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim();
+    matches.push(text);
+  }
+  
+  return matches;
+};
+
+// Helper function to convert array of strings to HTML
+const descriptionArrayToHtml = (descriptionArray: string[]): string => {
+  if (!Array.isArray(descriptionArray) || descriptionArray.length === 0) {
+    return '';
+  }
+  
+  const listItems = descriptionArray
+    .filter(item => item && item.trim())
+    .map(item => {
+      // Escape HTML entities
+      const escapedItem = item
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+      
+      return `<li style="margin-bottom:8px;">${escapedItem}</li>`;
+    })
+    .join('');
+  
+  return `<ul style="margin:10px 0 10px 20px;padding:0;font-size:15px;color:#333;line-height:1.6;">${listItems}</ul>`;
+};
+
 export const getWorkshopsFields = (workshop?: Workshop): Field[] => [
   {
     name: "title",
@@ -25,11 +73,18 @@ export const getWorkshopsFields = (workshop?: Workshop): Field[] => [
   },
   {
     name: "description",
-    type: "text",
-    label: "Description",
-    ...(workshop?.description && { defaultValue: workshop.description }),
-    step: 1,
-    placeholder: "Enter workshop description",
+    type: "dynamicArrayField",
+    label: "Description Points",
+    ...(workshop?.description && { 
+      defaultValue: htmlToDescriptionArray(workshop.description) 
+    }),
+    step: 2,
+    dynamicArrayFieldsConfig: {
+      isSimpleArray: true,
+      addButtonLabel: "Add Description Point",
+      itemName: "Description Point",
+      minItem: 1,
+    },
   },
   {
     name: "workshop_details",
@@ -129,6 +184,7 @@ function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
     <RowsActions
       rowData={rowData}
       isDelete={true}
+      steps={[1, 2]}
       fields={getWorkshopsFields(rowData)}
       validationSchema={workshopValidationSchema}
       updateMutation={(data) =>
@@ -136,6 +192,7 @@ function WorkshopRowActions({ rowData }: { rowData: Workshop }) {
           id: rowData.id.toString(),
           data: {
             ...data,
+            description: descriptionArrayToHtml(data.description),
             start_date: formatDate(data.start_date),
             end_date: formatDate(data.end_date),
           },

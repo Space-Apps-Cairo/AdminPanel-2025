@@ -6,14 +6,12 @@ import {
   useDeleteActualSolutionMutation,
   useUpdateActualSolutionMutation,
 } from "@/service/Api/actualSolutions";
-import { ActualSolution } from "@/types/actualSolution";
-import { actualSolutionValidationSchema } from "@/validations/actualSolution";
+import { ActualSolution } from "@/types/hackthon/form-options/actualSolution";
+import { actualSolutionValidationSchema } from "@/validations/hackthon/form-options/actualSolution";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 
-export const getActualSolutionFields = (
-  solution?: ActualSolution
-): Field[] => [
+export const getActualSolutionFields = (solution?: ActualSolution): Field[] => [
   {
     name: "title",
     type: "text",

@@ -8,17 +8,14 @@ import DataTable from "@/components/table/data-table";
 import Loading from "@/components/loading/loading";
 import CrudForm from "@/components/crud-form";
 
-import {
-  actualSolutionColumns,
-  getActualSolutionFields,
-} from "./columns";
+import { actualSolutionColumns, getActualSolutionFields } from "./columns";
 
 import {
   useGetActualSolutionsQuery,
   useAddActualSolutionMutation,
 } from "@/service/Api/actualSolutions";
-import { ActualSolution } from "@/types/actualSolution";
-import { actualSolutionValidationSchema } from "@/validations/actualSolution";
+import { ActualSolution } from "@/types/hackthon/form-options/actualSolution";
+import { actualSolutionValidationSchema } from "@/validations/hackthon/form-options/actualSolution";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import Error from "@/components/Error/page";
 

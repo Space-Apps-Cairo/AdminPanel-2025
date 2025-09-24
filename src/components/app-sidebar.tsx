@@ -189,14 +189,14 @@ const getNavigationItems = (userRole: UserRole) => {
               title: "Majors",
               url: "/hackathon/form-options/majors",
             },
-            {
-              title: "Member Roles",
-              url: "/hackathon/form-options/memberRole",
-            },
-            {
-              title: "Actual Solutions",
-              url: "/hackathon/form-options/actualSolutions",
-            },
+            // {
+            //   title: "Member Roles",
+            //   url: "/hackathon/form-options/memberRole",
+            // },
+            // {
+            //   title: "Actual Solutions",
+            //   url: "/hackathon/form-options/actualSolutions",
+            // },
           ],
         },
       ],

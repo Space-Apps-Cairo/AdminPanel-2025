@@ -19,9 +19,8 @@ import {
 } from "./_components/coulmns";
 
 export default function EducationLevelsPage() {
-  const { data, isLoading, error } = useGetAllEducationalLevelsQuery();
+  const { data: educationLevelsData, isLoading, error } = useGetAllEducationalLevelsQuery();
   const [isOpen, setIsOpen] = useState(false);
-  const educationLevels = data?.data ?? [];
 
   const [addEducationLevel] = useAddNewEducationalLevelMutation();
   const [deleteEducationLevel] = useDeleteEducationalLevelMutation();
@@ -64,7 +63,7 @@ export default function EducationLevelsPage() {
       <h1 className="text-2xl font-bold mb-6">Education Levels</h1>
 
       <DataTable<EducationalLevel>
-        data={educationLevels}
+        data={educationLevelsData?.data || []}
         columns={educationLevelColumns}
         searchConfig={{
           enabled: true,

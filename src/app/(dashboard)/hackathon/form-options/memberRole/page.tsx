@@ -14,17 +14,13 @@ import {
   useGetMemberRolesQuery,
   useAddMemberRoleMutation,
 } from "@/service/Api/memberRole";
-import { MemberRole } from "@/types/memberRole";
-import { memberRoleValidationSchema } from "@/validations/memberRole";
+import { MemberRole } from "@/types/hackthon/form-options/memberRole";
+import { memberRoleValidationSchema } from "@/validations/hackthon/form-options/memberRole";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import Error from "@/components/Error/page";
 
 export default function MemberRoles() {
-  const {
-    data: memberRolesData,
-    isLoading,
-    error,
-  } = useGetMemberRolesQuery();
+  const { data: memberRolesData, isLoading, error } = useGetMemberRolesQuery();
 
   const [isOpen, setIsOpen] = useState(false);
   const [addMemberRole] = useAddMemberRoleMutation();

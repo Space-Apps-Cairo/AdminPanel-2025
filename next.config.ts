@@ -14,7 +14,12 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "staging.spaceappscairo.com",
-        pathname: "/**", // allow all paths
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "adminpanel.spaceappscairo.com",
+        pathname: "/**", // allow all paths from adminpanel
       },
     ],
   },

@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { useGetTeamQuery } from '@/service/Api/teams'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog'
-import Loading from '@/components/loading/loading'
-import { 
-  Calendar, 
-  Trophy, 
-  Star, 
-  MapPin, 
-  Mail, 
-  Phone, 
-  Building, 
-  User, 
-  FileText, 
-  Video, 
+import React, { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useGetTeamQuery } from "@/service/Api/teams";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
+import Loading from "@/components/loading/loading";
+import {
+  Calendar,
+  Trophy,
+  Star,
+  MapPin,
+  Mail,
+  Phone,
+  Building,
+  User,
+  FileText,
+  Video,
   MessageCircle,
   Target,
   HelpCircle,
@@ -35,34 +35,34 @@ import {
   Image as ImageIcon,
   UserPlus,
   Crown,
-  X
-} from 'lucide-react'
-import { format } from 'date-fns'
-import Image from 'next/image'
+  X,
+} from "lucide-react";
+import { format } from "date-fns";
+import Image from "next/image";
 
 export default function TeamDetailsPage() {
-  const params = useParams()
-  const router = useRouter()
-  const teamId = params.id as string
-  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
+  const params = useParams();
+  const router = useRouter();
+  const teamId = params.id as string;
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
 
   const {
     data: teamData,
     isLoading,
     error,
     isError,
-    refetch
+    refetch,
   } = useGetTeamQuery(teamId, {
     refetchOnMountOrArgChange: true,
-    refetchOnFocus: true
-  })
+    refetchOnFocus: true,
+  });
 
   if (isLoading) {
     return (
       <div className="container mx-auto py-4 px-4 sm:py-6 sm:px-5">
         <Loading />
       </div>
-    )
+    );
   }
 
   if (isError || error || !teamData?.data) {
@@ -70,81 +70,107 @@ export default function TeamDetailsPage() {
       <div className="container mx-auto py-4 px-4 sm:py-6 sm:px-5">
         <div className="text-center py-8 sm:py-12">
           <AlertCircle className="w-12 h-12 sm:w-16 sm:h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-lg sm:text-xl font-semibold mb-2">Error Loading Team Details</h2>
+          <h2 className="text-lg sm:text-xl font-semibold mb-2">
+            Error Loading Team Details
+          </h2>
           <p className="text-muted-foreground mb-6 text-sm sm:text-base px-4">
-            {error && 'status' in error 
+            {error && "status" in error
               ? `Error ${error.status}: Unable to fetch team data`
-              : 'Something went wrong while loading the team information'
-            }
+              : "Something went wrong while loading the team information"}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button onClick={() => refetch()} variant="outline" size="sm" className="sm:size-default">
+            <Button
+              onClick={() => refetch()}
+              variant="outline"
+              size="sm"
+              className="sm:size-default"
+            >
               Try Again
             </Button>
-            <Button onClick={() => router.back()} size="sm" className="sm:size-default">
+            <Button
+              onClick={() => router.back()}
+              size="sm"
+              className="sm:size-default"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go Back
             </Button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  const team = teamData.data
+  const team = teamData.data;
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Not set'
+    if (!dateString) return "Not set";
     try {
-      return format(new Date(dateString), 'PPP')
+      return format(new Date(dateString), "PPP");
     } catch {
-      return dateString
+      return dateString;
     }
-  }
+  };
 
   const getStatusColor = (status: string | null) => {
-    if (!status) return "secondary"
+    if (!status) return "secondary";
     switch (status.toLowerCase()) {
-      case "approved": return "default"
-      case "pending": return "secondary"
-      case "rejected": return "destructive"
-      default: return "outline"
+      case "approved":
+        return "default";
+      case "pending":
+        return "secondary";
+      case "rejected":
+        return "destructive";
+      default:
+        return "outline";
     }
-  }
+  };
 
   const getParticipationColor = (method: string) => {
-    return method.toLowerCase() === "onsite" ? "default" : "secondary"
-  }
+    return method.toLowerCase() === "onsite" ? "default" : "secondary";
+  };
 
   const getParticipantTypeColor = (type: string | null) => {
-    if (!type) return "secondary"
+    if (!type) return "secondary";
     switch (type) {
-      case "1": return "default"
-      case "2": return "secondary"
-      case "3": return "outline"
-      default: return "secondary"
+      case "1":
+        return "default";
+      case "2":
+        return "secondary";
+      case "3":
+        return "outline";
+      default:
+        return "secondary";
     }
-  }
+  };
 
   const getParticipantTypeLabel = (type: string | null) => {
-    if (!type) return "Not specified"
+    if (!type) return "Not specified";
     switch (type) {
-      case "1": return "Individual"
-      case "2": return "Team Member"
-      case "3": return "Group Leader"
-      default: return `Type ${type}`
+      case "1":
+        return "Individual";
+      case "2":
+        return "Team Member";
+      case "3":
+        return "Group Leader";
+      default:
+        return `Type ${type}`;
     }
-  }
+  };
 
   return (
     <div className="container mx-auto py-4 px-4 sm:py-6 sm:px-5 max-w-7xl">
       {/* Header - Responsive */}
       <div className="mb-6 sm:mb-8">
-        <Button variant="outline" className="mb-6" onClick={() => router.back()}>
+        <Button
+          variant="outline"
+          className="mb-6"
+          onClick={() => router.back()}
+        >
           <ChevronLeft />
           <p>Go Back</p>
         </Button>
-        
+
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white break-words">
@@ -167,17 +193,28 @@ export default function TeamDetailsPage() {
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             {team.status ? (
-              <Badge variant={getStatusColor(team.status)} className="px-2 py-1 text-xs sm:px-3 sm:text-sm">
+              <Badge
+                variant={getStatusColor(team.status)}
+                className="px-2 py-1 text-xs sm:px-3 sm:text-sm"
+              >
                 {team.status}
               </Badge>
             ) : (
-              <Badge variant="secondary" className="px-2 py-1 text-xs sm:px-3 sm:text-sm">
+              <Badge
+                variant="secondary"
+                className="px-2 py-1 text-xs sm:px-3 sm:text-sm"
+              >
                 No Status
               </Badge>
             )}
-            <Badge variant={getParticipationColor(team.participation_method.title)} className="px-2 py-1 text-xs sm:px-3 sm:text-sm">
+            <Badge
+              variant={getParticipationColor(team.participation_method.title)}
+              className="px-2 py-1 text-xs sm:px-3 sm:text-sm"
+            >
               <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-              <span className="truncate">{team.participation_method.title}</span>
+              <span className="truncate">
+                {team.participation_method.title}
+              </span>
             </Badge>
           </div>
         </div>
@@ -187,9 +224,8 @@ export default function TeamDetailsPage() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
         {/* Left Column - Main Info */}
         <div className="xl:col-span-2 space-y-4 sm:space-y-6">
-          
           {/* Team Photo Card */}
-          {team.team_photo && (
+          {team?.team_photo && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -198,19 +234,21 @@ export default function TeamDetailsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="relative w-full h-64 sm:h-80 rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity"
-                     onClick={() => setIsImageDialogOpen(true)}
-                     role="button"
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                       if (e.key === 'Enter' || e.key === ' ') {
-                         e.preventDefault()
-                         setIsImageDialogOpen(true)
-                       }
-                     }}
-                     aria-label="Click to view full size image">
+                <div
+                  className="relative w-full h-64 sm:h-80 rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => setIsImageDialogOpen(true)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setIsImageDialogOpen(true);
+                    }
+                  }}
+                  aria-label="Click to view full size image"
+                >
                   <Image
-                    src={team.team_photo.url}
+                    src={team?.team_photo?.url}
                     alt={`${team.team_name} team photo`}
                     fill
                     className="object-cover"
@@ -228,13 +266,13 @@ export default function TeamDetailsPage() {
 
           {/* Image Zoom Dialog */}
           <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
-            <DialogContent 
+            <DialogContent
               className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 overflow-hidden"
               showCloseButton={false}
             >
               <div className="relative max-w-full max-h-[95vh] flex items-center justify-center">
                 <Image
-                  src={team.team_photo?.url || ''}
+                  src={team.team_photo?.url || ""}
                   alt={`${team.team_name} team photo - Full size`}
                   width={0}
                   height={0}
@@ -265,7 +303,7 @@ export default function TeamDetailsPage() {
                     <div key={member.id} className="border rounded-lg p-4">
                       <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
-                          {member.member_role === 'team_lead' ? (
+                          {member.member_role === "team_lead" ? (
                             <Crown className="w-5 h-5 text-yellow-600" />
                           ) : (
                             <User className="w-5 h-5 text-primary" />
@@ -274,17 +312,21 @@ export default function TeamDetailsPage() {
                         <div className="flex-1 space-y-3 min-w-0">
                           <div className="text-center sm:text-left">
                             <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                              <h3 className="font-semibold text-base break-words">{member.name}</h3>
-                              {member.member_role === 'team_lead' && (
+                              <h3 className="font-semibold text-base break-words">
+                                {member.name}
+                              </h3>
+                              {member.member_role === "team_lead" && (
                                 <Badge variant="default" className="text-xs">
                                   <Crown className="w-3 h-3 mr-1" />
                                   Leader
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-sm text-muted-foreground">UUID: {member.uuid}</p>
+                            <p className="text-sm text-muted-foreground">
+                              UUID: {member.uuid}
+                            </p>
                           </div>
-                          
+
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                             <div className="flex items-center gap-2 min-w-0">
                               <Mail className="w-4 h-4 text-blue-500 flex-shrink-0" />
@@ -292,11 +334,15 @@ export default function TeamDetailsPage() {
                             </div>
                             <div className="flex items-center gap-2 min-w-0">
                               <Phone className="w-4 h-4 text-green-500 flex-shrink-0" />
-                              <span className="truncate">{member.phone_number}</span>
+                              <span className="truncate">
+                                {member.phone_number}
+                              </span>
                             </div>
                             <div className="flex items-center gap-2 min-w-0">
                               <Building className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                              <span className="truncate">{member.organization}</span>
+                              <span className="truncate">
+                                {member.organization}
+                              </span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Calendar className="w-4 h-4 text-orange-500 flex-shrink-0" />
@@ -304,33 +350,55 @@ export default function TeamDetailsPage() {
                             </div>
                             <div className="flex items-center gap-2 min-w-0 md:col-span-2">
                               <CreditCard className="w-4 h-4 text-red-500 flex-shrink-0" />
-                              <span className="truncate">National ID: {member.national}</span>
+                              <span className="truncate">
+                                National ID: {member.national}
+                              </span>
                             </div>
                           </div>
-                          
+
                           <div className="flex gap-2 flex-wrap justify-center sm:justify-start">
-                            <Badge variant={member.is_new ? "secondary" : "default"} className="text-xs">
-                              {member.is_new ? "New Member" : "Returning Member"}
+                            <Badge
+                              variant={member.is_new ? "secondary" : "default"}
+                              className="text-xs"
+                            >
+                              {member.is_new
+                                ? "New Member"
+                                : "Returning Member"}
                             </Badge>
-                            <Badge variant="outline" className="text-xs capitalize">
-                              {member.member_role.replace('_', ' ')}
+                            <Badge
+                              variant="outline"
+                              className="text-xs capitalize"
+                            >
+                              {member.member_role.replace("_", " ")}
                             </Badge>
                             {member.participation_type && (
-                              <Badge variant={getParticipantTypeColor(member.participation_type)} className="text-xs">
-                                {getParticipantTypeLabel(member.participation_type)}
+                              <Badge
+                                variant={getParticipantTypeColor(
+                                  member.participation_type
+                                )}
+                                className="text-xs"
+                              >
+                                {getParticipantTypeLabel(
+                                  member.participation_type
+                                )}
                               </Badge>
                             )}
                           </div>
 
                           {member.extra_field && (
                             <div className="bg-muted/50 p-3 rounded-md">
-                              <p className="text-sm break-words"><strong>Extra Info:</strong> {member.extra_field}</p>
+                              <p className="text-sm break-words">
+                                <strong>Extra Info:</strong>{" "}
+                                {member.extra_field}
+                              </p>
                             </div>
                           )}
 
                           {member.notes && (
                             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-md">
-                              <p className="text-sm break-words"><strong>Notes:</strong> {member.notes}</p>
+                              <p className="text-sm break-words">
+                                <strong>Notes:</strong> {member.notes}
+                              </p>
                             </div>
                           )}
                         </div>
@@ -356,7 +424,9 @@ export default function TeamDetailsPage() {
               <CardContent>
                 <div className="space-y-3">
                   <div>
-                    <h3 className="font-semibold text-lg break-words">{team.challenge.title}</h3>
+                    <h3 className="font-semibold text-lg break-words">
+                      {team.challenge.title}
+                    </h3>
                     {/* <p className="text-sm text-muted-foreground">Challenge ID: {team.challenge.id}</p> */}
                   </div>
                   <p className="text-muted-foreground leading-relaxed break-words">
@@ -389,28 +459,38 @@ export default function TeamDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="h-auto p-3 sm:p-4 justify-start text-left"
-                  onClick={() => window.open(team.project_proposal_url, '_blank')}
+                  onClick={() =>
+                    window.open(team.project_proposal_url, "_blank")
+                  }
                 >
                   <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-blue-600 flex-shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <div className="font-medium text-sm sm:text-base">Project Proposal</div>
-                    <div className="text-xs text-muted-foreground">View document</div>
+                    <div className="font-medium text-sm sm:text-base">
+                      Project Proposal
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      View document
+                    </div>
                   </div>
                   <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   className="h-auto p-3 sm:p-4 justify-start text-left"
-                  onClick={() => window.open(team.project_video_url, '_blank')}
+                  onClick={() => window.open(team.project_video_url, "_blank")}
                 >
                   <Video className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-red-600 flex-shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <div className="font-medium text-sm sm:text-base">Project Video</div>
-                    <div className="text-xs text-muted-foreground">Watch presentation</div>
+                    <div className="font-medium text-sm sm:text-base">
+                      Project Video
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Watch presentation
+                    </div>
                   </div>
                   <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
                 </Button>
@@ -434,7 +514,9 @@ export default function TeamDetailsPage() {
                   </p>
                 </div>
               ) : (
-                <p className="text-muted-foreground italic">No solution provided yet</p>
+                <p className="text-muted-foreground italic">
+                  No solution provided yet
+                </p>
               )}
             </CardContent>
           </Card>
@@ -459,7 +541,9 @@ export default function TeamDetailsPage() {
                       {team.comment}
                     </p>
                   ) : (
-                    <p className="text-muted-foreground italic">No comment provided</p>
+                    <p className="text-muted-foreground italic">
+                      No comment provided
+                    </p>
                   )}
                 </div>
 
@@ -473,7 +557,9 @@ export default function TeamDetailsPage() {
                       {team.nots}
                     </p>
                   ) : (
-                    <p className="text-muted-foreground italic">No notes available</p>
+                    <p className="text-muted-foreground italic">
+                      No notes available
+                    </p>
                   )}
                 </div>
               </div>
@@ -493,43 +579,65 @@ export default function TeamDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-sm sm:text-base">Members Count</span>
+                <span className="text-muted-foreground text-sm sm:text-base">
+                  Members Count
+                </span>
                 <Badge variant="default" className="text-xs">
                   {team.members_count} Members
                 </Badge>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-sm sm:text-base">Team Rating</span>
+                <span className="text-muted-foreground text-sm sm:text-base">
+                  Team Rating
+                </span>
                 {team.team_rating ? (
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                     <span className="font-semibold">{team.team_rating}</span>
                   </div>
                 ) : (
-                  <span className="text-muted-foreground italic text-sm">Not rated</span>
-                )}
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-sm sm:text-base">Total Score</span>
-                {team.total_score ? (
-                  <span className="font-semibold">{team.total_score}</span>
-                ) : (
-                  <span className="text-muted-foreground italic text-sm">No score</span>
+                  <span className="text-muted-foreground italic text-sm">
+                    Not rated
+                  </span>
                 )}
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-sm sm:text-base">Limited Capacity</span>
-                <Badge variant={team.limited_capacity ? "destructive" : "default"} className="text-xs">
+                <span className="text-muted-foreground text-sm sm:text-base">
+                  Total Score
+                </span>
+                {team.total_score ? (
+                  <span className="font-semibold">{team.total_score}</span>
+                ) : (
+                  <span className="text-muted-foreground italic text-sm">
+                    No score
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm sm:text-base">
+                  Limited Capacity
+                </span>
+                <Badge
+                  variant={team.limited_capacity ? "destructive" : "default"}
+                  className="text-xs"
+                >
                   {team.limited_capacity ? "Yes" : "No"}
                 </Badge>
               </div>
-              
+
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-sm sm:text-base">Previous Participants</span>
-                <Badge variant={team.members_participated_before ? "default" : "secondary"} className="text-xs">
+                <span className="text-muted-foreground text-sm sm:text-base">
+                  Previous Participants
+                </span>
+                <Badge
+                  variant={
+                    team.members_participated_before ? "default" : "secondary"
+                  }
+                  className="text-xs"
+                >
                   {team.members_participated_before ? "Yes" : "No"}
                 </Badge>
               </div>
@@ -548,7 +656,9 @@ export default function TeamDetailsPage() {
               {team.mentorship_needed ? (
                 <div className="space-y-3">
                   <div>
-                    <h3 className="font-semibold break-words">{team.mentorship_needed.title}</h3>
+                    <h3 className="font-semibold break-words">
+                      {team.mentorship_needed.title}
+                    </h3>
                     {/* <p className="text-sm text-muted-foreground">ID: {team.mentorship_needed.id}</p> */}
                   </div>
                   {team.mentorship_needed.extra_field && (
@@ -558,7 +668,9 @@ export default function TeamDetailsPage() {
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground italic">No mentorship requested</p>
+                <p className="text-muted-foreground italic">
+                  No mentorship requested
+                </p>
               )}
             </CardContent>
           </Card>
@@ -573,7 +685,9 @@ export default function TeamDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="text-muted-foreground capitalize">{team.participation_method.title} Method</p>
+                <p className="text-muted-foreground capitalize">
+                  {team.participation_method.title} Method
+                </p>
               </div>
               {team.participation_method.extra_field && (
                 <p className="text-muted-foreground text-sm bg-muted/50 p-3 rounded-md break-words">
@@ -594,12 +708,16 @@ export default function TeamDetailsPage() {
             <CardContent className="space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 text-sm">
                 <span className="text-muted-foreground">Submission Date</span>
-                <span className="font-medium break-words">{formatDate(team.submission_date)}</span>
+                <span className="font-medium break-words">
+                  {formatDate(team.submission_date)}
+                </span>
               </div>
               {team.team_leader && (
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 text-sm">
                   <span className="text-muted-foreground">Leader Joined</span>
-                  <span className="font-medium break-words">{formatDate(team.team_leader.created_at)}</span>
+                  <span className="font-medium break-words">
+                    {formatDate(team.team_leader.created_at)}
+                  </span>
                 </div>
               )}
             </CardContent>
@@ -607,5 +725,5 @@ export default function TeamDetailsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

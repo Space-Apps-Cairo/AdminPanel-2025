@@ -1,5 +1,8 @@
 import { api } from "./api";
-import { ActualSolution, ActualSolutionsResponse } from "@/types/actualSolution";
+import {
+  ActualSolution,
+  ActualSolutionsResponse,
+} from "@/types/hackthon/form-options/actualSolution";
 
 export const ActualSolutionsApi = api.injectEndpoints({
   endpoints: (build) => ({
