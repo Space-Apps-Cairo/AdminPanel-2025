@@ -1,16 +1,29 @@
 "use client";
-
+import { useGetAllTeamsQuery } from "@/service/Api/teams";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { SpecialMemberSchema } from "@/validations/hackthon/specialMember";
-
+import { useAddSpecialCaseMutation } from "@/service/Api/hackthon/specialcase";
+import { toast } from "sonner";
 type FormData = z.infer<typeof SpecialMemberSchema>;
 
 export default function FullFormCard() {
@@ -21,24 +34,40 @@ export default function FullFormCard() {
       name: "",
       email: "",
       phone: "",
-      national_id:"",
-      reason:"",
+      national_id: "",
+      reason: "",
+      team_id: "",
     },
   });
-
-  const [submissions, setSubmissions] = useState<FormData[]>([]);
-  const [showTable, setShowTable] = useState(false);
-
-  const onSubmit = (data: FormData) => {
-    console.log("Sending data:", data);
-    setSubmissions((prev) => [...prev, data]);
-    form.reset();
-    setShowTable(true);
+  [];
+  const [addSpecialCase, { isLoading }] = useAddSpecialCaseMutation();
+  const { data: teamsData } = useGetAllTeamsQuery();
+  const onSubmit = async (data: FormData) => {
+    const selectedTeam = teamsData?.data?.find(
+      (team) => team.team_name === data.team_id
+    );
+    if (!selectedTeam) {
+      toast.error("Team name not found");
+      return;
+    }
+    try {
+     const payload = {
+      ...data,
+      team_id: selectedTeam.id,
+    };
+      await addSpecialCase(payload).unwrap();
+      toast.success("Special case submitted successfully");
+      form.reset();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.data?.message || "Failed to submit special case");
+    }
   };
-
   return (
-    <div className="w-full max-w-lg mx-auto mt-10 space-y-6">
-      <h1 className="text-3xl font-bold text-center">Register For Special Cases</h1>
+    <div className="w-full max-w-lg mx-auto mt-10 mb-10 space-y-6">
+      <h1 className="text-3xl font-bold text-center">
+        Register For Special Cases
+      </h1>
 
       <Card className="shadow-lg ">
         <CardHeader>
@@ -106,6 +135,20 @@ export default function FullFormCard() {
 
               <FormField
                 control={form.control}
+                name="team_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Team Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter Team Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="reason"
                 render={({ field }) => (
                   <FormItem>
@@ -122,14 +165,16 @@ export default function FullFormCard() {
                 <Button type="submit" className="w-full">
                   Submit
                 </Button>
-               <Button
-  type="button"
-  variant="outline"
-  className="w-full"
-  onClick={() => router.push("/qr-hackathon/special-cases/table")}
->
-  Show Submissions
-</Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    router.push("/qr-hackathon/special-cases/table")
+                  }
+                >
+                  Show Submissions
+                </Button>
               </CardFooter>
             </form>
           </Form>

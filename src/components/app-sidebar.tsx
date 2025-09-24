@@ -120,10 +120,6 @@ const getNavigationItems = (userRole: UserRole) => {
           url: "/bootcamp/participants",
         },
         {
-          title: "Email Templates",
-          url: "/bootcamp/email-templates",
-        },
-        {
           title: "Registeration Details ",
           url: "/bootcamp/registerationDetails",
           isActive: false,
@@ -167,9 +163,14 @@ const getNavigationItems = (userRole: UserRole) => {
 
       items: [
         {
+          title: "Dashboard",
+          url: "/",
+        },
+
+        {
           title: "Teams",
           url: "/hackathon/teams",
-           items: [
+          items: [
             {
               title: "All Teams",
               url: "/hackathon/teams/All",
@@ -178,7 +179,7 @@ const getNavigationItems = (userRole: UserRole) => {
               title: "Onsite Teams",
               url: "/hackathon/teams/onsite",
             },
-             {
+            {
               title: "Virtual Teams",
               url: "/hackathon/teams/virtual",
             },
@@ -187,7 +188,7 @@ const getNavigationItems = (userRole: UserRole) => {
         {
           title: "Members",
           url: "/hackathon/members",
-items: [
+          items: [
             {
               title: "All Members",
               url: "/hackathon/members/all-members",
@@ -196,14 +197,11 @@ items: [
               title: "Onsite Members",
               url: "/hackathon/members/onsite",
             },
-             {
+            {
               title: "Virtual Members",
               url: "/hackathon/members/virtual",
             },
           ],
-
-
-
         },
         {
           title: " Form Options",
@@ -246,7 +244,7 @@ items: [
         },
       ],
     },
-     {
+    {
       title: "Email System ",
       url: "/",
       isActive: false,

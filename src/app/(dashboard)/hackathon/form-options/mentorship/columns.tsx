@@ -41,6 +41,11 @@ export const mentorshipColumns: ColumnDef<MentorShipNeeded>[] = [
     size: 400,
   },
   {
+  header: "How Many Teams Need",
+  accessorKey: "how_many_teams_need",
+  
+},
+  {
     id: "actions",
     header: () => <span>Actions</span>,
     size: 150,

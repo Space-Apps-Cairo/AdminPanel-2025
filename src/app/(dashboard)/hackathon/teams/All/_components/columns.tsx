@@ -1,4 +1,5 @@
-"use client";
+
+"use client"
 import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteTeamMutation,
@@ -9,7 +10,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { ChevronRight, Eye } from "lucide-react";
 
 export const teamColumns: ColumnDef<Team>[] = [
   {
@@ -26,9 +27,9 @@ export const teamColumns: ColumnDef<Team>[] = [
   },
   {
     header: "Team Leader",
-    accessorKey: "team_leader.name",
+    accessorKey: "team_leader_id.name",
     cell: ({ row }) => {
-      const teamLeader = row.original.team_leader;
+      const teamLeader = row.original.team_leader_id;
       return teamLeader ? (
         <span className="text-sm">{teamLeader.name}</span>
       ) : (
@@ -40,10 +41,10 @@ export const teamColumns: ColumnDef<Team>[] = [
   },
   {
     header: "Challenge Name",
-    accessorKey: "challenge.title",
+    accessorKey: "challenge_id.title",
     size: 250,
     cell: ({ row }) => {
-      const challenge = row.original.challenge;
+      const challenge = row.original.challenge_id;
       return challenge ? (
         <span className="text-sm">{challenge.title}</span>
       ) : (
@@ -53,10 +54,10 @@ export const teamColumns: ColumnDef<Team>[] = [
   },
   {
     header: "Participation Method",
-    accessorKey: "participation_method.title",
+    accessorKey: "participation_method_id.title",
     size: 150,
     cell: ({ row }) => {
-      const method = row.original.participation_method;
+      const method = row.original.participation_method_id;
       return (
         <div className="w-full flex items-center justify-center">
             <Badge 
@@ -68,6 +69,17 @@ export const teamColumns: ColumnDef<Team>[] = [
         </div>
       );
     },
+  },
+  {
+    header: "Details",
+    cell: ({ row }) => (
+      <Button variant="outline" size="sm">
+        <Link href={`/hackathon/teams/All/${row.original.id}`}>View Details</Link>
+        <ChevronRight />
+      </Button>
+    ),
+    size: 140,
+    enableHiding: false,
   },
   {
     header: "Actions",
@@ -83,13 +95,10 @@ function TeamRowActions({ rowData }: { rowData: Team }) {
   return (
     <div className="flex items-center gap-3">
 
-        <Link href={`/hackathon/teams/All/${rowData.id}`}>
-            <Button variant={"outline"} size={"sm"}>
-                <Eye size={16} />
-            </Button>
-        </Link>
+
 
         <RowsActions
+        
             rowData={rowData}
             isDelete={true}
             isUpdate={true}

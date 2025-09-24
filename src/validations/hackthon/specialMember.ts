@@ -10,8 +10,8 @@ export const SpecialMemberSchema = z.object({
   reason: z.string().min(5, { message: "Reason must be at least 5 characters." }),
   national_id: z
     .string()
-    .length(9, { message: "National ID must be exactly 9 digits." }),
-  team_id: z.number().int().positive({ message: "Team ID must be a positive number." }),
+    .length(14, { message: "National ID must be exactly 14 digits." }),
+  team_id: z.string().min(2,{ message: "Team ID must be at least 2 characters" }),
 });
 
 export type TeamMemberSchema = z.infer<typeof SpecialMemberSchema>;

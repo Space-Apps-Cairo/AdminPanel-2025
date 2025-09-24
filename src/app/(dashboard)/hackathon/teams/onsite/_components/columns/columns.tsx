@@ -1,11 +1,6 @@
 "use client";
-import RowsActions from "@/components/table/rows-actions";
-import {
-  useDeleteTeamMutation,
-} from "@/service/Api/teams";
 import { Team } from "@/types/teams";
 import { ColumnDef } from "@tanstack/react-table";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -55,23 +50,3 @@ export const teamColumns: ColumnDef<Team>[] = [
     enableHiding: false,
   },
 ];
-
-function TeamRowActions({ rowData }: { rowData: Team }) {
-  
-  return (
-    <div className="flex items-center gap-3">
-
-        
-
-        <RowsActions
-            rowData={rowData}
-            isDelete={false}
-            isUpdate={false}
-            isPreview={false}
-            fields={[]}
-            validationSchema={null}
-        />
-
-    </div>
-  );
-}

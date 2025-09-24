@@ -175,9 +175,9 @@ export default function TeamDetailsPage() {
                 No Status
               </Badge>
             )}
-            <Badge variant={getParticipationColor(team.participation_method.title)} className="px-2 py-1 text-xs sm:px-3 sm:text-sm">
+            <Badge variant={getParticipationColor(team.participation_method_id.title)} className="px-2 py-1 text-xs sm:px-3 sm:text-sm">
               <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-              <span className="truncate">{team.participation_method.title}</span>
+              <span className="truncate">{team.participation_method_id.title}</span>
             </Badge>
           </div>
         </div>
@@ -386,7 +386,7 @@ export default function TeamDetailsPage() {
           </Card>
 
           {/* Challenge Card */}
-          {team.challenge ? (
+          {team.challenge_id ? (
             <Card>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -397,11 +397,11 @@ export default function TeamDetailsPage() {
               <CardContent>
                 <div className="space-y-3">
                   <div>
-                    <h3 className="font-semibold text-lg break-words">{team.challenge.title}</h3>
+                    <h3 className="font-semibold text-lg break-words">{team.challenge_id.title}</h3>
                     {/* <p className="text-sm text-muted-foreground">Challenge ID: {team.challenge.id}</p> */}
                   </div>
                   <p className="text-muted-foreground leading-relaxed break-words">
-                    {team.challenge.description}
+                    {team.challenge_id.description}
                   </p>
                 </div>
               </CardContent>
@@ -576,11 +576,11 @@ export default function TeamDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="text-muted-foreground capitalize">{team.participation_method.title} Method</p>
+                <p className="text-muted-foreground capitalize">{team.participation_method_id.title} Method</p>
               </div>
-              {team.participation_method.extra_field && (
+              {team.participation_method_id.extra_field && (
                 <p className="text-muted-foreground text-sm bg-muted/50 p-3 rounded-md break-words">
-                  {team.participation_method.extra_field}
+                  {team.participation_method_id.extra_field}
                 </p>
               )}
             </CardContent>
@@ -599,10 +599,10 @@ export default function TeamDetailsPage() {
                 <span className="text-muted-foreground">Submission Date</span>
                 <span className="font-medium break-words">{formatDate(team.submission_date)}</span>
               </div>
-              {team.team_leader && (
+              {team.team_leader_id && (
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 text-sm">
                   <span className="text-muted-foreground">Leader Joined</span>
-                  <span className="font-medium break-words">{formatDate(team.team_leader.created_at)}</span>
+                  <span className="font-medium break-words">{formatDate(team.team_leader_id.created_at)}</span>
                 </div>
               )}
             </CardContent>
