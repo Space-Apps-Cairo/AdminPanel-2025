@@ -1,16 +1,7 @@
 "use client";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 import {
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
   Sidebar,
   SidebarFooter,
   SidebarHeader,
@@ -32,8 +23,9 @@ import {
   LogOut,
   HomeIcon,
   ShieldUser,
-  FileText,
   Trophy,
+  Mail,
+  MailIcon,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -48,7 +40,6 @@ const getNavigationItems = (userRole: UserRole) => {
       icon: HomeIcon,
       isActive: true,
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
-      items: [{ title: "Dashboard", url: "/" }],
     },
     {
       title: "Qr Code",
@@ -105,10 +96,7 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Participants",
           url: "/bootcamp/participants",
         },
-        {
-          title: "Email Templates",
-          url: "/bootcamp/email-templates",
-        },
+
         {
           title: "Registeration Details ",
           url: "/bootcamp/registerationDetails",
@@ -200,6 +188,12 @@ const getNavigationItems = (userRole: UserRole) => {
           ],
         },
       ],
+    },
+    {
+      title: "Email Templates",
+      url: "/email-templates",
+      icon: MailIcon,
+      roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
     },
   ];
 
