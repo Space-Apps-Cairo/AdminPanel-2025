@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React from "react";
+import { useParams } from "next/navigation";
 import Loading from "../../../../../components/loading/loading";
-import { useGetFilteredTeamsQuery } from "@/service/Api/filtretions/team";
-
+import { useGetFilteredMemberQuery } from "@/service/Api/filtretions/member"; 
 import {
   Tabs,
   TabsList,
@@ -12,44 +11,44 @@ import {
   TabsContent,
 } from "../../../../../components/ui/tabs";
 
-import OnsiteTab from "../onsite/_components/tabs/onsitetab";
-export default function OnsitePage() {
-  const { id } = useParams();
-  
-  const { data: onsiteTeams, isLoading: isLoadingOnsite } =
-    useGetFilteredTeamsQuery({ status: "", type: "onsite" });
+import Tab from "../onsite/_components/tabs"; 
 
+export default function VirtualMembersPage() {
+  const { id } = useParams();
+
+  const { data: virtualTeams, isLoading: isLoadingVirtual } =
+    useGetFilteredMemberQuery({ status: "", type: "virtual" });
 
   const { data: acceptedTeams, isLoading: isLoadingAccepted } =
-    useGetFilteredTeamsQuery({ status: "accepted", type: "onsite" });
+    useGetFilteredMemberQuery({ status: "accepted", type: "virtual" });
 
-  
   const { data: rejectedTeams, isLoading: isLoadingRejected } =
-    useGetFilteredTeamsQuery({ status: "rejected", type: "onsite" });
+    useGetFilteredMemberQuery({ status: "rejected", type: "virtual" });
 
-     if (isLoadingAccepted || isLoadingOnsite ||isLoadingRejected) return <Loading/>
+  if (isLoadingAccepted || isLoadingVirtual || isLoadingRejected)
+    return <Loading />;
+
   //------------------tabs------------
   const tabs = [
     {
-      label: "Onsite",
-      value: "onsite",
+      label: "Virtual",
+      value: "virtual",
       component: (
-      <OnsiteTab title="Onsite Teams" data={onsiteTeams?.data??[]}/>
+        <Tab title="Virtual Members" data={virtualTeams?.data ?? []} />
       ),
     },
     {
       label: "Accepted",
       value: "accepted",
       component: (
-        <OnsiteTab title="Accepted Onsite Teams" data={acceptedTeams?.data??[]} />
+        <Tab title="Accepted Virtual Members" data={acceptedTeams?.data ?? []} />
       ),
     },
     {
       label: "Rejected",
       value: "rejected",
       component: (
-        <OnsiteTab title="Rejected Onsite Teams" data={rejectedTeams?.data??[]}
-        />
+        <Tab title="Rejected Virtual Members" data={rejectedTeams?.data ?? []} />
       ),
     },
   ];
@@ -57,7 +56,7 @@ export default function OnsitePage() {
   // -------------------- Render --------------------
   return (
     <div className="container mx-auto py-6 px-8">
-      <Tabs defaultValue="onsite" className="w-full">
+      <Tabs defaultValue="virtual" className="w-full">
         <TabsList>
           {tabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
@@ -73,4 +72,5 @@ export default function OnsitePage() {
         ))}
       </Tabs>
     </div>
-  );}
+  );
+}

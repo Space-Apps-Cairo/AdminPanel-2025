@@ -1,6 +1,7 @@
 "use client";
+
 import DataTable from "@/components/table/data-table";
-import { teamColumns } from "../columns/columns";
+import {MemberColumns } from "./columns";
 
 interface TabProps {
   title: string;     
@@ -14,7 +15,7 @@ export default function Tab({ title, data }: TabProps) {
 
       <DataTable
         data={data }
-        columns={teamColumns}
+        columns={MemberColumns }
         searchConfig={{ enabled: false }}
         statusConfig={{ enabled: false }}
         actionConfig={{

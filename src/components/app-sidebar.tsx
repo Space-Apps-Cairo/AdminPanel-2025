@@ -187,6 +187,23 @@ const getNavigationItems = (userRole: UserRole) => {
         {
           title: "Members",
           url: "/hackathon/members",
+items: [
+            {
+              title: "All Members",
+              url: "/hackathon/members/all-members",
+            },
+            {
+              title: "Onsite Members",
+              url: "/hackathon/members/onsite",
+            },
+             {
+              title: "Virtual Members",
+              url: "/hackathon/members/virtual",
+            },
+          ],
+
+
+
         },
         {
           title: " Form Options",

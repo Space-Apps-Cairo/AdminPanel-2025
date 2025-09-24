@@ -1,6 +1,6 @@
 import { Field } from "@/app/interface";
 import RowsActions from "@/components/table/rows-actions";
-import { useDeleteVolunteerMutation, useUpdateVolunteerMutation } from "@/service/Api/materials";
+import { useDeleteVolunteerMutation, useUpdateVolunteerMutation } from "@/service/Api/material/materials";
 import { Volunteer } from "@/types/material/materials";
 import { volunteerValidationSchema } from "@/validations/material/volunteer";
 import { ColumnDef } from "@tanstack/react-table";

@@ -19,7 +19,6 @@ import {
 } from "@/service/Api/emails/templates";
 import {
   sendEmailSchema,
-  sendEmailTemplateSchema,
 } from "@/validations/emails/templates";
 import {
   Dialog,

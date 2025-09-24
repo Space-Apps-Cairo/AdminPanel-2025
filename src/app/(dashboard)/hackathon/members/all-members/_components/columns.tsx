@@ -147,12 +147,7 @@ function MemberRowActions({ rowData }: { rowData: Member }) {
 
   return (
     <div className="flex items-center gap-3">
-      {/* <Link href={`/hackathon/members/${rowData.id}`}>
-        <Button variant={"outline"} size={"sm"}>
-          <Eye size={16} />
-        </Button>
-      </Link> */}
-
+    
       <RowsActions
         rowData={rowData}
         isDelete={true}

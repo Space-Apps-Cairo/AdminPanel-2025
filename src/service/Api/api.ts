@@ -50,6 +50,9 @@ export const api = createApi({
     "ParticipationMethod",
     "MemberRoles",
     "ActualSolutions",
+    "TEAMFILTRETION",
+    "MEMBERFILTRETION",
+    "SpecialCases",
   ],
 
   endpoints: () => ({}), // start empty

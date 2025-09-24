@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React from "react";
+import { useParams } from "next/navigation";
 import Loading from "../../../../../components/loading/loading";
-import { useGetFilteredTeamsQuery } from "@/service/Api/filtretions/team";
+import { useGetFilteredMemberQuery } from "@/service/Api/filtretions/member"; 
 
 import {
   Tabs,
@@ -12,43 +12,49 @@ import {
   TabsContent,
 } from "../../../../../components/ui/tabs";
 
-import OnsiteTab from "../onsite/_components/tabs/onsitetab";
-export default function OnsitePage() {
+import Tab from "./_components/tabs"; 
+
+export default function MemberOnsitePage() {
   const { id } = useParams();
-  
-  const { data: onsiteTeams, isLoading: isLoadingOnsite } =
-    useGetFilteredTeamsQuery({ status: "", type: "onsite" });
 
+  const { data: onsiteMembers, isLoading: isLoadingOnsite } =
+    useGetFilteredMemberQuery({ status: "", type: "onsite" });
 
-  const { data: acceptedTeams, isLoading: isLoadingAccepted } =
-    useGetFilteredTeamsQuery({ status: "accepted", type: "onsite" });
+  const { data: acceptedMembers, isLoading: isLoadingAccepted } =
+    useGetFilteredMemberQuery({ status: "accepted", type: "onsite" });
 
-  
-  const { data: rejectedTeams, isLoading: isLoadingRejected } =
-    useGetFilteredTeamsQuery({ status: "rejected", type: "onsite" });
+  const { data: rejectedMembers, isLoading: isLoadingRejected } =
+    useGetFilteredMemberQuery({ status: "rejected", type: "onsite" });
 
-     if (isLoadingAccepted || isLoadingOnsite ||isLoadingRejected) return <Loading/>
+  if (isLoadingAccepted || isLoadingOnsite || isLoadingRejected)
+    return <Loading />;
+
   //------------------tabs------------
   const tabs = [
     {
       label: "Onsite",
       value: "onsite",
       component: (
-      <OnsiteTab title="Onsite Teams" data={onsiteTeams?.data??[]}/>
+        <Tab title="Onsite Members" data={onsiteMembers?.data ?? []} />
       ),
     },
     {
       label: "Accepted",
       value: "accepted",
       component: (
-        <OnsiteTab title="Accepted Onsite Teams" data={acceptedTeams?.data??[]} />
+        <Tab
+          title="Accepted Members"
+          data={acceptedMembers?.data ?? []}
+        />
       ),
     },
     {
       label: "Rejected",
       value: "rejected",
       component: (
-        <OnsiteTab title="Rejected Onsite Teams" data={rejectedTeams?.data??[]}
+        <Tab
+          title="Rejected Members"
+          data={rejectedMembers?.data ?? []}
         />
       ),
     },
@@ -73,4 +79,5 @@ export default function OnsitePage() {
         ))}
       </Tabs>
     </div>
-  );}
+  );
+}

@@ -13,7 +13,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "staging.spaceappscairo.com",
+        hostname: "development.spaceappscairo.com",
         pathname: "/**", // allow all paths
       },
     ],

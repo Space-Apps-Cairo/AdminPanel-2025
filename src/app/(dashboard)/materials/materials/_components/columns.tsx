@@ -4,7 +4,7 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteMaterialMutation,
   useUpdateMaterialMutation,
-} from "@/service/Api/materials";
+} from "@/service/Api/material/materials";
 import { Material } from "@/types/material/materials";
 import { materialValidationSchema } from "@/validations/material/material";
 import { ColumnDef } from "@tanstack/react-table";
