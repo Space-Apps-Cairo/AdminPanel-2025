@@ -361,7 +361,7 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
       defaultValue: rowData.id.toString(),
     },
   ];
-
+//
   async function handleEmailSubmit(data) {
     try {
       const payload = {

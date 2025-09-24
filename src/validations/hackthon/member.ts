@@ -19,6 +19,7 @@ export const memberSchema = z.object({
   study_level_id: z.number().int(),
   extra_field: z.string().optional(),
   notes: z.string().optional(),
+  
 });
 
 // For request validation
