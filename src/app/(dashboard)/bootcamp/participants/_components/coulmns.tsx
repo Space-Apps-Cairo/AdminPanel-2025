@@ -329,7 +329,7 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
   const [deleteParticipant] = useDeleteParticipantMutation();
   const [sendEmail] = useSendEmailsMutation();
   const { data, isLoading } = useGetEmailTemplatesQuery();
-
+////////
   // Registration mutations and queries
   const [registerBootcampAttendee] = useRegisterBootcampAttendeeMutation();
   const [checkInWorkshopParticipant] = useCheckInWorkshopParticipantMutation();

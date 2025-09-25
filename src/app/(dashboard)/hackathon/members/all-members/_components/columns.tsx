@@ -4,9 +4,12 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteMemberMutation,
   useUpdateMemberMutation,
-  
 } from "@/service/Api/hackthon/member";
-import { useSendTestEmailMutation } from "@/service/Api/emails/templates";
+import {
+  useGetEmailTemplatesQuery,
+  useSendEmailsMutation,
+  useSendTestEmailMutation,
+} from "@/service/Api/emails/templates";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -17,122 +20,10 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Eye } from "lucide-react";
 import { memberSchema } from "@/validations/hackthon/member";
-import { Field } from "@/app/interface";
-
-export const getMemberFields = (member?: Member): Field[] => [
-  {
-    name: "national",
-    type: "text",
-    label: "National ID",
-    placeholder: "Enter national ID",
-    ...(member?.national && { defaultValue: member.national }),
-    step: 1,
-  },
-  {
-    name: "name",
-    type: "text",
-    label: "Full Name",
-    placeholder: "Enter full name",
-    ...(member?.name && { defaultValue: member.name }),
-    step: 1,
-  },
-  {
-    name: "email",
-    type: "email",
-    label: "Email",
-    placeholder: "Enter email address",
-    ...(member?.email && { defaultValue: member.email }),
-  },
-  {
-    name: "phone_number",
-    type: "text",
-    label: "Phone Number",
-    placeholder: "Enter phone number",
-    ...(member?.phone_number && { defaultValue: member.phone_number }),
-  },
-  {
-    name: "age",
-    type: "number",
-    label: "Age",
-    placeholder: "Enter age",
-    ...(member?.age && { defaultValue: member.age }),
-  },
-  {
-    name: "is_new",
-    type: "checkbox",
-    label: "Is New Member?",
-    ...(typeof member?.is_new === "boolean" && { defaultValue: member.is_new }),
-  },
-  {
-    name: "member_role",
-    type: "text",
-    label: "Role",
-    placeholder: "Enter member role",
-    ...(member?.member_role && { defaultValue: member.member_role }),
-  },
-  {
-    name: "tshirt_size_id",
-    type: "number",
-    label: "T-Shirt Size ID",
-    placeholder: "Enter t-shirt size ID",
-    ...(member?.tshirt_size_id && { defaultValue: member.tshirt_size_id }),
-  },
-  {
-    name: "major_id",
-    type: "number",
-    label: "Major ID",
-    placeholder: "Enter major ID",
-    ...(member?.major_id && { defaultValue: member.major_id }),
-  },
-  {
-    name: "organization",
-    type: "text",
-    label: "Organization",
-    placeholder: "Enter organization",
-    ...(member?.organization && { defaultValue: member.organization }),
-  },
-  {
-    name: "participation_type",
-    type: "number",
-    label: "Participation Type",
-    placeholder: "Enter participation type",
-    ...(member?.  participant_type&& {
-      defaultValue: member.participation_type,
-    }),
-  },
-  {
-    name: "study_level_id",
-    type: "number",
-    label: "Study Level ID",
-    placeholder: "Enter study level ID",
-    ...(member?.study_level_id && { defaultValue: member.study_level_id }),
-  },
-  {
-    name: "extra_field",
-    type: "text",
-    label: "Extra Info",
-    placeholder: "Enter extra info",
-    ...(member?.extra_field && { defaultValue: member.extra_field }),
-  },
-  {
-    name: "notes",
-    type: "textArea",
-    label: "Notes",
-    placeholder: "Enter any notes",
-    ...(member?.notes && { defaultValue: member.notes }),
-  },
-  {
-    name: "address",
-    type: "text",
-    label: "Address",
-    placeholder: "Enter address",
-    ...(member?.address && { defaultValue: member.address }),
-  },
-];
-
-
-
-
+import { Field, FieldOption } from "@/app/interface";
+import { sendEmailSchema } from "@/validations/emails/templates";
+import CrudForm from "@/components/crud-form";
+import { useState } from "react";
 
 
 export const memberColumns: ColumnDef<Member>[] = [
@@ -232,16 +123,6 @@ export const memberColumns: ColumnDef<Member>[] = [
       </Badge>
     ),
   },
-  {
-    header: "T-Shirt Size",
-    accessorKey: "tshirt_size.title",
-    size: 120,
-    cell: ({ row }) => (
-      <Badge className="capitalize px-2.5 py-0.5">
-        {row.original?.tshirt_size?.title ?? "N/A"}
-      </Badge>
-    ),
-  },
   // {
   //   header: "Notes",
   //   accessorKey: "notes",
@@ -266,40 +147,93 @@ export const memberColumns: ColumnDef<Member>[] = [
 function MemberRowActions({ rowData }: { rowData: Member }) {
   const [deleteMember] = useDeleteMemberMutation();
   const [updateMember] = useUpdateMemberMutation();
-  const [sendTestEmail] = useSendTestEmailMutation();
+  // const [sendTestEmail] = useSendTestEmailMutation();
+  const [sendEmail] = useSendEmailsMutation();
+  const [isOpen, setIsOpen] = useState(false);
+ const { data, isLoading } = useGetEmailTemplatesQuery();
+const templateOptions: FieldOption[] =
+    data?.data?.map((template) => ({
+      value: template.id.toString(),
+      label: template.title,
+    })) ?? [];
 
-async function handleSendEmail() {
-  try {
-    await sendTestEmail({
-      template_id: 1, 
-      email: rowData.email, 
-    }).unwrap();
 
-    toast.success("Email sent successfully!");
-  } catch (error) {
-    toast.error("Failed to send email");
-    console.error(error);
+
+const fields: Field[] = [
+    {
+      name: "template_id",
+      type: "select",
+      label: "Select Template",
+      options: templateOptions,
+      placeholder: isLoading ? "Loading templates..." : "Choose a template",
+    },
+    {
+      name: "ids",
+      type: "select",
+      label: "Select Participants",
+      //  Example: single participant
+      options: [{ value: rowData.id.toString(), label: rowData.name }],
+      defaultValue: rowData.id.toString(),
+    },
+  ];
+  
+  async function handleEmailSubmit(data: any) {
+    try {
+      const payload = {
+        template_id: data.template_id,
+        ids: [rowData.id],
+      };
+      await sendEmail(payload).unwrap();
+      toast.success("Email sent successfully");
+      setIsOpen(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send email");
+    }
   }
-}
-
 
   return (
     <div className="flex items-center gap-3">
-    <Button variant="outline" size="sm" onClick={handleSendEmail}>
-    <Mail className="w-4 h-4" />
-  </Button>
+      <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
+        <Mail className="w-4 h-4" />
+      </Button>
+      {isOpen && (
+        <CrudForm
+          fields={fields}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          operation={"add"}
+          asDialog={true}
+          validationSchema={sendEmailSchema}
+          onSubmit={handleEmailSubmit}
+        />
+      )}
       <RowsActions
         rowData={rowData}
         isDelete={true}
-        isUpdate={true}
-        isPreview={true}
-        fields={
-          
-          
-
-getMemberFields(rowData)}
+        isUpdate={false}
+        isPreview={false}
+       fields={[
+          { name: "name", label: "Name", type: "text" },
+          { name: "email", label: "Email", type: "email" },
+          { name: "phone_number", label: "Phone Number", type: "text" },
+          { name: "age", label: "Age", type: "number" },
+          {
+            name: "member_role",
+            label: "Role",
+            type: "select",
+            options: [],
+          },
+          {
+            name: "participant_type",
+            label: "Participant Type",
+            type: "select",
+            options: [],
+          },
+          { name: "organization", label: "Organization", type: "text" },
+        ]}
         validationSchema={memberSchema}
-        updateMutation={(data) =>
+        updateMutation={(data: any) =>
           updateMember({ id: rowData.id, data }).unwrap()
         }
         deleteMutation={deleteMember}

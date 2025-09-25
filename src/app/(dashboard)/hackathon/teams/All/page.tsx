@@ -31,9 +31,9 @@ export default function TeamsPage() {
 
     const actionConfig: ActionConfig = {
         enabled: true,
-        showAdd: true, // Since teams are created by participants, not admins
+        showAdd:false, // Since teams are created by participants, not admins
         showDelete: true,
-        addButtonText: "Add Team",
+        // addButtonText: "Add Team",
         showExport: true
     };
 

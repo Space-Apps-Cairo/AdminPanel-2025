@@ -101,7 +101,7 @@ function TeamRowActions({ rowData }: { rowData: Team }) {
         
             rowData={rowData}
             isDelete={true}
-            isUpdate={true}
+            isUpdate={false}
             isPreview={false}
             fields={[]}
             validationSchema={null}

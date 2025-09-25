@@ -51,28 +51,48 @@ const getNavigationItems = (userRole: UserRole) => {
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
       items: [{ title: "Dashboard", url: "/" }],
     },
-    {
-      title: "Qr Code Bootcamp",
-      url: "/qr-code",
-      icon: QrCode,
-      isActive: false,
-      roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
-      items: [
-        { title: "Scan QR Code", url: "/qr-code/scan" },
-        { title: "Manual Attending", url: "/qr-code/manual-attending" },
-      ],
-    },
+    // {
+    //   title: "Qr Code Bootcamp",
+    //   url: "/qr-code",
+    //   icon: QrCode,
+    //   isActive: false,
+    //   roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
+    //   items: [
+    //     { title: "Scan QR Code", url: "/qr-code/scan" },
+    //     { title: "Manual Attending", url: "/qr-code/manual-attending" },
+    //   ],
+    // },
 
     {
-      title: "Qr Code Hackathon",
-      url: "/qr-hackathon",
+      title: "Qr Code",
+      url: "/qr",
       icon: QrCode,
       isActive: false,
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
       items: [
-        { title: "Scan QR Code", url: "/qr-hackathon/scan" },
-        { title: "Manual Attending", url: "/qr-hackathon/manual-attending" },
-        { title: "Special Cases", url: "/qr-hackathon/special-cases" },
+        {
+          title: "Qr Code Bootcamp",
+          url: "/qr/qr-bootcamp",
+          items: [
+            { title: "Scan QR Code", url: "/qr/qr-bootcamp/scan" },
+            {
+              title: "Manual Attending",
+              url: "/qr/qr-bootcamp/manual-attending",
+            },
+          ],
+        },
+        {
+          title: "Qr Code Hackathon",
+          url: "/qr/qr-hackathon",
+          items: [
+            { title: "Scan QR Code", url: "/qr/qr-hackathon/scan" },
+            {
+              title: "Manual Attending",
+              url: "/qr/qr-hackathon/manual-attending",
+            },
+            { title: "Special Cases", url: "/qr/qr-hackathon/special-cases" },
+          ],
+        },
       ],
     },
     {
