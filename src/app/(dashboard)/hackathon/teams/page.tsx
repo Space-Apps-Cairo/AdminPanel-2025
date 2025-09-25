@@ -36,6 +36,8 @@ export default function TeamsPage() {
         addButtonText: "Add Team",
     };
 
+    console.log(teamsData?.data);
+
     // ====== status ====== //
 
     if (isLoadingTeams) return <Loading />;

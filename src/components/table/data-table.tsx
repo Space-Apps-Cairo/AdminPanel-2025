@@ -30,6 +30,8 @@ import {
   PlusIcon,
   TrashIcon,
   Mail as MailIcon,
+  LoaderCircle,
+  SearchIcon, // Add search icon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -77,7 +79,6 @@ import {
   TableRow,
 } from "../ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-
 import {
   Card,
   CardAction,
@@ -87,16 +88,15 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-
 import { DataTableRow, DataTableProps } from "@/types/table";
 import { exportToExcel, exportToPDF, exportToCSV } from "@/lib/exporter";
 import { toast } from "sonner";
-
-// NEW: RTK hooks for templates & sending emails
 import {
   useGetEmailTemplatesQuery,
   useSendEmailsMutation,
 } from "@/service/Api/emails/templates";
+import { EmailRequest } from "@/types/emails/templates";
+import Loading from "../loading/loading";
 
 // Create a global filter function for multi-column search
 const createGlobalFilterFn = <TData extends DataTableRow>(
@@ -139,8 +139,8 @@ export default function DataTable<TData extends DataTableRow>({
   className,
   columnVisibilityConfig,
   enableBulkEmail = false,
-}: // NEW prop: enable bulk email flow
-DataTableProps<TData>) {
+  backendPagination = { enabled: false },
+}:DataTableProps<TData>) {
   const id = useId();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -169,7 +169,84 @@ DataTableProps<TData>) {
     undefined
   );
 
+  // Add temporary search state for backend pagination
+  const [tempSearchValue, setTempSearchValue] = useState("");
+
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Add refs to track previous values
+  const prevPaginationRef = useRef<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const prevGlobalFilterRef = useRef<string>("");
+  const prevSortingRef = useRef<SortingState>([]);
+  const prevColumnFiltersRef = useRef<ColumnFiltersState>([]);
+  const backendPaginationRef = useRef(backendPagination);
+
+  // Update ref when backendPagination changes
+  useEffect(() => {
+    backendPaginationRef.current = backendPagination;
+  }, [backendPagination]);
+
+  // Handle backend pagination changes
+  useEffect(() => {
+    const currentBackendPagination = backendPaginationRef.current;
+    if (currentBackendPagination.enabled && currentBackendPagination.onPageChange) {
+      const prevPagination = prevPaginationRef.current;
+      if (prevPagination.pageIndex !== pagination.pageIndex || 
+          prevPagination.pageSize !== pagination.pageSize) {
+        currentBackendPagination.onPageChange(pagination.pageIndex + 1, pagination.pageSize);
+      }
+    }
+    prevPaginationRef.current = pagination;
+  }, [pagination]);
+
+  // Handle backend search changes - modified to use search button
+  useEffect(() => {
+    const currentBackendPagination = backendPaginationRef.current;
+    if (currentBackendPagination.enabled && currentBackendPagination.onSearchChange) {
+      // Only trigger search when globalFilter changes (not tempSearchValue)
+      const prevGlobalFilter = prevGlobalFilterRef.current;
+      if (prevGlobalFilter !== globalFilter) {
+        currentBackendPagination.onSearchChange(globalFilter);
+      }
+    }
+    prevGlobalFilterRef.current = globalFilter;
+  }, [globalFilter]);
+
+  // Handle backend sorting changes
+  useEffect(() => {
+    const currentBackendPagination = backendPaginationRef.current;
+    if (currentBackendPagination.enabled && currentBackendPagination.onSortChange) {
+      const prevSorting = prevSortingRef.current;
+      if (JSON.stringify(prevSorting) !== JSON.stringify(sorting)) {
+        if (sorting.length > 0) {
+          const sort = sorting[0];
+          currentBackendPagination.onSortChange({
+            field: sort.id,
+            direction: sort.desc ? 'desc' : 'asc'
+          });
+        } else {
+          currentBackendPagination.onSortChange(null);
+        }
+      }
+    }
+    prevSortingRef.current = sorting;
+  }, [sorting]);
+
+  // Handle backend filter changes
+  useEffect(() => {
+    const currentBackendPagination = backendPaginationRef.current;
+    if (currentBackendPagination.enabled && currentBackendPagination.onFilterChange) {
+      const prevColumnFilters = prevColumnFiltersRef.current;
+      if (JSON.stringify(prevColumnFilters) !== JSON.stringify(columnFilters)) {
+        const filters: Record<string, unknown> = {};
+        columnFilters.forEach(filter => {
+          filters[filter.id] = filter.value;
+        });
+        currentBackendPagination.onFilterChange(filters);
+      }
+    }
+    prevColumnFiltersRef.current = columnFilters;
+  }, [columnFilters]);
 
   // Create columns with optional selection column
   const columns: ColumnDef<TData>[] = useMemo(() => {
@@ -227,17 +304,17 @@ DataTableProps<TData>) {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    getSortedRowModel: backendPagination.enabled ? undefined : getSortedRowModel(),
     onSortingChange: setSorting,
     enableSortingRemoval: false,
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: backendPagination.enabled ? undefined : getPaginationRowModel(),
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    getFilteredRowModel: getFilteredRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFilteredRowModel: backendPagination.enabled ? undefined : getFilteredRowModel(),
+    getFacetedUniqueValues: backendPagination.enabled ? undefined : getFacetedUniqueValues(),
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: searchConfig.enabled
+    globalFilterFn: searchConfig.enabled && !backendPagination.enabled
       ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
       : undefined,
     enableSorting,
@@ -248,6 +325,13 @@ DataTableProps<TData>) {
       columnVisibility,
       globalFilter,
     },
+    // Backend pagination configuration
+    manualPagination: backendPagination.enabled,
+    manualSorting: backendPagination.enabled,
+    manualFiltering: backendPagination.enabled,
+    pageCount: backendPagination.enabled && backendPagination.totalCount 
+      ? Math.ceil(backendPagination.totalCount / pagination.pageSize) 
+      : -1,
   });
 
   // RTK: templates & send emails
@@ -258,12 +342,13 @@ DataTableProps<TData>) {
   } = useGetEmailTemplatesQuery(undefined, {
     skip: !enableBulkEmail, // 👈 don't fetch until dialog is open
   });
+  console.log(isTemplatesError);
   const [sendEmails, { isLoading: isSending }] = useSendEmailsMutation();
 
   // helper: template options for Select
   const templateOptions = useMemo(() => {
     return (
-      templatesResp?.data?.map((t: any) => ({
+      templatesResp?.data?.map((t: { id: number; title: string; subject: string }) => ({
         value: String(t.id),
         label: t.title ?? t.subject ?? `Template ${t.id}`,
       })) ?? []
@@ -272,7 +357,9 @@ DataTableProps<TData>) {
 
   //handle Export
   const handleExport = (type: string) => {
-    const exportData = table.getFilteredRowModel().rows.map((r) => r.original);
+    const exportData = backendPagination.enabled 
+      ? data // Use current page data for backend pagination
+      : table.getFilteredRowModel().rows.map((r) => r.original);
     if (type === "excel") exportToExcel(exportData);
     else if (type === "pdf") exportToPDF(exportData);
     else if (type === "csv") exportToCSV(exportData);
@@ -281,18 +368,27 @@ DataTableProps<TData>) {
   // Get unique status values for status filter
   const uniqueStatusValues = useMemo(() => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return [];
+    if (backendPagination.enabled) {
+      // For backend pagination, we need to get unique values from the backend
+      // This should be provided by the parent component
+      return [];
+    }
     const statusColumn = table.getColumn(statusConfig.columnKey);
     if (!statusColumn) return [];
     const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
     return values.sort();
-  }, [statusConfig.enabled, statusConfig.columnKey, table]);
+  }, [statusConfig.enabled, statusConfig.columnKey, table, backendPagination.enabled]);
 
   const statusCounts = useMemo(() => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return new Map();
+    if (backendPagination.enabled) {
+      // For backend pagination, status counts should be provided by the backend
+      return new Map();
+    }
     const statusColumn = table.getColumn(statusConfig.columnKey);
     if (!statusColumn) return new Map();
     return statusColumn.getFacetedUniqueValues();
-  }, [statusConfig.enabled, statusConfig.columnKey, table]);
+  }, [statusConfig.enabled, statusConfig.columnKey, table, backendPagination.enabled]);
 
   const selectedStatuses = useMemo(() => {
     if (!statusConfig.enabled || !statusConfig.columnKey) return [];
@@ -332,7 +428,7 @@ DataTableProps<TData>) {
     if (!container) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const { top, bottom, left, right } = container.getBoundingClientRect();
+      const { left, right } = container.getBoundingClientRect();
       const threshold = 70;
       const scrollSpeed = 30;
 
@@ -375,7 +471,7 @@ DataTableProps<TData>) {
     };
 
     try {
-      await sendEmails(payload).unwrap();
+      await sendEmails(payload as EmailRequest).unwrap();
       toast.success(
         ids.length === 1
           ? "Email sent to 1 participant"
@@ -383,146 +479,195 @@ DataTableProps<TData>) {
       );
       setBulkDialogOpen(false);
       table.resetRowSelection();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Bulk send error:", err);
       toast.error("Failed to send emails", {
-        description: err?.data?.message ?? err?.message ?? "",
+        description: err instanceof Error ? err.message : "An error occurred",
       });
+    }
+  };
+
+  // Add search handler function
+  const handleSearch = () => {
+    if (backendPagination.enabled) {
+      setGlobalFilter(tempSearchValue);
+      // Reset to first page when searching
+      table.setPageIndex(0);
     }
   };
 
   return (
     <div className={cn("space-y-4", className)}>
       {/* Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center justify-between">
+        <div className="flex flex-wrap items-center gap-6">
           {/* Search filter */}
           {searchConfig.enabled && (
-            <div className="relative">
-              <Input
-                id={`${id}-input`}
-                ref={inputRef}
-                className={cn(
-                  "peer min-w-60 ps-9",
-                  Boolean(globalFilter) && "pe-9"
-                )}
-                value={globalFilter ?? ""}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                placeholder={searchConfig.placeholder || "Search..."}
-                type="text"
-                aria-label={searchConfig.placeholder || "Search"}
-              />
-              <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
-                <ListFilterIcon size={16} aria-hidden="true" />
-              </div>
-              {Boolean(globalFilter) && (
-                <button
-                  className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                  aria-label="Clear search"
-                  onClick={() => {
-                    setGlobalFilter("");
-                    if (inputRef.current) {
-                      inputRef.current.focus();
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative">
+                <Input
+                  id={`${id}-input`}
+                  ref={inputRef}
+                  className={cn(
+                    "peer min-w-60 ps-9",
+                    Boolean(backendPagination.enabled ? tempSearchValue : globalFilter) && "pe-9"
+                  )}
+                  value={backendPagination.enabled ? tempSearchValue : (globalFilter ?? "")}
+                  onChange={(e) => {
+                    if (backendPagination.enabled) {
+                      setTempSearchValue(e.target.value);
+                    } else {
+                      setGlobalFilter(e.target.value);
                     }
                   }}
+                  placeholder={searchConfig.placeholder || "Search..."}
+                  type="text"
+                  aria-label={searchConfig.placeholder || "Search"}
+                  disabled={backendPagination.loading}
+                  onKeyDown={(e) => {
+                    if (backendPagination.enabled && e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                />
+                <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+                  <ListFilterIcon size={16} aria-hidden="true" />
+                </div>
+                {Boolean(backendPagination.enabled ? tempSearchValue : globalFilter) && (
+                  <button
+                    className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                    aria-label="Clear search"
+                    onClick={() => {
+                      if (backendPagination.enabled) {
+                        setTempSearchValue("");
+                        setGlobalFilter("");
+                      } else {
+                        setGlobalFilter("");
+                      }
+                      if (inputRef.current) {
+                        inputRef.current.focus();
+                      }
+                    }}
+                    disabled={backendPagination.loading}
+                  >
+                    <CircleXIcon size={16} aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+              
+              {/* Search button for backend pagination */}
+              {backendPagination.enabled && (
+                <Button
+                  onClick={handleSearch}
+                  disabled={backendPagination.loading}
+                  size="sm"
+                  className="px-3"
                 >
-                  <CircleXIcon size={16} aria-hidden="true" />
-                </button>
+                  <SearchIcon size={16} className="mr-1" />
+                  Search
+                </Button>
               )}
             </div>
           )}
 
-          {/* Status filter */}
-          {statusConfig.enabled && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline">
-                  <FilterIcon className="-ms-1 opacity-60" size={16} />
-                  {statusConfig.title || "Status"}
-                  {selectedStatuses.length > 0 && (
-                    <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-                      {selectedStatuses.length}
-                    </span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto min-w-36 p-3" align="start">
-                <div className="space-y-3">
-                  <div className="text-muted-foreground text-xs font-medium">
-                    Filters
-                  </div>
-                  <div className="space-y-3">
-                    {uniqueStatusValues.map((value, i) => (
-                      <div key={value} className="flex items-center gap-2">
-                        <Checkbox
-                          id={`${id}-${i}`}
-                          checked={selectedStatuses.includes(value)}
-                          onCheckedChange={(checked: boolean) =>
-                            handleStatusChange(checked, value)
-                          }
-                        />
-                        <Label
-                          htmlFor={`${id}-${i}`}
-                          className="flex grow justify-between gap-2 font-normal"
-                        >
-                          {value}{" "}
-                          <span className="text-muted-foreground ms-2 text-xs">
-                            {statusCounts.get(value)}
-                          </span>
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
 
-          {/* Column visibility toggle */}
-          {columnVisibilityConfig?.enableColumnVisibility && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <Columns3Icon className="-ms-1 opacity-60" size={16} />
-                  View
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                        onSelect={(event) => event.preventDefault()}
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+            {/* Status filter */}
+            {statusConfig.enabled && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" disabled={backendPagination.loading}>
+                    <FilterIcon className="-ms-1 opacity-60" size={16} />
+                    {statusConfig.title || "Status"}
+                    {selectedStatuses.length > 0 && (
+                      <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
+                        {selectedStatuses.length}
+                      </span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto min-w-36 p-3" align="start">
+                  <div className="space-y-3">
+                    <div className="text-muted-foreground text-xs font-medium">
+                      Filters
+                    </div>
+                    <div className="space-y-3">
+                      {uniqueStatusValues.map((value, i) => (
+                        <div key={value} className="flex items-center gap-2">
+                          <Checkbox
+                            id={`${id}-${i}`}
+                            checked={selectedStatuses.includes(value)}
+                            onCheckedChange={(checked: boolean) =>
+                              handleStatusChange(checked, value)
+                            }
+                          />
+                          <Label
+                            htmlFor={`${id}-${i}`}
+                            className="flex grow justify-between gap-2 font-normal"
+                          >
+                            {value}{" "}
+                            <span className="text-muted-foreground ms-2 text-xs">
+                              {statusCounts.get(value)}
+                            </span>
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+
+            {/* Column visibility toggle */}
+            {columnVisibilityConfig?.enableColumnVisibility && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" disabled={backendPagination.loading}>
+                    <Columns3Icon className="-ms-1 opacity-60" size={16} />
+                    View
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                          onSelect={(event) => event.preventDefault()}
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
+          </div>
+
         </div>
 
         {/* Actions */}
         {actionConfig.enabled && (
           <div className="flex items-center gap-3">
+
             {/* Delete button */}
+
             {enableSelection &&
               actionConfig.showDelete &&
               (onDeleteRows || bulkDeleteMutation) &&
               table.getSelectedRowModel().rows.length > 0 && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button className="ml-auto" variant="outline">
+                    <Button className="ml-auto" variant="outline" disabled={backendPagination.loading}>
                       <TrashIcon className="-ms-1 opacity-60" size={16} />
                       Delete
                       <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
@@ -633,7 +778,7 @@ DataTableProps<TData>) {
                       onOpenChange={setBulkDialogOpen}
                     >
                       <AlertDialogTrigger asChild>
-                        <Button variant="outline" className="ml-2">
+                        <Button variant="outline" className="ml-2" disabled={backendPagination.loading}>
                           <MailIcon className="-ms-1 opacity-60" size={16} />
                           Send ({table.getSelectedRowModel().rows.length})
                         </Button>
@@ -698,7 +843,7 @@ DataTableProps<TData>) {
               {actionConfig?.showExport && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" disabled={backendPagination.loading}>
                       Export
                       <ChevronDownIcon className="ml-2 h-4 w-4" />
                     </Button>
@@ -723,6 +868,7 @@ DataTableProps<TData>) {
                   className="ml-auto"
                   variant="outline"
                   onClick={actionConfig.onAdd}
+                  disabled={backendPagination.loading}
                 >
                   <PlusIcon className="-ms-1 opacity-60" size={16} />
                   {actionConfig.addButtonText || "Add"}
@@ -735,6 +881,14 @@ DataTableProps<TData>) {
           </div>
         )}
       </div>
+
+      {/* Loading indicator for backend pagination */}
+      {/* {backendPagination.loading && (
+        <div className="fixed left-0 top-0 w-full h-full flex items-center justify-center py-4 bg-black z-50">
+          <LoaderCircle className="animate-spin mr-2" size={20} />
+          <span className="text-muted-foreground">Loading...</span>
+        </div>
+      )} */}
 
       {/* Table */}
       <Tabs defaultValue="table" className="w-full">
@@ -850,9 +1004,9 @@ DataTableProps<TData>) {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 text-center"
+                      className="m-auto h-24 text-center"
                     >
-                      No results.
+                      {backendPagination.loading ? <Loading className="w-full !top-[93px] h-24 flex items-center justify-center" /> : "No results."}
                     </TableCell>
                   </TableRow>
                 )}
@@ -924,7 +1078,7 @@ DataTableProps<TData>) {
               ))
             ) : (
               <div className="col-span-full text-center py-8 text-muted-foreground">
-                No results.
+                {backendPagination.loading ? "Loading..." : "No results."}
               </div>
             )}
           </div>
@@ -943,6 +1097,7 @@ DataTableProps<TData>) {
             onValueChange={(value) => {
               table.setPageSize(Number(value));
             }}
+            disabled={backendPagination.loading}
           >
             <SelectTrigger
               id={`${id}-pagesize`}
@@ -967,23 +1122,32 @@ DataTableProps<TData>) {
             aria-live="polite"
           >
             <span className="text-foreground">
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}
+              {backendPagination.enabled && backendPagination.totalCount
+                ? // Backend pagination calculation
+                  table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1
+                : // Frontend pagination calculation
+                  table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
               -
-              {Math.min(
-                Math.max(
-                  table.getState().pagination.pageIndex *
-                    table.getState().pagination.pageSize +
-                    table.getState().pagination.pageSize,
-                  0
-                ),
-                table.getRowCount()
-              )}
+              {backendPagination.enabled && backendPagination.totalCount
+                ? // Backend pagination calculation
+                  Math.min(
+                    table.getState().pagination.pageIndex * table.getState().pagination.pageSize + table.getState().pagination.pageSize,
+                    backendPagination.totalCount
+                  )
+                : // Frontend pagination calculation
+                  Math.min(
+                    Math.max(
+                      table.getState().pagination.pageIndex * table.getState().pagination.pageSize + table.getState().pagination.pageSize,
+                      0
+                    ),
+                    table.getRowCount()
+                  )}
             </span>{" "}
             of{" "}
             <span className="text-foreground">
-              {table.getRowCount().toString()}
+              {backendPagination.enabled && backendPagination.totalCount
+                ? backendPagination.totalCount.toString()
+                : table.getRowCount().toString()}
             </span>
           </p>
         </div>
@@ -998,7 +1162,7 @@ DataTableProps<TData>) {
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.firstPage()}
-                  disabled={!table.getCanPreviousPage()}
+                  disabled={!table.getCanPreviousPage() || backendPagination.loading}
                   aria-label="Go to first page"
                 >
                   <ChevronFirstIcon size={16} aria-hidden="true" />
@@ -1010,7 +1174,7 @@ DataTableProps<TData>) {
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
+                  disabled={!table.getCanPreviousPage() || backendPagination.loading}
                   aria-label="Go to previous page"
                 >
                   <ChevronLeftIcon size={16} aria-hidden="true" />
@@ -1022,7 +1186,7 @@ DataTableProps<TData>) {
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
+                  disabled={!table.getCanNextPage() || backendPagination.loading}
                   aria-label="Go to next page"
                 >
                   <ChevronRightIcon size={16} aria-hidden="true" />
@@ -1034,7 +1198,7 @@ DataTableProps<TData>) {
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.lastPage()}
-                  disabled={!table.getCanNextPage()}
+                  disabled={!table.getCanNextPage() || backendPagination.loading}
                   aria-label="Go to last page"
                 >
                   <ChevronLastIcon size={16} aria-hidden="true" />

@@ -6,6 +6,7 @@ const getRoutePermissions = () => {
   return {
     Admin: [
       "/",
+      "/test",
       "/dashboard",
       "/qr-code",
       "/qr-code/scan",

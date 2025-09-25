@@ -45,6 +45,7 @@ export default function TeamDetailsPage() {
   const router = useRouter()
   const teamId = params.id as string
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   const {
     data: teamData,
@@ -189,7 +190,7 @@ export default function TeamDetailsPage() {
         <div className="xl:col-span-2 space-y-4 sm:space-y-6">
           
           {/* Team Photo Card */}
-          {team.team_photo && (
+          {team?.team_photo?.url && !imageError && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -209,13 +210,14 @@ export default function TeamDetailsPage() {
                        }
                      }}
                      aria-label="Click to view full size image">
-                  <Image
+                  {/* <Image
                     src={team.team_photo.url}
                     alt={`${team.team_name} team photo`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
-                  />
+                    onError={() => setImageError(true)}
+                  /> */}
                   <div className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/10 transition-colors">
                     <div className="bg-black/50 text-white px-3 py-1 rounded-md opacity-0 hover:opacity-100 transition-opacity">
                       Click to enlarge
