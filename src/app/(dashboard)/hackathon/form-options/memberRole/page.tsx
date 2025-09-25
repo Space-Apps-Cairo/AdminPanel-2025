@@ -13,7 +13,7 @@ import { memberRoleColumns, getMemberRoleFields } from "./columns";
 import {
   useGetMemberRolesQuery,
   useAddMemberRoleMutation,
-} from "@/service/Api/hackthon/form-options/memberRole";
+} from "@/service/Api/hackathon/form-options/memberRole";
 import { MemberRole } from "@/types/hackthon/form-options/memberRole";
 import { memberRoleValidationSchema } from "@/validations/hackthon/form-options/memberRole";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";

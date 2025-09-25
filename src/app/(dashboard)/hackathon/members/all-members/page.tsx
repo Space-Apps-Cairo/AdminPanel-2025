@@ -139,7 +139,7 @@ import {
   useGetMembersQuery,
   useDeleteMemberMutation,
   useAddMemberMutation,
-} from "@/service/Api/hackthon/member";
+} from "@/service/Api/hackathon/member";
 import { Member } from "@/types/hackthon/member";
 import {
   ActionConfig,

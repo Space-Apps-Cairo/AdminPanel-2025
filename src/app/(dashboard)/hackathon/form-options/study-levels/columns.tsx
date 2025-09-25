@@ -6,7 +6,7 @@ import { studyLevelValidationSchema } from "@/validations/hackthon/form-options/
 import {
   useDeleteStudtyLevelMutation,
   useUpdateStudyLevelMutation,
-} from "@/service/Api/hackthon/form-options/studyLevel";
+} from "@/service/Api/hackathon/form-options/studyLevel";
 import { toast } from "sonner";
 import { Field } from "@/app/interface";
 

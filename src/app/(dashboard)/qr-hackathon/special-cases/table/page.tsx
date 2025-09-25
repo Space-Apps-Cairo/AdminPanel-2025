@@ -1,5 +1,5 @@
 "use client"
-import { useGetSpecialCasesQuery } from "@/service/Api/hackthon/specialcase"
+import { useGetSpecialCasesQuery } from "@/service/Api/hackathon/specialcase"
 
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";

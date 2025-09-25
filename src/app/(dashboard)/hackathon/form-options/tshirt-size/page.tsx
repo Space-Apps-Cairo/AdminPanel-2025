@@ -13,7 +13,7 @@ import { tshirtColumns ,getTShirtFields} from "./columns";
 import {
   useGetTshirtsQuery,
   useAddTshirtMutation,
-} from "@/service/Api/hackthon/form-options/tshirt";
+} from "@/service/Api/hackathon/form-options/tshirt";
 import { TShirtSize } from "@/types/hackthon/form-options/tshritSize";
 import { tshirtValidationSchema } from "@/validations/hackthon/form-options/tshirtSize";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";

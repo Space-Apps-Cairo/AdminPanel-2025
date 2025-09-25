@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteSpecialCaseMutation,
-} from "@/service/Api/hackthon/specialcase";
+} from "@/service/Api/hackathon/specialcase";
 import { Member } from "@/types/hackthon/specialMember";
 import { SpecialMemberSchema } from "@/validations/hackthon/specialMember";
 

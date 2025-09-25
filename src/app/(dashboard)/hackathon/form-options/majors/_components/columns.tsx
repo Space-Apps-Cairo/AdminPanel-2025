@@ -4,7 +4,7 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteMajorMutation,
   useUpdateMajorMutation,
-} from "@/service/Api/hackthon/form-options/majors";
+} from "@/service/Api/hackathon/form-options/majors";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { Major, MajorRequest } from "@/types/hackthon/form-options/majors";

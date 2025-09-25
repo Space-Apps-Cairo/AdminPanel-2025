@@ -12,7 +12,7 @@ import {
   useGetstudylevelQuery,
   useAddStudtyLevelMutation,
   useDeleteStudtyLevelMutation,
-} from "@/service/Api/hackthon/form-options/studyLevel";
+} from "@/service/Api/hackathon/form-options/studyLevel";
 import { StudyLevel } from "@/types/hackthon/form-options/studyLevels";
 import { studyLevelValidationSchema } from "@/validations/hackthon/form-options/studylevel"
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";

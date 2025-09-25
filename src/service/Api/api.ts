@@ -53,6 +53,7 @@ export const api = createApi({
     "TEAMFILTRETION",
     "MEMBERFILTRETION",
     "SpecialCases",
+    "HackathonDashboard",
   ],
 
   endpoints: () => ({}), // start empty

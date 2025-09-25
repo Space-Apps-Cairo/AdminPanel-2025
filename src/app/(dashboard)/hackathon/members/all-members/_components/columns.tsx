@@ -5,7 +5,7 @@ import {
   useDeleteMemberMutation,
   useUpdateMemberMutation,
   
-} from "@/service/Api/hackthon/member";
+} from "@/service/Api/hackathon/member";
 import { useSendTestEmailMutation } from "@/service/Api/emails/templates";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";

@@ -5,7 +5,7 @@ import { MentorShipNeeded} from "@/types/hackthon/form-options/mentorShipNeeded"
 import { mentorshipValidationSchema } from "@/validations/hackthon/form-options/mentorship";
 import {
   useDeleteMentorShipMutation,useUpdateMentorShipMutation
-} from "@/service/Api/hackthon/form-options/mentorShipNeeded";
+} from "@/service/Api/hackathon/form-options/mentorShipNeeded";
 import { toast } from "sonner";
 import { Field } from "@/app/interface";
 
