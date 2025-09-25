@@ -1,6 +1,7 @@
 import {
 	TeamsRes,
 	SingleTeamRes,
+	// TeamsQueryParams,
 } from "@/types/teams";
 import { api } from "./api";
 
@@ -8,8 +9,8 @@ export const teamsApi = api.injectEndpoints({
 	endpoints: (build) => ({
 		// ====== teams ====== //
 
-		getAllTeams: build.query<TeamsRes, void>({
-			query: () => '/teams',
+		getAllTeams: build.query<TeamsRes, string>({
+			query: (queryString) => `/teams${queryString}`,
 			providesTags: ['Teams'],
 		}),
 

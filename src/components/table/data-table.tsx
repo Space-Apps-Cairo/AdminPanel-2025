@@ -189,13 +189,23 @@ export default function DataTable<TData extends DataTableRow>({
   // Handle backend pagination changes
   useEffect(() => {
     const currentBackendPagination = backendPaginationRef.current;
-    if (currentBackendPagination.enabled && currentBackendPagination.onPageChange) {
-      const prevPagination = prevPaginationRef.current;
-      if (prevPagination.pageIndex !== pagination.pageIndex || 
-          prevPagination.pageSize !== pagination.pageSize) {
-        currentBackendPagination.onPageChange(pagination.pageIndex + 1, pagination.pageSize);
-      }
+    const prevPagination = prevPaginationRef.current;
+
+    if (!currentBackendPagination.enabled) {
+      prevPaginationRef.current = pagination;
+      return;
     }
+
+    // Handle page size change
+    if (prevPagination.pageSize !== pagination.pageSize && currentBackendPagination.onPageSizeChange) {
+      currentBackendPagination.onPageSizeChange(pagination.pageSize);
+    }
+
+    // Handle page index change
+    if (prevPagination.pageIndex !== pagination.pageIndex && currentBackendPagination.onPageChange) {
+      currentBackendPagination.onPageChange(pagination.pageIndex + 1);
+    }
+
     prevPaginationRef.current = pagination;
   }, [pagination]);
 

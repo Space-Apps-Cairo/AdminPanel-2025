@@ -41,10 +41,11 @@ export interface ColumnVisibilityConfig {
 export interface BackendPaginationConfig {
   enabled: boolean;
   totalCount?: number;
-  onPageChange?: (page: number, pageSize: number) => void;
-  onSearchChange?: (searchTerm: string) => void;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  onSearchChange?: (query: string) => void;
+  onSortChange?: (sort: { field: string; direction: 'asc' | 'desc' } | null) => void;
   onFilterChange?: (filters: Record<string, unknown>) => void;
-  onSortChange?: (sorting: { field: string; direction: 'asc' | 'desc' } | null) => void;
   loading?: boolean;
 }
 

@@ -90,6 +90,10 @@ export type TeamsRes = {
 	success: boolean;
 	message: string;
 	data: Team[];
+	count?: number;
+	total_pages?: number;
+	current_page?: number;
+	per_page?: string | number;
 }
 
 export type SingleTeamRes = {
@@ -102,3 +106,10 @@ export type SingleTeamRes = {
 export type CreateTeamRequest = Omit<Team, 'id' | 'uuid' | 'created_at' | 'team_leader' | 'challenge' | 'mentorship_needed' | 'participation_method' | 'members' | 'members_count' | 'team_photo'>;
 
 export type UpdateTeamRequest = Partial<CreateTeamRequest>;
+
+// Add parameters type for teams query
+export type TeamsQueryParams = {
+	search?: string;
+	limit?: number;
+	page?: number;
+}
