@@ -5,7 +5,7 @@ import DataTable from "@/components/table/data-table";
 import {
   useGetMembersQuery,
   useDeleteMemberMutation,
-} from "@/service/Api/hackthon/member";
+} from "@/service/Api/hackathon/member";
 import { Member } from "@/types/hackthon/member";
 import {
   ActionConfig,

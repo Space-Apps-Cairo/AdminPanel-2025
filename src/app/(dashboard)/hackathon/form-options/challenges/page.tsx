@@ -2,7 +2,7 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useGetAllChallengesQuery, useDeleteChallengeMutation, useAddChallengeMutation } from '@/service/Api/hackthon/form-options/challenges';
+import { useGetAllChallengesQuery, useDeleteChallengeMutation, useAddChallengeMutation } from '@/service/Api/hackathon/form-options/challenges';
 import { Challenge, CreateChallengeRequest } from '@/types/hackthon/form-options/challenges';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useState } from 'react';

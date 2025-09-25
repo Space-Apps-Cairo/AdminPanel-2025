@@ -3,7 +3,7 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteParticipationMethodMutation,
   useUpdateParticipationMethodMutation,
-} from "@/service/Api/hackthon/form-options/participationMethod";
+} from "@/service/Api/hackathon/form-options/participationMethod";
 import { ParticipationMethod } from "@/types/hackthon/form-options/participationMethod";
 import { participationMethodValidationSchema } from "@/validations/hackthon/form-options/participationMethod";
 import { ColumnDef } from "@tanstack/react-table";

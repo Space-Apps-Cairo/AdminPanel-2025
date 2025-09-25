@@ -7,7 +7,7 @@ import Error from "@/components/Error/page";
 import { SpecialMemberSchema } from "@/validations/hackthon/specialMember";
 import { useParams, useRouter } from "next/navigation";
 import { Member } from "@/types/hackthon/specialMember";
-import {useGetSpecialCasesQuery} from "@/service/Api/hackthon/specialcase";
+import {useGetSpecialCasesQuery} from "@/service/Api/hackathon/specialcase";
 import Loading from "@/components/loading/loading";
 import {getSpecialCasesColumns} from "./columns"
 import { Button } from "@/components/ui/button";

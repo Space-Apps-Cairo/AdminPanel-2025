@@ -15,7 +15,7 @@ import {
 import {
  useGetParticipationMethodQuery,
   useAddParticipationMethodMutation,
-} from "@/service/Api/hackthon/form-options/participationMethod";
+} from "@/service/Api/hackathon/form-options/participationMethod";
 
 import { ParticipationMethod } from "@/types/hackthon/form-options/participationMethod";
 import { participationMethodValidationSchema } from "@/validations/hackthon/form-options/participationMethod";

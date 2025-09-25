@@ -4,7 +4,7 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteChallengeMutation,
   useUpdateChallengeMutation,
-} from "@/service/Api/hackthon/form-options/challenges";
+} from "@/service/Api/hackathon/form-options/challenges";
 import { Challenge, CreateChallengeRequest } from "@/types/hackthon/form-options/challenges";
 import { challengeValidationSchema } from "@/validations/hackthon/form-options/challenges";
 import { ColumnDef } from "@tanstack/react-table";

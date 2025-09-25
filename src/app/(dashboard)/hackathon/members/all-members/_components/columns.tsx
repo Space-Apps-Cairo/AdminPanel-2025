@@ -4,7 +4,7 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteMemberMutation,
   useUpdateMemberMutation,
-} from "@/service/Api/hackthon/member";
+} from "@/service/Api/hackathon/member";
 import {
   useGetEmailTemplatesQuery,
   useSendEmailsMutation,
