@@ -3,7 +3,8 @@ import { Member } from "@/types/hackthon/specialMember";
 import { SpecialMemberSchema } from "@/validations/hackthon/specialMember";
 import { toast } from "sonner";
 import RowsActions from "@/components/table/rows-actions";
-import { useDeleteSpecialCaseMutation } from "@/service/Api/hackthon/specialcase";
+// import {  } from "@/service/Api/hackathon/attending";
+import { useDeleteSpecialCaseMutation } from "@/service/Api/hackathon/specialcase";
 
 export const getSpecialCasesColumns = (teamsData: { id: number; name: string }[]) => {
  const getTeamName = (team_id: number) => {

@@ -32,6 +32,7 @@ const getRoutePermissions = () => {
       "/forms",
       "/form-builder",
       "/hackathon",
+      "/hackathon/dashboard",
       "/hackathon/teams",
       "/hackathon/teams/All",
       "/hackathon/teams/onsite",

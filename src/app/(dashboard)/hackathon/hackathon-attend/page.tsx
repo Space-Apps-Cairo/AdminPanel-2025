@@ -2,7 +2,7 @@
 "use client";
 import { attendedMembersColumns, AttendedMember } from "./columns";
 import DataTable from "@/components/table/data-table";
-import { useGetMembersQuery } from "@/service/Api/hackthon/attending"
+import { useGetMembersQuery } from "@/service/Api/hackathon/attending"
 import Loading from "@/components/loading/loading";
 import Error from "@/components/Error/page";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";

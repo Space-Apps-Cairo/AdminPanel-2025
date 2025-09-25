@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { UserCheck, Loader2 } from "lucide-react";
-import { useRegisterHackathonMemberMutation } from "@/service/Api/hackthon/attending"; 
+import { useRegisterHackathonMemberMutation } from "@/service/Api/hackathon/attending"; 
 
 export default function ManualMemberAttendingPage() {
   const [memberUUID, setMemberUUID] = useState("");

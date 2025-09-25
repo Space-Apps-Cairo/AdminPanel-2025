@@ -22,7 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { SpecialMemberSchema } from "@/validations/hackthon/specialMember";
-import { useAddSpecialCaseMutation } from "@/service/Api/hackthon/specialcase";
+import { useAddSpecialCaseMutation } from "@/service/Api/hackathon/specialcase";
 import { toast } from "sonner";
 type FormData = z.infer<typeof SpecialMemberSchema>;
 
@@ -170,7 +170,7 @@ export default function FullFormCard() {
                   variant="outline"
                   className="w-full"
                   onClick={() =>
-                    router.push("/qr-hackathon/special-cases/table")
+                    router.push("/qr/qr-hackathon/special-cases/table")
                   }
                 >
                   Show Submissions

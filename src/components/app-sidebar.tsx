@@ -51,17 +51,6 @@ const getNavigationItems = (userRole: UserRole) => {
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
       items: [{ title: "Dashboard", url: "/" }],
     },
-    // {
-    //   title: "Qr Code Bootcamp",
-    //   url: "/qr-code",
-    //   icon: QrCode,
-    //   isActive: false,
-    //   roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
-    //   items: [
-    //     { title: "Scan QR Code", url: "/qr-code/scan" },
-    //     { title: "Manual Attending", url: "/qr-code/manual-attending" },
-    //   ],
-    // },
 
     {
       title: "Qr Code",
@@ -184,9 +173,8 @@ const getNavigationItems = (userRole: UserRole) => {
       items: [
         {
           title: "Dashboard",
-          url: "/",
+          url: "/hackathon/dashboard",
         },
-
         {
           title: "Teams",
           url: "/hackathon/teams",

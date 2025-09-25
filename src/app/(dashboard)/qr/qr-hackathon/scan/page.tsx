@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, QrCode, User } from "lucide-react";
-import { useRegisterHackathonMemberMutation } from "@/service/Api/hackthon/attending"; 
+import { useRegisterHackathonMemberMutation } from "@/service/Api/hackathon/attending"; 
 import Loading from "@/components/loading/loading";
 import Link from "next/link";
 
