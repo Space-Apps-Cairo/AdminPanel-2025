@@ -62,7 +62,7 @@ export default function TeamsPage() {
         filterOptions: [
             {
                 // columnKey: "participation_method.title",
-                queryKey: "participation_method_id",
+                queryKey: "participation_method_id", //any thing
                 title: "Participation Method",
                 options: [{id: 1, label: "onsite"}, {id: 2, label: "virtual"}],
             },
