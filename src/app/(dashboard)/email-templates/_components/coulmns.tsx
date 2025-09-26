@@ -102,7 +102,7 @@ function EmailRowActions({ rowData }: { rowData: EmailTemplate }) {
         deleteMutation={deleteTemplate}
         customEditHandler={(row) => {
           console.log("Edit IdL", row.id);
-          router.push(`/bootcamp/email-templates/${row.id}`);
+          router.push(`/email-templates/${row.id}`);
         }}
         onDeleteSuccess={(result) =>
           toast.success("Email deleted successfully")

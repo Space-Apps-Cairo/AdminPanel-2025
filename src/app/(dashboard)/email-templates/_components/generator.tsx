@@ -367,7 +367,7 @@ export default function EmailGenerator({ mode, email }: EmailGeneratorProps) {
           <DialogFooter className="flex justify-between">
             <Button
               variant="outline"
-              onClick={() => router.push("/bootcamp/email-templates")}
+              onClick={() => router.push("/email-templates")}
             >
               ← Back to templates page
             </Button>

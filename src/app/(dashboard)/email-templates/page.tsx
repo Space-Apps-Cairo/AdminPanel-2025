@@ -1,7 +1,7 @@
 "use client";
 
 import { EmailColumns } from "./_components/coulmns";
-import DataTable from "../../../../components/table/data-table";
+import DataTable from "../../../components/table/data-table";
 
 import { useRouter } from "next/navigation";
 import CrudForm from "@/components/crud-form";
@@ -40,7 +40,7 @@ export default function EmailPage() {
             showDelete: true,
             addButtonText: "Create Template",
             onAdd: () => {
-              router.push("/bootcamp/email-templates/new");
+              router.push("/email-templates/new");
             },
           }}
           // onDeleteRows={deleteBootcamp}
