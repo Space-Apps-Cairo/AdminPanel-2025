@@ -13,11 +13,27 @@ export interface SearchConfig {
   searchKeys?: string[];
 }
 
-// Configuration for status filters
+// Filter option interface
+export interface FilterOption {
+  id: number | string;
+  label: string;
+}
+
+// Individual filter configuration
+export interface FilterConfig {
+  columnKey?: string; // for static filter
+  queryKey?: string; // for backend filter
+  options: FilterOption[];
+  title?: string;
+}
+
+// Configuration for status filters - updated to support multiple filters
 export interface StatusConfig {
   enabled: boolean;
-  columnKey?: string;
-  title?: string;
+  columnKey?: string; // Legacy support
+  title?: string; // Legacy support
+  // New: Support for multiple filter options
+  filterOptions?: FilterConfig[];
 }
 
 // Configuration for actions
