@@ -13,19 +13,34 @@ export default function TeamsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    // NEW: Add state for filters
+    const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
 
-    // Build query string
+    // Build query string - updated to include filters
     const buildQueryString = useCallback(() => {
         const params = new URLSearchParams();
         
         if (searchTerm) {
             params.append('search', searchTerm);
         }
+        
+        // Add filter parameters
+        Object.entries(activeFilters).forEach(([key, values]) => {
+            console.log('key', key);
+            console.log('values', values);
+            if (values.length > 0) {
+                // If multiple values, add each one separately
+                values.forEach(value => {
+                    params.append(key, value);
+                });
+            }
+        });
+        
         params.append('limit', pageSize.toString());
         params.append('page', currentPage.toString());
 
         return params.toString() ? `?${params.toString()}` : '';
-    }, [searchTerm, pageSize, currentPage]);
+    }, [searchTerm, pageSize, currentPage, activeFilters]); // Add activeFilters to dependencies
 
     const {
         data: teamsData,
@@ -43,8 +58,16 @@ export default function TeamsPage() {
     };
 
     const statusConfig: StatusConfig = {
-        enabled: false,
-    };
+        enabled: true,
+        filterOptions: [
+            {
+                // columnKey: "participation_method.title",
+                queryKey: "participation_method_id",
+                title: "Participation Method",
+                options: [{id: 1, label: "onsite"}, {id: 2, label: "virtual"}],
+            },
+        ]
+    }
 
     const actionConfig: ActionConfig = {
         enabled: true,
@@ -53,7 +76,7 @@ export default function TeamsPage() {
         addButtonText: "Add Team",
     };
 
-    // Backend pagination configuration
+    // Backend pagination configuration - updated to include onFilterChange
     const backendPagination = {
         enabled: true,
         currentPage: teamsData?.current_page || 1,
@@ -71,10 +94,16 @@ export default function TeamsPage() {
             setSearchTerm(search);
             setCurrentPage(1); // Reset to first page when searching
         },
+        // NEW: Add filter change handler
+        onFilterChange: (filters: Record<string, unknown>) => {
+            setActiveFilters(filters as Record<string, string[]>);
+            setCurrentPage(1); // Reset to first page when filtering
+        },
         loading: isLoadingTeams,
     };
 
     console.log(teamsData?.data);
+    console.log('Active filters:', activeFilters); // Debug log
 
   // ====== status ====== //
 

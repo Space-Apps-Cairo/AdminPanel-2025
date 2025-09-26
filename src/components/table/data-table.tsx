@@ -173,6 +173,9 @@ export default function DataTable<TData extends DataTableRow  >({
   // Add temporary search state for backend pagination
   const [tempSearchValue, setTempSearchValue] = useState("");
 
+  // Add new state for managing multiple filters
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Add refs to track previous values
@@ -181,6 +184,7 @@ export default function DataTable<TData extends DataTableRow  >({
   const prevSortingRef = useRef<SortingState>([]);
   const prevColumnFiltersRef = useRef<ColumnFiltersState>([]);
   const backendPaginationRef = useRef(backendPagination);
+  const prevActiveFiltersRef = useRef<Record<string, string[]>>({});
 
   // Update ref when backendPagination changes
   useEffect(() => {
@@ -258,6 +262,28 @@ export default function DataTable<TData extends DataTableRow  >({
     }
     prevColumnFiltersRef.current = columnFilters;
   }, [columnFilters]);
+
+  // NEW: Handle custom filter changes for backend
+  useEffect(() => {
+    console.log('activeFilters changed:', activeFilters); // Debug log
+    const currentBackendPagination = backendPaginationRef.current;
+    if (currentBackendPagination.enabled && currentBackendPagination.onFilterChange) {
+      const prevActiveFilters = prevActiveFiltersRef.current;
+      console.log('prevActiveFilters:', prevActiveFilters); // Debug log
+      if (JSON.stringify(prevActiveFilters) !== JSON.stringify(activeFilters)) {
+        // Convert activeFilters to the format expected by backend
+        const backendFilters: Record<string, unknown> = {};
+        Object.entries(activeFilters).forEach(([queryKey, values]) => {
+          if (values.length > 0) {
+            backendFilters[queryKey] = values;
+          }
+        });
+        console.log('Calling onFilterChange with:', backendFilters); // Debug log
+        currentBackendPagination.onFilterChange(backendFilters);
+      }
+    }
+    prevActiveFiltersRef.current = activeFilters;
+  }, [activeFilters]);
 
   // Create columns with optional selection column
   const columns: ColumnDef<TData>[] = useMemo(() => {
@@ -393,58 +419,84 @@ export default function DataTable<TData extends DataTableRow  >({
   };
 
   // Get unique status values for status filter
-  const uniqueStatusValues = useMemo(() => {
-    if (!statusConfig.enabled || !statusConfig.columnKey) return [];
-    if (backendPagination.enabled) {
-      // For backend pagination, we need to get unique values from the backend
-      // This should be provided by the parent component
-      return [];
-    }
-    const statusColumn = table.getColumn(statusConfig.columnKey);
-    if (!statusColumn) return [];
-    const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
-    return values.sort();
-  }, [statusConfig.enabled, statusConfig.columnKey, table, backendPagination.enabled]);
+  // const uniqueStatusValues = useMemo(() => {
+  //   if (!statusConfig.enabled || !statusConfig.columnKey) return [];
+  //   if (backendPagination.enabled) {
+  //     // For backend pagination, we need to get unique values from the backend
+  //     // This should be provided by the parent component
+  //     return [];
+  //   }
+  //   const statusColumn = table.getColumn(statusConfig.columnKey);
+  //   if (!statusColumn) return [];
+  //   const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
+  //   return values.sort();
+  // }, [statusConfig.enabled, statusConfig.columnKey, table, backendPagination.enabled]);
 
-  const statusCounts = useMemo(() => {
-    if (!statusConfig.enabled || !statusConfig.columnKey) return new Map();
-    if (backendPagination.enabled) {
-      // For backend pagination, status counts should be provided by the backend
-      return new Map();
-    }
-    const statusColumn = table.getColumn(statusConfig.columnKey);
-    if (!statusColumn) return new Map();
-    return statusColumn.getFacetedUniqueValues();
-  }, [statusConfig.enabled, statusConfig.columnKey, table, backendPagination.enabled]);
+  // const statusCounts = useMemo(() => {
+  //   if (!statusConfig.enabled || !statusConfig.columnKey) return new Map();
+  //   if (backendPagination.enabled) {
+  //     // For backend pagination, status counts should be provided by the backend
+  //     return new Map();
+  //   }
+  //   const statusColumn = table.getColumn(statusConfig.columnKey);
+  //   if (!statusColumn) return new Map();
+  //   return statusColumn.getFacetedUniqueValues();
+  // }, [statusConfig.enabled, statusConfig.columnKey, table, backendPagination.enabled]);
 
-  const selectedStatuses = useMemo(() => {
-    if (!statusConfig.enabled || !statusConfig.columnKey) return [];
-    const filterValue = table
-      .getColumn(statusConfig.columnKey)
-      ?.getFilterValue() as string[];
-    return filterValue ?? [];
-  }, [statusConfig.enabled, statusConfig.columnKey, table]);
+  // const selectedStatuses = useMemo(() => {
+  //   if (!statusConfig.enabled || !statusConfig.columnKey) return [];
+  //   const filterValue = table
+  //     .getColumn(statusConfig.columnKey)
+  //     ?.getFilterValue() as string[];
+  //   return filterValue ?? [];
+  // }, [statusConfig.enabled, statusConfig.columnKey, table]);
 
-  const handleStatusChange = (checked: boolean, value: string) => {
-    if (!statusConfig.enabled || !statusConfig.columnKey) return;
+  // const handleStatusChange = (checked: boolean, value: string) => {
+  //   if (!statusConfig.enabled || !statusConfig.columnKey) return;
 
-    const filterValue = table
-      .getColumn(statusConfig.columnKey)
-      ?.getFilterValue() as string[];
-    const newFilterValue = filterValue ? [...filterValue] : [];
+  //   const filterValue = table
+  //     .getColumn(statusConfig.columnKey)
+  //     ?.getFilterValue() as string[];
+  //   const newFilterValue = filterValue ? [...filterValue] : [];
 
-    if (checked) {
-      newFilterValue.push(value);
-    } else {
-      const index = newFilterValue.indexOf(value);
-      if (index > -1) {
-        newFilterValue.splice(index, 1);
+  //   if (checked) {
+  //     newFilterValue.push(value);
+  //   } else {
+  //     const index = newFilterValue.indexOf(value);
+  //     if (index > -1) {
+  //       newFilterValue.splice(index, 1);
+  //     }
+  //   }
+
+  //   table
+  //     .getColumn(statusConfig.columnKey)
+  //     ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
+  // };
+
+  // Update the filter handling logic
+  const handleFilterChange = (filterKey: string, checked: boolean, value: string) => {
+    console.log('handleFilterChange called:', { filterKey, checked, value }); // Debug log
+    setActiveFilters(prev => {
+      const updated = { ...prev };
+      
+      if (checked) {
+        // If checking, set only this value (remove any other values for this filter)
+        updated[filterKey] = [value];
+      } else {
+        // If unchecking, remove this value
+        const currentValues = prev[filterKey] || [];
+        const newValues = currentValues.filter(v => v !== value);
+        
+        if (newValues.length === 0) {
+          delete updated[filterKey];
+        } else {
+          updated[filterKey] = newValues;
+        }
       }
-    }
-
-    table
-      .getColumn(statusConfig.columnKey)
-      ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
+      
+      console.log('Updated activeFilters:', updated); // Debug log
+      return updated;
+    });
   };
 
   // Handle auto scroll
@@ -599,46 +651,50 @@ export default function DataTable<TData extends DataTableRow  >({
           <div className="flex flex-wrap items-center gap-3">
 
             {/* Status filter */}
-            {statusConfig.enabled && (
+            {statusConfig.enabled && statusConfig.filterOptions && (
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" disabled={backendPagination.loading}>
                     <FilterIcon className="-ms-1 opacity-60" size={16} />
-                    {statusConfig.title || "Status"}
-                    {selectedStatuses.length > 0 && (
+                    Filters
+                    {Object.values(activeFilters).flat().length > 0 && (
                       <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-                        {selectedStatuses.length}
+                        {Object.values(activeFilters).flat().length}
                       </span>
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto min-w-36 p-3" align="start">
-                  <div className="space-y-3">
-                    <div className="text-muted-foreground text-xs font-medium">
-                      Filters
-                    </div>
-                    <div className="space-y-3">
-                      {uniqueStatusValues.map((value, i) => (
-                        <div key={value} className="flex items-center gap-2">
-                          <Checkbox
-                            id={`${id}-${i}`}
-                            checked={selectedStatuses.includes(value)}
-                            onCheckedChange={(checked: boolean) =>
-                              handleStatusChange(checked, value)
-                            }
-                          />
-                          <Label
-                            htmlFor={`${id}-${i}`}
-                            className="flex grow justify-between gap-2 font-normal"
-                          >
-                            {value}{" "}
-                            <span className="text-muted-foreground ms-2 text-xs">
-                              {statusCounts.get(value)}
-                            </span>
-                          </Label>
+                <PopoverContent className="w-auto min-w-64 p-3" align="start">
+                  <div className="space-y-4">
+                    {statusConfig.filterOptions.map((filterOption, index) => (
+                      <div key={`${filterOption.queryKey}-${index}`} className="space-y-2">
+                        <div className="text-xs font-medium text-muted-foreground">
+                          {filterOption.title || filterOption.queryKey}
                         </div>
-                      ))}
-                    </div>
+                        <div className="space-y-2">
+                          {filterOption.options.map((option) => (
+                            <div key={option.id} className="flex items-center gap-2">
+                              <Checkbox
+                                id={`${id}-${filterOption.queryKey}-${option.id}`}
+                                checked={activeFilters[filterOption?.queryKey ?? '']?.includes(option.id.toString()) || false}
+                                onCheckedChange={(checked: boolean) =>
+                                  handleFilterChange(filterOption.queryKey ?? '', checked, option.id.toString())
+                                }
+                              />
+                              <Label
+                                htmlFor={`${id}-${filterOption.queryKey}-${option.id}`}
+                                className="flex grow justify-between gap-2 font-normal"
+                              >
+                                {option.label}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                        {index < (statusConfig.filterOptions?.length ?? 0) - 1 && (
+                          <div className="border-t mt-4 border-border/50" />
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </PopoverContent>
               </Popover>
