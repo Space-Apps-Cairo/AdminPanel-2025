@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   ActionConfig,
   ColumnVisibilityConfig,
@@ -22,21 +22,39 @@ import {
   useGetAllParticipantsQuery,
 } from "@/service/Api/participants";
 import { Participant, ParticipantRequest } from "@/types/participants";
-import { useGetAllEducationalLevelsQuery } from "@/service/Api/educationalLevels";
-import { useGetAllFieldsOfStudyQuery } from "@/service/Api/fieldsOfStudy";
-import { useGetAllSkillsQuery } from "@/service/Api/skills";
+import { EducationalLevel, useGetAllEducationalLevelsQuery } from "@/service/Api/educationalLevels";
+import { FieldOfStudy, useGetAllFieldsOfStudyQuery } from "@/service/Api/fieldsOfStudy";
+import { Skill, useGetAllSkillsQuery } from "@/service/Api/skills";
 import { FieldOption } from "@/app/interface";
 import { useToast } from "@/components/ui/use-toast";
 import { useGetAllWorkshopsQuery } from "@/service/Api/workshops";
+import { Workshop } from "@/types/workshop";
+import { FieldValues } from "react-hook-form";
 
 export default function ParticipantsPage() {
   const { toast } = useToast(); //  هنا جوه الـ component
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const buildQueryString = useCallback(() => {
+    const params = new URLSearchParams();
+
+    if (searchTerm) {
+      params.append("search", searchTerm);
+    }
+    params.append("limit", pageSize.toString());
+    params.append("page", currentPage.toString());
+
+    return params.toString() ? `?${params.toString()}` : "";
+  }, [searchTerm, pageSize, currentPage]);
 
   const {
     data: participantsData,
     isLoading,
     error,
-  } = useGetAllParticipantsQuery();
+  } = useGetAllParticipantsQuery(buildQueryString());
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,19 +64,19 @@ export default function ParticipantsPage() {
   const { data: skillsData } = useGetAllSkillsQuery();
 
   const educationalLevelOptions: FieldOption[] =
-    eduLevelsData?.data?.map((lvl: any) => ({
+    eduLevelsData?.data?.map((lvl: EducationalLevel) => ({
       value: lvl.id.toString(),
       label: lvl.name,
     })) ?? [];
 
   const fieldOfStudyOptions: FieldOption[] =
-    fieldsData?.data?.map((f: any) => ({
+    fieldsData?.data?.map((f: FieldOfStudy) => ({
       value: f.id.toString(),
       label: f.name,
     })) ?? [];
 
   const skillsOptions: FieldOption[] =
-    skillsData?.data?.map((s: any) => ({
+    skillsData?.data?.map((s: Skill) => ({
       value: s.id.toString(),
       label: s.name,
     })) ?? [];
@@ -66,7 +84,7 @@ export default function ParticipantsPage() {
   const { data: workshopsData } = useGetAllWorkshopsQuery();
 
   const workshopOptions: FieldOption[] =
-    workshopsData?.data?.map((w: any) => ({
+    workshopsData?.data?.map((w: Workshop) => ({
       value: w.id.toString(),
       label: w.title,
     })) ?? [];
@@ -103,10 +121,10 @@ export default function ParticipantsPage() {
     formData: FormData
   ) => {
     try {
-      const result = await addParticipant(formData).unwrap();
+      const result = await addParticipant(formData as unknown as ParticipantRequest).unwrap();
 
       if (result.data) {
-        setParticipants((prev) => [...prev, result.data]);
+        // setParticipants((prev: Participant[]) => [...prev, result.data]);
 
         //  Toast للنجاح
         toast({
@@ -128,6 +146,25 @@ export default function ParticipantsPage() {
     }
   };
 
+  const backendPagination = {
+    enabled: true,
+    currentPage: participantsData?.current_page || 1,
+    totalPages: participantsData?.total_pages || 1,
+    pageSize: Number(participantsData?.per_page) || 10,
+    totalCount: participantsData?.count || 0,
+    onPageChange: (page: number) => {
+      setCurrentPage(page);
+    },
+    onPageSizeChange: (size: number) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page when changing page size
+    },
+    onSearchChange: (search: string) => {
+      setSearchTerm(search);
+      setCurrentPage(1); // Reset to first page when searching
+    },
+  };
+
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading participants</div>;
 
@@ -143,6 +180,7 @@ export default function ParticipantsPage() {
         enableBulkEmail={true}
         enableSelection={true}
         columnVisibilityConfig={columnVisibilityConfig}
+        backendPagination={backendPagination}
         // allowTrigger={true}
       />
 
@@ -160,8 +198,8 @@ export default function ParticipantsPage() {
           operation="add"
           asDialog={true}
           validationSchema={participantValidationSchema}
-          onSubmit={handleAddParticipant as any}
-          steps={[1, 2, 3, 4, 5]}
+          onSubmit={handleAddParticipant as unknown as (data: FieldValues, formData?: FormData) => Promise<void>}
+          steps={[1, 2, 3, 4]}
         />
       )}
     </div>

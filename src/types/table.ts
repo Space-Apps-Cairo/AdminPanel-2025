@@ -36,6 +36,19 @@ export interface ColumnVisibilityConfig {
   enableColumnVisibility?: boolean;
   invisibleColumns?: string[];
 }
+
+// Backend pagination configuration
+export interface BackendPaginationConfig {
+  enabled: boolean;
+  totalCount?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  onSearchChange?: (query: string) => void;
+  onSortChange?: (sort: { field: string; direction: 'asc' | 'desc' } | null) => void;
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+  loading?: boolean;
+}
+
 // Props for the DataTable component
 export interface DataTableProps<TData extends DataTableRow> {
   columns: ColumnDef<TData>[];
@@ -47,7 +60,7 @@ export interface DataTableProps<TData extends DataTableRow> {
   onDeleteRows?: (data: TData[]) => void;
   enableBulkEmail?: boolean;
   // Single delete mutation hook for bulk operations
-  bulkDeleteMutation?: any; // RTK Query mutation hook
+  bulkDeleteMutation?: (id: string | number) => { unwrap: () => Promise<unknown> };
   error?: string;
   pageSize?: number;
   columnVisibilityConfig?: ColumnVisibilityConfig;
@@ -55,4 +68,6 @@ export interface DataTableProps<TData extends DataTableRow> {
   enableSelection?: boolean;
   className?: string;
   allowTrigger?: boolean;
+  // Backend pagination configuration
+  backendPagination?: BackendPaginationConfig;
 }

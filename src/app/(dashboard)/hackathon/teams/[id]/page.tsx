@@ -41,10 +41,11 @@ import { format } from "date-fns";
 import Image from "next/image";
 
 export default function TeamDetailsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const teamId = params.id as string;
-  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+  const params = useParams()
+  const router = useRouter()
+  const teamId = params.id as string
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   const {
     data: teamData,
@@ -225,7 +226,7 @@ export default function TeamDetailsPage() {
         {/* Left Column - Main Info */}
         <div className="xl:col-span-2 space-y-4 sm:space-y-6">
           {/* Team Photo Card */}
-          {team?.team_photo && (
+          {team?.team_photo?.url && !imageError && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -234,25 +235,26 @@ export default function TeamDetailsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div
-                  className="relative w-full h-64 sm:h-80 rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity"
+                <div className="relative w-full h-64 sm:h-80 rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity"
                   onClick={() => setIsImageDialogOpen(true)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setIsImageDialogOpen(true);
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setIsImageDialogOpen(true)
                     }
                   }}
                   aria-label="Click to view full size image"
                 >
                   <Image
-                    src={team?.team_photo?.url}
+                    src={team.team_photo.original_url}
                     alt={`${team.team_name} team photo`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
+                    onError={() => setImageError(true)}
+                    priority
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/10 transition-colors">
                     <div className="bg-black/50 text-white px-3 py-1 rounded-md opacity-0 hover:opacity-100 transition-opacity">

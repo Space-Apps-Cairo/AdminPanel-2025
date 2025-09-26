@@ -1,127 +1,137 @@
-"use client"
+"use client";
 
-import Loading from '@/components/loading/loading';
-import DataTable from '@/components/table/data-table';
-import { 
-  useAddBootcampDetailsMutation, 
+import Loading from "@/components/loading/loading";
+import DataTable from "@/components/table/data-table";
+import {
+  useAddBootcampDetailsMutation,
   useGetAllBootcampDetailsQuery,
-  useDeleteBootcampDetailsMutation
-} from '@/service/Api/bootcampDetails';
-import { BootcampDetailsRequest, BootcampDetailsType } from '@/types/bootcampDetails';
-import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
-import React, { useEffect, useState } from 'react'
-import { getBootcampDetailsFields, bootcampDetailsColumns } from './_components/bootcampDetailsColumns';
-import { FieldValues } from 'react-hook-form';
-import CrudForm from '@/components/crud-form';
-import { bootcampDetailsValidationSchema } from '@/validations/bootcampDetails';
-import { toast } from 'sonner';
+  useDeleteBootcampDetailsMutation,
+} from "@/service/Api/bootcampDetails";
+import {
+  BootcampDetailsRequest,
+  BootcampDetailsType,
+} from "@/types/bootcampDetails";
+import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
+import React, { useEffect, useState } from "react";
+import {
+  getBootcampDetailsFields,
+  bootcampDetailsColumns,
+} from "./_components/bootcampDetailsColumns";
+import { FieldValues } from "react-hook-form";
+import CrudForm from "@/components/crud-form";
+import { bootcampDetailsValidationSchema } from "@/validations/bootcampDetails";
+import { toast } from "sonner";
 
 export default function Bootcamps() {
+  const {
+    data: bootcampsData,
+    isLoading: isLoadingBootcamps,
+    error: bootcampsError,
+  } = useGetAllBootcampDetailsQuery();
 
-    const {
-        data: bootcampsData,
-        isLoading: isLoadingBootcamps,
-        error: bootcampsError,
-    } = useGetAllBootcampDetailsQuery();
+  const [isOpen, setIsOpen] = useState(false);
 
-    const [isOpen, setIsOpen] = useState(false);
+  // Delete mutation for bulk operations
+  const [deleteBootcampDetails] = useDeleteBootcampDetailsMutation();
 
-    // Delete mutation for bulk operations
-    const [deleteBootcampDetails] = useDeleteBootcampDetailsMutation();
+  const searchConfig: SearchConfig = {
+    enabled: true,
+    placeholder: "Filter by name",
+    searchKeys: ["name"],
+  };
 
-    const searchConfig: SearchConfig = {
-        enabled: true,
-        placeholder: "Filter by name",
-        searchKeys: ["name"],
-    };
-    
-    const statusConfig: StatusConfig = {
-        enabled: false,
-    };
-    
-    const actionConfig: ActionConfig = {
-        enabled: true,
-        showAdd: true,
-        showDelete: true,
-        addButtonText: "Add Bootcamp",
-        onAdd: () => {
-            setIsOpen(true);
-        },
-    };
+  const statusConfig: StatusConfig = {
+    enabled: false,
+  };
 
-    // ====== add-new-bootcamp ====== //
-    
-    const [addBootcampDetails] = useAddBootcampDetailsMutation();
+  const actionConfig: ActionConfig = {
+    enabled: true,
+    showAdd: true,
+    showDelete: true,
+    addButtonText: "Add Bootcamp",
+    onAdd: () => {
+      setIsOpen(true);
+    },
+  };
 
-    const handleAddBootcampSubmit = async (data: FieldValues, formData?: FormData) => {
+  // ====== add-new-bootcamp ====== //
 
-        try {
-            console.log("Submitting bootcamp data:", data);
-            console.log("Form data:", formData ? [...formData.entries()] : "No form data");
-            
-            // Format the date correctly
-            const formattedDate = data.date ? new Date(data.date).toISOString().slice(0, 19).replace('T', ' ') : null;
+  const [addBootcampDetails] = useAddBootcampDetailsMutation();
 
-            const bootcampData = {
-                name: data.name,
-                date: formattedDate,
-                total_capacity: data.total_capacity,
-            };
+  const handleAddBootcampSubmit = async (
+    data: FieldValues,
+    formData?: FormData
+  ) => {
+    try {
+      console.log("Submitting bootcamp data:", data);
+      console.log(
+        "Form data:",
+        formData ? [...formData.entries()] : "No form data"
+      );
 
-            const result = await addBootcampDetails(bootcampData as BootcampDetailsRequest).unwrap();
+      // Format the date correctly
+      const formattedDate = data.date
+        ? new Date(data.date).toISOString().slice(0, 19).replace("T", " ")
+        : null;
 
-            console.log("Bootcamp added successfully:", result);
-            toast.success(result.message || "Bootcamp added successfully!");
+      const bootcampData = {
+        name: data.name,
+        date: formattedDate,
+        total_capacity: data.total_capacity,
+      };
 
-        } catch (error) {
-            console.error("Error adding bootcamp:", error);
-            toast.error((error as any).data?.message || "Failed to add bootcamp. Please try again.");
-            throw error;
-        }
+      const result = await addBootcampDetails(
+        bootcampData as BootcampDetailsRequest
+      ).unwrap();
 
-    };
-
-    if (isLoadingBootcamps) return <Loading />;
-
-    if (bootcampsError) {
-        return (
-            <div className="mx-auto py-6">
-                <div className="text-red-500">
-                Error loading bootcamps
-                </div>
-            </div>
-        );
+      console.log("Bootcamp added successfully:", result);
+      toast.success(result.message || "Bootcamp added successfully!");
+    } catch (error) {
+      console.error("Error adding bootcamp:", error);
+      toast.error(
+        (error as any).data?.message ||
+          "Failed to add bootcamp. Please try again."
+      );
+      throw error;
     }
+  };
 
-    return <React.Fragment>
+  if (isLoadingBootcamps) return <Loading />;
 
-        {isOpen && (
-            <CrudForm
-            fields={getBootcampDetailsFields()}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            operation={"add"}
-            asDialog={true}
-            validationSchema={bootcampDetailsValidationSchema}
-            onSubmit={handleAddBootcampSubmit}
-            />
-        )}
+  if (bootcampsError) {
+    return (
+      <div className="mx-auto py-6">
+        <div className="text-red-500">Error loading bootcamps</div>
+      </div>
+    );
+  }
 
-        <div className="mx-auto py-6 px-8">
+  return (
+    <React.Fragment>
+      {isOpen && (
+        <CrudForm
+          fields={getBootcampDetailsFields()}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          operation={"add"}
+          asDialog={true}
+          validationSchema={bootcampDetailsValidationSchema}
+          onSubmit={handleAddBootcampSubmit}
+        />
+      )}
 
-            <h1 className="text-2xl font-bold mb-6">Bootcamps</h1>
+      <div className="mx-auto py-6 px-8">
+        <h1 className="text-2xl font-bold mb-6">Bootcamps</h1>
 
-            <DataTable<BootcampDetailsType>
-                data={bootcampsData?.data || []}
-                columns={bootcampDetailsColumns}
-                searchConfig={searchConfig}
-                statusConfig={statusConfig}
-                actionConfig={actionConfig}
-                bulkDeleteMutation={deleteBootcampDetails}
-            />
-
-        </div>
-
+        <DataTable<BootcampDetailsType>
+          data={bootcampsData?.data || []}
+          columns={bootcampDetailsColumns}
+          searchConfig={searchConfig}
+          statusConfig={statusConfig}
+          actionConfig={actionConfig}
+          bulkDeleteMutation={deleteBootcampDetails}
+        />
+      </div>
     </React.Fragment>
-
+  );
 }

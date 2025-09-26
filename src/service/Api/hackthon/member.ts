@@ -10,16 +10,14 @@ import { api } from "../api";
 export const membersApi = api.injectEndpoints({
   endpoints: (build) => ({
     // Get all members
-    getMembers: build.query<Member[], void>({
-      query: () => "/members",
-      transformResponse: (response: MembersResponse) => response.data ?? [],
+    getMembers: build.query<MembersResponse, string>({
+      query: (queryString) => `/members/${queryString}`,
       providesTags: ["Member"],
     }),
 
     // Get single member by ID
-    getMemberById: build.query<Member, number>({
+    getMemberById: build.query<MemberResponse, number>({
       query: (id) => `/members/${id}`,
-      transformResponse: (response: MemberResponse) => response.data,
       providesTags: (_result, _error, id) => [{ type: "Member", id }],
     }),
 

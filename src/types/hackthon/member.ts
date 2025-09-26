@@ -28,6 +28,10 @@ type ApiResponse<T> = {
   message: string;
   status: number;
   data: T;
+  count?: number;
+  total_pages?: number;
+  current_page?: number;
+  per_page?: string | number;
 };
 
 // Request type (omit auto-generated fields)
