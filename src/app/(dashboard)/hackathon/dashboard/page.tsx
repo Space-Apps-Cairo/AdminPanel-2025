@@ -1,10 +1,13 @@
- "use client";
+
+"use client";
 
 import Loading from "@/components/loading/loading";
 import {
   useGetHackathonInsightsQuery,
   useGetStudyLevelsQuery,
   useGetMajorsQuery,
+  useGetChallengesQuery,
+  useGetMentorshipNeededsQuery,
 } from "@/service/Api/hackathon/dashboard";
 import { SectionCards, SectionCardData } from "@/components/sectionCards/page";
 import { ReusablePieChart } from "@/components/charts/ReusablePieChart";
@@ -24,40 +27,45 @@ export default function HackathonDashboard() {
   const { data: insightsRes, isLoading, error } = useGetHackathonInsightsQuery();
   const { data: studyLevelsRes, isLoading: levelsLoading } = useGetStudyLevelsQuery();
   const { data: majorsRes, isLoading: majorsLoading } = useGetMajorsQuery();
+  const { data: challengesRes, isLoading: challengesLoading } = useGetChallengesQuery();
+  const { data: mentorshipRes, isLoading: mentorshipLoading } = useGetMentorshipNeededsQuery();
 
-  if (isLoading || levelsLoading || majorsLoading) return <Loading />;
+  if (isLoading || levelsLoading || majorsLoading || challengesLoading || mentorshipLoading)
+    return <Loading />;
   if (error || !insightsRes?.data) return <div>Error loading data</div>;
 
   const insights = insightsRes.data;
   const studyLevels = studyLevelsRes?.data ?? [];
   const majors = majorsRes?.data ?? [];
+  const challenges = challengesRes?.data ?? [];
+  const mentorships = mentorshipRes?.data ?? [];
 
-  // ---------- Section Cards ----------
+  // ---------- Cards ----------
   const cards: SectionCardData[] = [
     {
-      title: "Members",
+      title: "Registered Members",
       value: insights.members_and_teams.members.toString(),
-      description: "Total Members",
+      description: "Total registered members",
       icon: <Users />,
       color: "text-blue-500 bg-blue-100",
     },
     {
-      title: "Teams",
-      value: insights.members_and_teams.teams.toString(),
-      description: "Total Teams",
+      title: "Attended Members",
+      value: insights.MembersCountAttended.toString(),
+      description: "Members who attended",
       icon: <UserCheck />,
       color: "text-green-500 bg-green-100",
     },
     {
-      title: "New Members",
-      value: insights.members_and_teams.new_members.toString(),
-      description: "Joined this hackathon",
+      title: "Not Attended",
+      value: insights.MembersCountPending.toString(),
+      description: "Members who did not attend",
       icon: <Users />,
-      color: "text-purple-500 bg-purple-100",
+      color: "text-red-500 bg-red-100",
     },
   ];
 
-  // ---------- Pie Data ----------
+  // ---------- Pie Charts ----------
   const genderData =
     insights.gender_members.map((g: any, i: number) => ({
       gender: g.gender,
@@ -73,19 +81,17 @@ export default function HackathonDashboard() {
     })) ?? [];
 
   const studyLevelData =
-  insights.studylevels_members.map((s: any, i: number) => {
-    // بدل ما نشتغل بالـ id هنشتغل بالـ title مباشرة
-    const matchedLevel = studyLevels.find(
-      (lvl: any) => String(lvl.id) === String(s.study_level_id)
-    );
+    insights.studylevels_members.map((s: any, i: number) => {
+      const matchedLevel = studyLevels.find(
+        (lvl: any) => String(lvl.id) === String(s.study_level_id)
+      );
 
-    return {
-      title: matchedLevel ? matchedLevel.title : "Unknown",
-      count: s.count,
-      fill: colors[i % colors.length],
-    };
-  }) ?? [];
-
+      return {
+        title: matchedLevel ? matchedLevel.title : "Unknown",
+        count: s.count,
+        fill: colors[i % colors.length],
+      };
+    }) ?? [];
 
   const majorsData =
     insights.major_members.map((m: any, i: number) => {
@@ -100,20 +106,30 @@ export default function HackathonDashboard() {
 
   // ---------- Bar Charts ----------
   const challengeTeamsData =
-    insights.challenges_teams.map((c: any) => ({
-      challenge: `Challenge ${c.challenge_id}`,
-      teams: c.count,
-    })) ?? [];
+    insights.challenges_teams.map((c: any) => {
+      const matchedChallenge = challenges.find(
+        (ch: any) => String(ch.id) === String(c.challenge_id)
+      );
+      return {
+        title: matchedChallenge ? matchedChallenge.title : `Challenge ${c.challenge_id}`,
+        teams: c.count,
+      };
+    }) ?? [];
 
   const challengeTeamsConfig = {
     teams: { label: "Teams", color: "var(--chart-1)" },
   };
 
   const mentorshipData =
-    insights.mentorshipTeam.map((m: any) => ({
-      mentorship: `Need ${m.mentorship_needed_id}`,
-      total: m.total,
-    })) ?? [];
+    insights.mentorshipTeam.map((m: any) => {
+      const mentorshipTitle =
+        mentorships.find((ms: any) => String(ms.id) === String(m.mentorship_needed_id))
+          ?.title || `Need ${m.mentorship_needed_id}`;
+      return {
+        title: mentorshipTitle,
+        total: m.total,
+      };
+    }) ?? [];
 
   const mentorshipConfig = {
     total: { label: "Teams", color: "var(--chart-2)" },
@@ -176,3 +192,5 @@ export default function HackathonDashboard() {
     </div>
   );
 }
+
+
