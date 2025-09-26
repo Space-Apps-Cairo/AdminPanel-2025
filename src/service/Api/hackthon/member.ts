@@ -11,7 +11,7 @@ export const membersApi = api.injectEndpoints({
   endpoints: (build) => ({
     // Get all members
     getMembers: build.query<MembersResponse, string>({
-      query: (queryString) => `/members/${queryString}`,
+      query: (queryString) => `/members${queryString}`,
       providesTags: ["Member"],
     }),
 

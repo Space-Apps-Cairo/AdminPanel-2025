@@ -137,7 +137,12 @@ const getNavigationItems = (userRole: UserRole) => {
       url: "/hackathon",
       icon: Trophy,
       isActive: true,
-      roles: ["Admin", "logistics", "registeration"] as UserRole[],
+      roles: [
+        "Admin",
+        "logistics",
+        "registeration",
+        "filteration",
+      ] as UserRole[],
 
       items: [
         {
@@ -267,34 +272,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
-
-        {/* Hackathon Management Section
-  <SidebarGroup>
-    <SidebarGroupLabel>Hackathon Management</SidebarGroupLabel>
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <SidebarMenuSub>
-          <SidebarMenuSubItem>
-              <SidebarMenuSubButton asChild data-active={isActive("/hackathon/form-options/memberRole") ? "true" : undefined}>
-                 <Link href="/hackathon/form-options/memberRole">
-                   Member Roles
-                      </Link>
-                       </SidebarMenuSubButton>
-
-
-          </SidebarMenuSubItem>
-          <SidebarMenuSubItem>
-            <SidebarMenuSubButton asChild data-active={isActive("/hackathon/form-options/actualSolutions") ? "true" : undefined}
-  >
-             <Link href="/hackathon/form-options/actualSolutions">
-               Actual Solutions
-               </Link>
-            </SidebarMenuSubButton>
-          </SidebarMenuSubItem>
-        </SidebarMenuSub>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  </SidebarGroup> */}
       </SidebarContent>
       <SidebarFooter>
         <Button
