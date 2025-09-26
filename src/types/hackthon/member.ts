@@ -20,6 +20,8 @@ export interface Member {
   notes?: string;
   created_at: string;
   created_by_id: number;
+  address?: string;
+  [key: string]: unknown;
 }
 
 // Generic API response

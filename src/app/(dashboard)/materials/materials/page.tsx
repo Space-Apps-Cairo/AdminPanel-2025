@@ -2,14 +2,14 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useAddMaterialMutation, useGetAllMaterialsQuery, useDeleteMaterialMutation } from '@/service/Api/materials';
-import { Material } from '@/types/materials';
+import { useAddMaterialMutation, useGetAllMaterialsQuery, useDeleteMaterialMutation } from '@/service/Api/material/materials';
+import { Material } from '@/types/material/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useState } from 'react'
 import { getMaterialFields, materialColumns } from './_components/columns';
 import { FieldValues } from 'react-hook-form';
 import CrudForm from '@/components/crud-form';
-import { materialValidationSchema } from '@/validations/material';
+import { materialValidationSchema } from '@/validations/material/material';
 import { toast } from 'sonner';
 
 export default function Materials() {

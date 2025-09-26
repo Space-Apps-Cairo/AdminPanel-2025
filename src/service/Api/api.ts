@@ -51,6 +51,11 @@ export const api = createApi({
     "ParticipationMethod",
     "MemberRoles",
     "ActualSolutions",
+    "TEAMFILTRETION",
+    "MEMBERFILTRETION",
+    "SpecialCases",
+    "HackathonAttend",
+    "HackathonDashboard",
   ],
 
   endpoints: () => ({}), // start empty

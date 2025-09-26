@@ -13,10 +13,9 @@ import { tshirtColumns ,getTShirtFields} from "./columns";
 import {
   useGetTshirtsQuery,
   useAddTshirtMutation,
-  useDeleteTShirtMutation,
-} from "@/service/Api/tshirt";
-import { TShirtSize } from "@/types/tshritSize";
-import { tshirtValidationSchema } from "@/validations/tshirtSize";
+} from "@/service/Api/hackathon/form-options/tshirt";
+import { TShirtSize } from "@/types/hackthon/form-options/tshritSize";
+import { tshirtValidationSchema } from "@/validations/hackthon/form-options/tshirtSize";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import Error from "@/components/Error/page";
 

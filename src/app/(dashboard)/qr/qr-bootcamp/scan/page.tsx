@@ -17,14 +17,14 @@ import { ChevronRight, QrCode, User } from "lucide-react";
 import {
   useGetAllCollectionsQuery,
   useAssignCollectionMutation,
-} from "@/service/Api/materials";
+} from "@/service/Api/material/materials";
 import {
   useGetBootcampsQuery,
   useRegisterBootcampAttendeeMutation,
 } from "@/service/Api/bootcamp";
 import { useCheckInWorkshopParticipantMutation } from "@/service/Api/workshops";
 
-import { Collection } from "@/types/materials";
+import { Collection } from "@/types/material/materials";
 import { BootcampType } from "@/types/bootcamp";
 import Loading from "@/components/loading/loading";
 import Link from "next/link";

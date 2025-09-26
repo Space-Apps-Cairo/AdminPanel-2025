@@ -8,12 +8,14 @@ export interface MajorType {
   created_at: string;
   created_by_id: number;
 }
-
 export const majorSchema = z.object({
   title: z.string().min(5, { message: "title must be at least 5 characters" }),
   description: z.string().min(1, { message: "description is required" }),
-  extra_field: z
-    .string()
-    .min(1, { message: "extra_field is required" })
-    .optional(),
+ extra_field: z
+     .string()
+     .optional()
+     .refine(
+       (val) => !val || val.length >= 10,
+       { message: "Extra Info must be at least 10 characters" }
+     ),
 });

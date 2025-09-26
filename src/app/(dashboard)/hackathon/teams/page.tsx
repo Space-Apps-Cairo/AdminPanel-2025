@@ -119,7 +119,7 @@ export default function TeamsPage() {
 
   if (teamsError) {
     return (
-      <div className="container mx-auto py-6">
+      <div className="mx-auto py-6">
         <div className="text-red-500">Error loading teams</div>
       </div>
     );

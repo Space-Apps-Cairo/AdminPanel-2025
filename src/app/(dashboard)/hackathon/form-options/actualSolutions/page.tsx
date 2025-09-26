@@ -13,7 +13,7 @@ import { actualSolutionColumns, getActualSolutionFields } from "./columns";
 import {
   useGetActualSolutionsQuery,
   useAddActualSolutionMutation,
-} from "@/service/Api/actualSolutions";
+} from "@/service/Api/hackathon/form-options/actualSolutions";
 import { ActualSolution } from "@/types/hackthon/form-options/actualSolution";
 import { actualSolutionValidationSchema } from "@/validations/hackthon/form-options/actualSolution";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";

@@ -6,7 +6,7 @@ import {
   useGetMajorsQuery,
   useDeleteMajorMutation,
   useAddMajorMutation,
-} from "@/service/Api/hackthon/form-options/majors";
+} from "@/service/Api/hackathon/form-options/majors";
 import { Major, MajorRequest } from "@/types/hackthon/form-options/majors";
 import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
 import React, { useState } from "react";

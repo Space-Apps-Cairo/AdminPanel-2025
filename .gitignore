@@ -41,14 +41,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-
-# Ignore files
-src/app/hackathon/form-options/actualSolutions
-src/app/hackathon/form-options/memberRole
-
-src/types/hackathon/form-options/actualSolution.ts
-src/types/hackathon/form-options/memberRole.ts
-
-src/validations/hackathon/form-options/actualSolution.ts
-src/validations/hackathon/form-options/memberRole.ts
+et --hard HEAD@*

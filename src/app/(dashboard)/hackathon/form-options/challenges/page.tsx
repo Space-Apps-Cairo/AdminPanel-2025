@@ -2,13 +2,13 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useGetAllChallengesQuery, useDeleteChallengeMutation, useAddChallengeMutation } from '@/service/Api/challenges';
-import { Challenge, CreateChallengeRequest } from '@/types/challenges';
+import { useGetAllChallengesQuery, useDeleteChallengeMutation, useAddChallengeMutation } from '@/service/Api/hackathon/form-options/challenges';
+import { Challenge, CreateChallengeRequest } from '@/types/hackthon/form-options/challenges';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useState } from 'react';
 import { challengeColumns, getChallengeFields } from './_components/columns';
 import CrudForm from '@/components/crud-form';
-import { challengeValidationSchema } from '@/validations/challenges';
+import { challengeValidationSchema } from '@/validations/hackthon/form-options/challenges';
 import { FieldValues } from 'react-hook-form';
 import { toast } from 'sonner';
 

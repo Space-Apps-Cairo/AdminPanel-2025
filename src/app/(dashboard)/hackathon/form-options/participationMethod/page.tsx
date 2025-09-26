@@ -15,10 +15,10 @@ import {
 import {
  useGetParticipationMethodQuery,
   useAddParticipationMethodMutation,
-} from "@/service/Api/participationMethod";
+} from "@/service/Api/hackathon/form-options/participationMethod";
 
-import { ParticipationMethod } from "@/types/participationMethod";
-import { participationMethodValidationSchema } from "@/validations/participationMethod";
+import { ParticipationMethod } from "@/types/hackthon/form-options/participationMethod";
+import { participationMethodValidationSchema } from "@/validations/hackthon/form-options/participationMethod";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 
 export default function ParticipationMethods() {

@@ -1188,12 +1188,15 @@ export default function DataTable<TData extends DataTableRow  >({
               <SelectValue placeholder="Select number of results" />
             </SelectTrigger>
             <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
-              {[5, 10, 25, 50].map((size) => (
-                <SelectItem key={size} value={size.toString()}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
+  {[5, 10, 25, 50].map((size) => (
+    <SelectItem key={size} value={size.toString()}>
+      {size}
+    </SelectItem>
+  ))}
+  <SelectItem key="all" value={data.length.toString()}>
+    All
+  </SelectItem>
+</SelectContent>
           </Select>
         </div>
 

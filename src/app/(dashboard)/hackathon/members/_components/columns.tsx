@@ -4,15 +4,28 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteMemberMutation,
   useUpdateMemberMutation,
-} from "@/service/Api/hackthon/member";
+} from "@/service/Api/hackathon/member";
+import {
+  useGetEmailTemplatesQuery,
+  useSendEmailsMutation,
+  useSendTestEmailMutation,
+} from "@/service/Api/emails/templates";
+import { Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 import { Member } from "@/types/hackthon/member";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { memberSchema } from "@/validations/hackthon/member";
+import { Field, FieldOption } from "@/app/interface";
+import { sendEmailSchema } from "@/validations/emails/templates";
+import CrudForm from "@/components/crud-form";
+import { useState } from "react";
+
+
 export const memberColumns: ColumnDef<Member>[] = [
   {
     header: "UUID",
@@ -110,16 +123,6 @@ export const memberColumns: ColumnDef<Member>[] = [
       </Badge>
     ),
   },
-  {
-    header: "T-Shirt Size",
-    accessorKey: "tshirt_size.title",
-    size: 120,
-    cell: ({ row }) => (
-      <Badge className="capitalize px-2.5 py-0.5">
-        {row.original?.tshirt_size?.title ?? "N/A"}
-      </Badge>
-    ),
-  },
   // {
   //   header: "Notes",
   //   accessorKey: "notes",
@@ -144,21 +147,73 @@ export const memberColumns: ColumnDef<Member>[] = [
 function MemberRowActions({ rowData }: { rowData: Member }) {
   const [deleteMember] = useDeleteMemberMutation();
   const [updateMember] = useUpdateMemberMutation();
+  // const [sendTestEmail] = useSendTestEmailMutation();
+  const [sendEmail] = useSendEmailsMutation();
+  const [isOpen, setIsOpen] = useState(false);
+ const { data, isLoading } = useGetEmailTemplatesQuery();
+const templateOptions: FieldOption[] =
+    data?.data?.map((template) => ({
+      value: template.id.toString(),
+      label: template.title,
+    })) ?? [];
+
+
+
+const fields: Field[] = [
+    {
+      name: "template_id",
+      type: "select",
+      label: "Select Template",
+      options: templateOptions,
+      placeholder: isLoading ? "Loading templates..." : "Choose a template",
+    },
+    {
+      name: "ids",
+      type: "select",
+      label: "Select Participants",
+      //  Example: single participant
+      options: [{ value: rowData.id.toString(), label: rowData.name }],
+      defaultValue: rowData.id.toString(),
+    },
+  ];
+  
+  async function handleEmailSubmit(data: any) {
+    try {
+      const payload = {
+        template_id: data.template_id,
+        ids: [rowData.id],
+      };
+      await sendEmail(payload).unwrap();
+      toast.success("Email sent successfully");
+      setIsOpen(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send email");
+    }
+  }
 
   return (
     <div className="flex items-center gap-3">
-      {/* <Link href={`/hackathon/members/${rowData.id}`}>
-        <Button variant={"outline"} size={"sm"}>
-          <Eye size={16} />
-        </Button>
-      </Link> */}
-
+      <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
+        <Mail className="w-4 h-4" />
+      </Button>
+      {isOpen && (
+        <CrudForm
+          fields={fields}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          operation={"add"}
+          asDialog={true}
+          validationSchema={sendEmailSchema}
+          onSubmit={handleEmailSubmit}
+        />
+      )}
       <RowsActions
         rowData={rowData}
         isDelete={true}
         isUpdate={false}
         isPreview={false}
-        fields={[
+       fields={[
           { name: "name", label: "Name", type: "text" },
           { name: "email", label: "Email", type: "email" },
           { name: "phone_number", label: "Phone Number", type: "text" },
@@ -178,7 +233,7 @@ function MemberRowActions({ rowData }: { rowData: Member }) {
           { name: "organization", label: "Organization", type: "text" },
         ]}
         validationSchema={memberSchema}
-        updateMutation={(data) =>
+        updateMutation={(data: any) =>
           updateMember({ id: rowData.id, data }).unwrap()
         }
         deleteMutation={deleteMember}

@@ -5,7 +5,7 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteActualSolutionMutation,
   useUpdateActualSolutionMutation,
-} from "@/service/Api/actualSolutions";
+} from "@/service/Api/hackathon/form-options/actualSolutions";
 import { ActualSolution } from "@/types/hackthon/form-options/actualSolution";
 import { actualSolutionValidationSchema } from "@/validations/hackthon/form-options/actualSolution";
 import { ColumnDef } from "@tanstack/react-table";

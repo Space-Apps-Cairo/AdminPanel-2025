@@ -4,9 +4,9 @@ import RowsActions from "@/components/table/rows-actions";
 import {
   useDeleteChallengeMutation,
   useUpdateChallengeMutation,
-} from "@/service/Api/challenges";
-import { Challenge, CreateChallengeRequest } from "@/types/challenges";
-import { challengeValidationSchema } from "@/validations/challenges";
+} from "@/service/Api/hackathon/form-options/challenges";
+import { Challenge, CreateChallengeRequest } from "@/types/hackthon/form-options/challenges";
+import { challengeValidationSchema } from "@/validations/hackthon/form-options/challenges";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";

@@ -13,7 +13,7 @@ import { memberRoleColumns, getMemberRoleFields } from "./columns";
 import {
   useGetMemberRolesQuery,
   useAddMemberRoleMutation,
-} from "@/service/Api/memberRole";
+} from "@/service/Api/hackathon/form-options/memberRole";
 import { MemberRole } from "@/types/hackthon/form-options/memberRole";
 import { memberRoleValidationSchema } from "@/validations/hackthon/form-options/memberRole";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
@@ -25,10 +25,11 @@ export default function MemberRoles() {
   const [isOpen, setIsOpen] = useState(false);
   const [addMemberRole] = useAddMemberRoleMutation();
 
+  //  search by title instead of old "name"
   const searchConfig: SearchConfig = {
     enabled: true,
-    placeholder: "Filter by role name",
-    searchKeys: ["name"],
+    placeholder: "Filter by role title",
+    searchKeys: ["title", "description", "extra_field"],
   };
 
   const statusConfig: StatusConfig = {

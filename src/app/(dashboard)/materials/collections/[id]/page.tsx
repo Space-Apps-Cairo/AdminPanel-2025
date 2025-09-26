@@ -3,8 +3,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { columns } from "./_components/columns";
 import DataTable from "@/components/table/data-table";
-import { useGetCollectionUsersQuery } from "@/service/Api/materials";
-import { CollectionUser } from "@/types/materials";
+import { useGetCollectionUsersQuery } from "@/service/Api/material/materials";
+import { CollectionUser } from "@/types/material/materials";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import Loading from "@/components/loading/loading";
 import { Button } from "@/components/ui/button";

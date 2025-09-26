@@ -2,14 +2,14 @@
 
 import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
-import { useAddVolunteerMutation, useGetAllVolunteersQuery, useImportVolunteersFileMutation, useDeleteVolunteerMutation } from '@/service/Api/materials';
-import { Volunteer } from '@/types/materials';
+import { useAddVolunteerMutation, useGetAllVolunteersQuery, useImportVolunteersFileMutation, useDeleteVolunteerMutation } from '@/service/Api/material/materials';
+import { Volunteer } from '@/types/material/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
 import React, { useState, useRef } from 'react';
 import { getVolunteerFields, volunteerColumns } from './_components/columns';
 import { FieldValues } from 'react-hook-form';
 import CrudForm from '@/components/crud-form';
-import { volunteerValidationSchema } from '@/validations/volunteer';
+import { volunteerValidationSchema } from '@/validations/material/volunteer';
 import { Button } from '@/components/ui/button';
 import { Upload, FileText, X } from 'lucide-react';
 import {

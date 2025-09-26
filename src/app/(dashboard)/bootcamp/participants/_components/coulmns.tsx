@@ -19,7 +19,6 @@ import {
 } from "@/service/Api/emails/templates";
 import {
   sendEmailSchema,
-  sendEmailTemplateSchema,
 } from "@/validations/emails/templates";
 import {
   Dialog,
@@ -330,7 +329,7 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
   const [deleteParticipant] = useDeleteParticipantMutation();
   const [sendEmail] = useSendEmailsMutation();
   const { data, isLoading } = useGetEmailTemplatesQuery();
-
+////////
   // Registration mutations and queries
   const [registerBootcampAttendee] = useRegisterBootcampAttendeeMutation();
   const [checkInWorkshopParticipant] = useCheckInWorkshopParticipantMutation();
@@ -357,12 +356,12 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
       name: "ids",
       type: "select",
       label: "Select Participants",
-      // ✅ Example: single participant
+      //  Example: single participant
       options: [{ value: rowData.id.toString(), label: rowData.name_en }],
       defaultValue: rowData.id.toString(),
     },
   ];
-
+//
   async function handleEmailSubmit(data) {
     try {
       const payload = {
@@ -495,6 +494,7 @@ function ParticipantRowActions({ rowData }: { rowData: Participant }) {
           })
         }
         steps={[1, 2, 3]}
+        
       />
     </div>
   );

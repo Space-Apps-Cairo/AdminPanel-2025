@@ -5,7 +5,7 @@ import DataTable from "@/components/table/data-table";
 import {
   useGetMembersQuery,
   useDeleteMemberMutation,
-} from "@/service/Api/hackthon/member";
+} from "@/service/Api/hackathon/member";
 import { Member } from "@/types/hackthon/member";
 import {
   ActionConfig,
@@ -57,10 +57,10 @@ export default function MembersPage() {
   };
 
   const actionConfig: ActionConfig = {
-    enabled: false,
-    showAdd: true, // allow admin to add members
+    enabled: true,
+    showAdd: false, // allow admin to add members
     showDelete: true,
-    addButtonText: "Add Member",
+    showExport: true,
   };
 
   const columnVisibilityConfig: ColumnVisibilityConfig = {
@@ -109,11 +109,11 @@ export default function MembersPage() {
         actionConfig={actionConfig}
         columnVisibilityConfig={columnVisibilityConfig}
         backendPagination={backendPagination}
-        bulkDeleteMutation={(ids: number[]) =>
-          Promise.all(ids.map((id) => deleteMember(id).unwrap()))
-            .then(() => toast.success("Members deleted successfully!"))
-            .catch(() => toast.error("Failed to delete selected members."))
-        }
+        // bulkDeleteMutation={(ids: number[]) =>
+        //   Promise.all(ids.map((id) => deleteMember(id).unwrap()))
+        //     .then(() => toast.success("Members deleted successfully!"))
+        //     .catch(() => toast.error("Failed to delete selected members."))
+        // }
       />
     </div>
   );

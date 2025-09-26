@@ -1,8 +1,13 @@
+<<<<<<< HEAD:src/service/Api/actualSolutions.ts
 import { api } from "./api";
 import {
   ActualSolution,
   ActualSolutionsResponse,
 } from "@/types/hackthon/form-options/actualSolution";
+=======
+import { api } from "../../api";
+import { ActualSolution, ActualSolutionsResponse } from "@/types/hackthon/form-options/actualSolution";
+>>>>>>> 2795fecb19e189a1e588ff363c875288f8c35303:src/service/Api/hackathon/form-options/actualSolutions.ts
 
 export const ActualSolutionsApi = api.injectEndpoints({
   endpoints: (build) => ({

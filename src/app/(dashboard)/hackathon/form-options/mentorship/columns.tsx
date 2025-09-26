@@ -1,11 +1,11 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import RowsActions from "@/components/table/rows-actions";
-import { MentorShipNeeded} from "@/types/mentorShipNeeded";
-import { mentorshipValidationSchema } from "@/validations/mentorship";
+import { MentorShipNeeded} from "@/types/hackthon/form-options/mentorShipNeeded";
+import { mentorshipValidationSchema } from "@/validations/hackthon/form-options/mentorship";
 import {
   useDeleteMentorShipMutation,useUpdateMentorShipMutation
-} from "@/service/Api/mentorShipNeeded";
+} from "@/service/Api/hackathon/form-options/mentorShipNeeded";
 import { toast } from "sonner";
 import { Field } from "@/app/interface";
 
@@ -40,6 +40,11 @@ export const mentorshipColumns: ColumnDef<MentorShipNeeded>[] = [
     accessorKey: "extra_field",
     size: 400,
   },
+  {
+  header: "How Many Teams Need",
+  accessorKey: "how_many_teams_need",
+  
+},
   {
     id: "actions",
     header: () => <span>Actions</span>,

@@ -41,15 +41,37 @@ const getNavigationItems = (userRole: UserRole) => {
       isActive: true,
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
     },
+
     {
       title: "Qr Code",
-      url: "/qr-code",
+      url: "/qr",
       icon: QrCode,
       isActive: false,
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
       items: [
-        { title: "Scan QR Code", url: "/qr-code/scan" },
-        { title: "Manual Attending", url: "/qr-code/manual-attending" },
+        {
+          title: "Bootcamp",
+          url: "/qr/qr-bootcamp",
+          items: [
+            { title: "Scan QR Code", url: "/qr/qr-bootcamp/scan" },
+            {
+              title: "Manual Attending",
+              url: "/qr/qr-bootcamp/manual-attending",
+            },
+          ],
+        },
+        {
+          title: "Hackathon",
+          url: "/qr/qr-hackathon",
+          items: [
+            { title: "Scan QR Code", url: "/qr/qr-hackathon/scan" },
+            {
+              title: "Manual Attending",
+              url: "/qr/qr-hackathon/manual-attending",
+            },
+            { title: "Special Cases", url: "/qr/qr-hackathon/special-cases" },
+          ],
+        },
       ],
     },
     {
@@ -146,6 +168,10 @@ const getNavigationItems = (userRole: UserRole) => {
 
       items: [
         {
+          title: "Dashboard",
+          url: "/hackathon/dashboard",
+        },
+        {
           title: "Teams",
           url: "/hackathon/teams",
         },
@@ -153,6 +179,7 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Members",
           url: "/hackathon/members",
         },
+
         {
           title: " Form Options",
           url: "/hackathon/form-options",
@@ -182,6 +209,14 @@ const getNavigationItems = (userRole: UserRole) => {
               title: "Majors",
               url: "/hackathon/form-options/majors",
             },
+            // {
+            //   title: "Member Roles",
+            //   url: "/hackathon/form-options/memberRole",
+            // },
+            // {
+            //   title: "Actual Solutions",
+            //   url: "/hackathon/form-options/actualSolutions",
+            // },
             // {
             //   title: "Member Roles",
             //   url: "/hackathon/form-options/memberRole",

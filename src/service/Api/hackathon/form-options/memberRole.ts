@@ -1,8 +1,13 @@
+<<<<<<< HEAD:src/service/Api/memberRole.ts
 import {
   MemberRole,
   MemberRolesResponse,
 } from "@/types/hackthon/form-options/memberRole";
 import { api } from "./api";
+=======
+import { MemberRole, MemberRolesResponse } from "@/types/hackthon/form-options/memberRole";
+import { api } from "../../api";
+>>>>>>> 2795fecb19e189a1e588ff363c875288f8c35303:src/service/Api/hackathon/form-options/memberRole.ts
 
 export const MemberRoleApi = api.injectEndpoints({
   endpoints: (build) => ({

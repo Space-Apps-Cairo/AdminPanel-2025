@@ -1,12 +1,12 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import RowsActions from "@/components/table/rows-actions";
-import { StudyLevel } from "@/types/studyLevels";
-import { studyLevelValidationSchema } from "@/validations/studylevel"
+import { StudyLevel } from "@/types/hackthon/form-options/studyLevels";
+import { studyLevelValidationSchema } from "@/validations/hackthon/form-options/studylevel"
 import {
   useDeleteStudtyLevelMutation,
   useUpdateStudyLevelMutation,
-} from "@/service/Api/studyLevel";
+} from "@/service/Api/hackathon/form-options/studyLevel";
 import { toast } from "sonner";
 import { Field } from "@/app/interface";
 

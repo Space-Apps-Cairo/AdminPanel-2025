@@ -98,6 +98,7 @@ export default function Workshops() {
     enabled: true,
     showAdd: true,
     showDelete: true,
+      showExport: true,
     addButtonText: "Add workshop",
     onAdd: () => {
       setIsOpen(true);

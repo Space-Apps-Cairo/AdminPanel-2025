@@ -41,11 +41,11 @@ import { format } from "date-fns";
 import Image from "next/image";
 
 export default function TeamDetailsPage() {
-  const params = useParams()
-  const router = useRouter()
-  const teamId = params.id as string
-  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
-  const [imageError, setImageError] = useState(false)
+  const params = useParams();
+  const router = useRouter();
+  const teamId = params.id as string;
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const {
     data: teamData,
@@ -235,14 +235,15 @@ export default function TeamDetailsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="relative w-full h-64 sm:h-80 rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity"
+                <div
+                  className="relative w-full h-64 sm:h-80 rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity"
                   onClick={() => setIsImageDialogOpen(true)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      setIsImageDialogOpen(true)
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setIsImageDialogOpen(true);
                     }
                   }}
                   aria-label="Click to view full size image"

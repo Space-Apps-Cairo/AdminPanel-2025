@@ -1,8 +1,6 @@
 "use client";
 import RowsActions from "@/components/table/rows-actions";
-import {
-  useDeleteTeamMutation,
-} from "@/service/Api/teams";
+import { useDeleteTeamMutation } from "@/service/Api/teams";
 import { Team } from "@/types/teams";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -59,12 +57,12 @@ export const teamColumns: ColumnDef<Team>[] = [
       const method = row.original.participation_method;
       return (
         <div className="w-full flex items-center justify-center">
-            <Badge 
-                variant={method?.title === "onsite" ? "default" : "secondary"}
-                className="capitalize px-2.5 py-1"
-            >
-                {method?.title || "N/A"}
-            </Badge>
+          <Badge
+            variant={method?.title === "onsite" ? "default" : "secondary"}
+            className="capitalize px-2.5 py-1"
+          >
+            {method?.title || "N/A"}
+          </Badge>
         </div>
       );
     },
@@ -82,46 +80,42 @@ function TeamRowActions({ rowData }: { rowData: Team }) {
 
   return (
     <div className="flex items-center gap-3">
+      <Link href={`/hackathon/teams/${rowData.id}`}>
+        <Button variant={"outline"} size={"sm"}>
+          <Eye size={16} />
+        </Button>
+      </Link>
 
-        <Link href={`/hackathon/teams/${rowData.id}`}>
-            <Button variant={"outline"} size={"sm"}>
-                <Eye size={16} />
-            </Button>
-        </Link>
-
-        <RowsActions
-            rowData={rowData}
-            isDelete={true}
-            isUpdate={false}
-            isPreview={false}
-            fields={[]}
-            validationSchema={null}
-            updateMutation={(data: Team) =>
-                Promise.resolve(data)
-            }
-            deleteMutation={deleteTeam}
-            onUpdateSuccess={(result) => {
-                console.log("Team updated successfully:", result);
-                toast.success(result.message || "Team updated successfully!");
-            }}
-            onUpdateError={(error) => {
-                console.error("Error updating team:", error);
-                toast.error(
-                error.data?.message || "Failed to update team. Please try again."
-                );
-            }}
-            onDeleteSuccess={(result) => {
-                console.log("Team deleted successfully:", result);
-                toast.success(result.message || "Team deleted successfully!");
-            }}
-            onDeleteError={(error) => {
-                console.error("Error deleting team:", error);
-                toast.error(
-                    error.data?.message || "Failed to delete team. Please try again."
-                );
-            }}
-        />
-
+      <RowsActions
+        rowData={rowData}
+        isDelete={true}
+        isUpdate={false}
+        isPreview={false}
+        fields={[]}
+        validationSchema={null}
+        updateMutation={(data: Team) => Promise.resolve(data)}
+        deleteMutation={deleteTeam}
+        onUpdateSuccess={(result) => {
+          console.log("Team updated successfully:", result);
+          toast.success(result.message || "Team updated successfully!");
+        }}
+        onUpdateError={(error) => {
+          console.error("Error updating team:", error);
+          toast.error(
+            error.data?.message || "Failed to update team. Please try again."
+          );
+        }}
+        onDeleteSuccess={(result) => {
+          console.log("Team deleted successfully:", result);
+          toast.success(result.message || "Team deleted successfully!");
+        }}
+        onDeleteError={(error) => {
+          console.error("Error deleting team:", error);
+          toast.error(
+            error.data?.message || "Failed to delete team. Please try again."
+          );
+        }}
+      />
     </div>
   );
 }
