@@ -2,22 +2,27 @@ import { api } from "./api";
 import {
   Participant,
   ParticipantRequest,
-  ParticipantResponse,
-  ParticipantsResponse,
 } from "@/types/participants";
 
 export const participantsApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getAllParticipants: build.query<ParticipantsResponse, void>({
-      query: () => "/bootcamp-participants",
+    getAllParticipants: build.query<{
+      data: Participant[];
+      total: number;
+      current_page: number;
+      total_pages: number;
+      per_page: number;
+      count: number;
+    }, string>({
+      query: (queryString) => `/bootcamp-participants${queryString}`,
       providesTags: ["Participant"],
     }),
     getParticipantDetails: build.query<Participant, number>({
       query: (id: number) => `/bootcamp-participants/${id}`,
-      transformResponse: (response: any) => response.data ?? {},
+      transformResponse: (response: { data: Participant }) => response.data ?? {},
       providesTags: ["Participant"],
     }),
-    addNewParticipant: build.mutation<ParticipantResponse, ParticipantRequest>({
+    addNewParticipant: build.mutation<{ data: Participant }, ParticipantRequest>({
       query: (participantData) => ({
         url: "/bootcamp-participants",
         method: "POST",
@@ -26,7 +31,7 @@ export const participantsApi = api.injectEndpoints({
       invalidatesTags: ["Participant"],
     }),
     updateParticipant: build.mutation<
-      ParticipantResponse,
+      { data: Participant },
       { id: string; data: Partial<ParticipantRequest> }
     >({
       query: ({ id, data }) => ({
