@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import Loading from "@/components/loading/loading";
 import {
@@ -21,8 +21,13 @@ const colors = [
 ];
 
 export default function HackathonDashboard() {
-  const { data: insightsRes, isLoading, error } = useGetHackathonInsightsQuery();
-  const { data: studyLevelsRes, isLoading: levelsLoading } = useGetStudyLevelsQuery();
+  const {
+    data: insightsRes,
+    isLoading,
+    error,
+  } = useGetHackathonInsightsQuery();
+  const { data: studyLevelsRes, isLoading: levelsLoading } =
+    useGetStudyLevelsQuery();
   const { data: majorsRes, isLoading: majorsLoading } = useGetMajorsQuery();
 
   if (isLoading || levelsLoading || majorsLoading) return <Loading />;
@@ -73,19 +78,18 @@ export default function HackathonDashboard() {
     })) ?? [];
 
   const studyLevelData =
-  insights.studylevels_members.map((s: any, i: number) => {
-    // بدل ما نشتغل بالـ id هنشتغل بالـ title مباشرة
-    const matchedLevel = studyLevels.find(
-      (lvl: any) => String(lvl.id) === String(s.study_level_id)
-    );
+    insights.studylevels_members.map((s: any, i: number) => {
+      // بدل ما نشتغل بالـ id هنشتغل بالـ title مباشرة
+      const matchedLevel = studyLevels.find(
+        (lvl: any) => String(lvl.id) === String(s.study_level_id)
+      );
 
-    return {
-      title: matchedLevel ? matchedLevel.title : "Unknown",
-      count: s.count,
-      fill: colors[i % colors.length],
-    };
-  }) ?? [];
-
+      return {
+        title: matchedLevel ? matchedLevel.title : "Unknown",
+        count: s.count,
+        fill: colors[i % colors.length],
+      };
+    }) ?? [];
 
   const majorsData =
     insights.major_members.map((m: any, i: number) => {
