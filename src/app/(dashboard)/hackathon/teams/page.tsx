@@ -1,6 +1,6 @@
 "use client"
 
-import Loading from '@/components/loading/loading';
+// import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
 import { useGetAllTeamsQuery, useDeleteTeamMutation } from '@/service/Api/teams';
 import { Team } from '@/types/teams';
@@ -71,13 +71,14 @@ export default function TeamsPage() {
             setSearchTerm(search);
             setCurrentPage(1); // Reset to first page when searching
         },
+        loading: isLoadingTeams,
     };
 
     console.log(teamsData?.data);
 
     // ====== status ====== //
 
-    if (isLoadingTeams) return <Loading />;
+    // if (isLoadingTeams) return <Loading />;
 
     if (teamsError) {
         return (

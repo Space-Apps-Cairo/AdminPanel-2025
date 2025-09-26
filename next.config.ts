@@ -16,6 +16,11 @@ const nextConfig = {
         hostname: "staging.spaceappscairo.com",
         pathname: "/**", // allow all paths
       },
+      {
+        protocol: "https",
+        hostname: "development.spaceappscairo.com",
+        pathname: "/**", // allow all paths
+      },
     ],
   },
   matcher: ["/dashboard/:path*"],

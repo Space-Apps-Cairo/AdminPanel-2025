@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useId, useMemo, useState, useEffect } from "react";
+import debounce from 'lodash.debounce';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -31,7 +32,6 @@ import {
   TrashIcon,
   Mail as MailIcon,
   LoaderCircle,
-  SearchIcon, // Add search icon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -344,6 +344,22 @@ export default function DataTable<TData extends DataTableRow>({
       : -1,
   });
 
+  const debouncedSearchRef = useRef<ReturnType<typeof debounce> | null>(null);
+
+
+  useEffect(() => {
+  const handler = debounce((value: string) => {
+    setGlobalFilter(value);
+    table.setPageIndex(0);
+  }, 500);
+
+  debouncedSearchRef.current = handler;
+
+  return () => {
+    handler.cancel(); // ✅ يلغي أي تايمر شغال
+  };
+}, [table]);
+
   // RTK: templates & send emails
   const {
     data: templatesResp,
@@ -498,13 +514,13 @@ export default function DataTable<TData extends DataTableRow>({
   };
 
   // Add search handler function
-  const handleSearch = () => {
-    if (backendPagination.enabled) {
-      setGlobalFilter(tempSearchValue);
-      // Reset to first page when searching
-      table.setPageIndex(0);
-    }
-  };
+  // const handleSearch = () => {
+  //   if (backendPagination.enabled) {
+  //     setGlobalFilter(tempSearchValue);
+  //     // Reset to first page when searching
+  //     table.setPageIndex(0);
+  //   }
+  // };
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -524,21 +540,20 @@ export default function DataTable<TData extends DataTableRow>({
                   )}
                   value={backendPagination.enabled ? tempSearchValue : (globalFilter ?? "")}
                   onChange={(e) => {
+                    const value = e.target.value;
                     if (backendPagination.enabled) {
-                      setTempSearchValue(e.target.value);
+                      setTempSearchValue(value);
+                      // Debounce the search execution
+                      debouncedSearchRef.current?.(value);
                     } else {
-                      setGlobalFilter(e.target.value);
+                      setGlobalFilter(value);
                     }
                   }}
                   placeholder={searchConfig.placeholder || "Search..."}
                   type="text"
                   aria-label={searchConfig.placeholder || "Search"}
                   disabled={backendPagination.loading}
-                  onKeyDown={(e) => {
-                    if (backendPagination.enabled && e.key === 'Enter') {
-                      handleSearch();
-                    }
-                  }}
+                  autoFocus={!!(backendPagination.enabled ? tempSearchValue : globalFilter)}
                 />
                 <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
                   <ListFilterIcon size={16} aria-hidden="true" />
@@ -566,7 +581,7 @@ export default function DataTable<TData extends DataTableRow>({
               </div>
               
               {/* Search button for backend pagination */}
-              {backendPagination.enabled && (
+              {/* {backendPagination.enabled && (
                 <Button
                   onClick={handleSearch}
                   disabled={backendPagination.loading}
@@ -576,7 +591,7 @@ export default function DataTable<TData extends DataTableRow>({
                   <SearchIcon size={16} className="mr-1" />
                   Search
                 </Button>
-              )}
+              )} */}
             </div>
           )}
 

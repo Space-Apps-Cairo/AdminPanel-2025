@@ -55,6 +55,7 @@ export type MentorshipNeeded = {
 
 export type TeamPhoto = {
 	url: string;
+	original_url: string;
 	alt?: string;
 }
 
