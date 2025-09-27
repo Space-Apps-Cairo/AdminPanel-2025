@@ -13,7 +13,8 @@ const createValidationSchema = (fields: any[]) => {
   fields.forEach(field => {
     // Skip validation for header fields
     if (field.name.startsWith('criteria_')) {
-      if (field.type === "select") {
+      // Add validation for both select and radio fields
+      if (field.type === "select" || field.type === "radio") {
         schema[field.name] = z.string().min(1, "This field is required");
       }
     }

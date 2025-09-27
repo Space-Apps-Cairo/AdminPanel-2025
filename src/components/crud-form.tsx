@@ -454,10 +454,14 @@ export default function CrudForm(props: {
                     <Controller
                       name={field.name}
                       control={control}
+                      defaultValue={field.defaultValue || ""}
                       render={({ field: fld }) => (
                         <RadioGroup 
-                          value={fld.value} 
-                          onValueChange={fld.onChange}
+                          value={fld.value || ""} 
+                          onValueChange={(value) => {
+                            console.log(`Radio ${field.name} changed to:`, value);
+                            fld.onChange(value);
+                          }}
                           className={`flex gap-0 -space-x-px rounded-md shadow-xs ${
                             field.radioConfig?.orientation === "vertical" 
                               ? "flex-col space-y-2" 

@@ -409,13 +409,42 @@ export default function DataTable<TData extends DataTableRow  >({
   }, [templatesResp]);
 
   //handle Export
+  const extractTeamData = (data: any[]) => {
+    return data.map(item => {
+      const onsiteMembersCount = item.members 
+        ? item.members.filter((member: any) => member.participation_type === 1).length
+        : 0;
+
+      return {
+        'UUID': item.uuid || 'N/A',
+        'Team Name': item.team_name || 'N/A',
+        'Challenge Name': item.challenge?.title || 'N/A',
+        'Challenge Description': item.challenge?.description || 'N/A',
+        'Team Leader Name': item.team_leader?.name || 'N/A',
+        'Team Leader Email': item.team_leader?.email || 'N/A',
+        'Limited Capacity': item.limited_capacity ? 'Yes' : 'No',
+        'Member Count': item.members_count || 0,
+        'Onsite Members Count': onsiteMembersCount,
+        'Project Proposal': item.project_proposal_url || 'N/A',
+        'Project Video': item.project_video_url || 'N/A',
+        'Team Image': item.team_photo?.url || 'N/A',
+        'Actual Solution': item.actual_solution || 'N/A',
+        'Participation Method': item.participation_method?.title || 'N/A'
+      };
+    });
+  };
+  // استخدامها في دالة التصدير
   const handleExport = (type: string) => {
     const exportData = backendPagination.enabled 
-      ? data // Use current page data for backend pagination
+      ? data
       : table.getFilteredRowModel().rows.map((r) => r.original);
-    if (type === "excel") exportToExcel(exportData);
-    else if (type === "pdf") exportToPDF(exportData);
-    else if (type === "csv") exportToCSV(exportData);
+    
+    // استخراج البيانات المطلوبة فقط
+    const filteredData = extractTeamData(exportData);
+    
+    if (type === "excel") exportToExcel(filteredData);
+    else if (type === "pdf") exportToPDF(filteredData);
+    else if (type === "csv") exportToCSV(filteredData);
   };
 
   // Get unique status values for status filter

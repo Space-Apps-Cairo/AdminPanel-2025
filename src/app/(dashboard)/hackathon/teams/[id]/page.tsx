@@ -58,6 +58,7 @@ export default function TeamDetailsPage() {
   const [submitCriteriaRating] = useSubmitCriteriaRatingMutation();
 
   const handleSubmit = async (data: FieldValues) => {
+    console.log("data before submit", data);
     try {
       // Transform the form data to match the API format
       const ratingData = {
@@ -660,7 +661,7 @@ export default function TeamDetailsPage() {
 
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground text-sm sm:text-base">
-                  Team Rating
+                  Team Rank
                 </span>
                 {team.rank === null ? (
                   <span className="text-muted-foreground italic text-sm">

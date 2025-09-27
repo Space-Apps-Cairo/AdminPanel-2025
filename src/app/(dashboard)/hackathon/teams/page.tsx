@@ -71,8 +71,18 @@ export default function TeamsPage() {
         queryKey: "participation_method_id", //any thing
         title: "Participation Method",
         options: [
-          { id: 1, label: "onsite" },
-          { id: 2, label: "virtual" },
+          { id: 1, label: "Onsite" },
+          { id: 2, label: "Virtual" },
+        ],
+      },
+      {
+        // columnKey: "participation_method.title",
+        queryKey: "status", //any thing
+        title: "Status",
+        options: [
+          { id: 'accepted', label: "Accepted" },
+          { id: 'rejected', label: "Rejected" },
+          // { id: 3, label: "pending" },
         ],
       },
     ],

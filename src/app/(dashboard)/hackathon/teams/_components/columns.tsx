@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Eye, Mail } from "lucide-react";
+import { Eye, Mail, Star } from "lucide-react";
 import {
   useGetEmailTemplatesQuery,
   useSendEmailsMutation,
@@ -58,7 +58,14 @@ export const teamColumns: ColumnDef<Team>[] = [
     accessorKey: "rank",
     cell: ({ row }) => {
       const rank = row.original.rank;
-      return rank ? `#${rank}` : "—";
+      return (
+        rank 
+          ? <div className="flex items-center gap-1">
+              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+              <span className="text-sm">{rank}</span>
+            </div>
+          : <span className="text-sm">—</span>
+      );
     },
     size: 80,
   },
@@ -80,10 +87,28 @@ export const teamColumns: ColumnDef<Team>[] = [
       );
     },
   },
+    {
+    header: "Team Status",
+    accessorKey: "status",
+    size: 150,
+    cell: ({ row }) => {
+      const status = row.original.status;
+      return (
+        <div className="w-full flex items-center justify-center">
+          <Badge
+            variant={status === "accepted" ? "default" : "secondary"}
+            className="capitalize px-2.5 py-1"
+          >
+            {status || "N/A"}
+          </Badge>
+        </div>
+      );
+    },
+  },
   {
     header: "Actions",
     id: "actions",
-    size: 150,
+    size: 170,
     cell: ({ row }) => <TeamRowActions rowData={row.original} />,
   },
 ];
