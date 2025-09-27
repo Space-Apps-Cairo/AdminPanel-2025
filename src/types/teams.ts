@@ -75,10 +75,10 @@ export type Team = {
   comment: string | null;
   nots: string | null;
   description: string | null;
-  actual_solution: string | null;
+  actual_soultion: string | null;
   team_leader: TeamLeader | null;
   challenge: Challenge | null;
-  mentorship_needed: MentorshipNeeded | null;
+  mentorship_needed: MentorshipNeeded[] | null;
   participation_method: ParticipationMethod;
   members: TeamMember[];
   members_count: number;

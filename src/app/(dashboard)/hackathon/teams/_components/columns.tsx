@@ -51,6 +51,7 @@ export const teamColumns: ColumnDef<Team>[] = [
       const score = row.original.total_score;
       return score !== null ? score : "—";
     },
+    size: 100,
   },
   {
     header: "Rank",
@@ -59,6 +60,7 @@ export const teamColumns: ColumnDef<Team>[] = [
       const rank = row.original.rank;
       return rank ? `#${rank}` : "—";
     },
+    size: 80,
   },
   {
     header: "Participation Method",
@@ -81,7 +83,7 @@ export const teamColumns: ColumnDef<Team>[] = [
   {
     header: "Actions",
     id: "actions",
-    size: 100,
+    size: 150,
     cell: ({ row }) => <TeamRowActions rowData={row.original} />,
   },
 ];

@@ -263,7 +263,7 @@ export default function CrudForm(props: {
 
                 {field.type === "select" && (
                   <div className="grid gap-3">
-                    <Label>{field.label || field.placeholder}</Label>
+                    <Label style={{lineHeight: "20px"}}>{field.label || field.placeholder}</Label>
                     <Controller
                       name={`${field.name}`}
                       control={control}
@@ -448,7 +448,7 @@ export default function CrudForm(props: {
 
                 {field.type === "radio" && (
                   <fieldset className="space-y-4">
-                    <legend className="text-foreground text-sm leading-none font-medium mb-4">
+                    <legend className="text-foreground text-sm leading-none font-medium mb-4" style={{lineHeight: "20px"}}>
                       {field.label}
                     </legend>
                     <Controller

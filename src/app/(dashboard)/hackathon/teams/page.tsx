@@ -10,6 +10,7 @@ import { Team } from "@/types/teams";
 import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
 import React, { useState, useCallback } from "react";
 import { teamColumns } from "./_components/columns";
+import Error from "@/components/Error/page";
 
 export default function TeamsPage() {
   // State for pagination and search
@@ -109,10 +110,7 @@ export default function TeamsPage() {
       setCurrentPage(1); // Reset to first page when filtering
     },
     loading: isLoadingTeams,
-  };
-
-  console.log(teamsData?.data);
-  console.log("Active filters:", activeFilters); // Debug log
+  }; // Debug log
 
   // ====== status ====== //
 
@@ -120,9 +118,7 @@ export default function TeamsPage() {
 
   if (teamsError) {
     return (
-      <div className="mx-auto py-6">
-        <div className="text-red-500">Error loading teams</div>
-      </div>
+      <Error />
     );
   }
 

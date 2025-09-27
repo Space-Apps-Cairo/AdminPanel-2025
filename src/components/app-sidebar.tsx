@@ -24,8 +24,8 @@ import {
   HomeIcon,
   ShieldUser,
   Trophy,
-  Mail,
   MailIcon,
+  Filter,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -212,14 +212,6 @@ const getNavigationItems = (userRole: UserRole) => {
               title: "Majors",
               url: "/hackathon/form-options/majors",
             },
-            // {
-            //   title: "Member Roles",
-            //   url: "/hackathon/form-options/memberRole",
-            // },
-            // {
-            //   title: "Actual Solutions",
-            //   url: "/hackathon/form-options/actualSolutions",
-            // },
           ],
         },
       ],
@@ -274,6 +266,11 @@ const getTeamData = (userRole: UserRole) => {
       name: "NSAC | Registration",
       logo: ClipboardList,
       plan: "registration team",
+    },
+    filtration: {
+      name: "NSAC | Filtration",
+      logo: Filter,
+      plan: "filtration team",
     },
   };
 

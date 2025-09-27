@@ -36,6 +36,7 @@ import {
   UserPlus,
   Crown,
   X,
+  Check,
 } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
@@ -62,7 +63,9 @@ export default function TeamDetailsPage() {
       const ratingData = {
         team_id: parseInt(teamId),
         rate: Object.entries(data)
-          .filter(([key]) => key.startsWith('criteria_'))
+          .filter(([key, value]) => 
+            key && typeof key === 'string' && key.startsWith('criteria_') && value != null
+          )
           .map(([key, value]) => ({
             criteria_id: parseInt(key.replace('criteria_', '')),
             score: parseInt(value as string)
@@ -228,9 +231,13 @@ export default function TeamDetailsPage() {
             <ChevronLeft />
             <p>Go Back</p>
           </Button>
-          <Button onClick={() => setIsFormOpen(true)}>
+          {team.total_score === null && <Button onClick={() => setIsFormOpen(true)}>
             Start Evaluation
-          </Button>
+          </Button>}
+          {team.total_score !== null && <Button disabled>
+            <Check size={20} />
+            Evaluation Submitted
+          </Button>}
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -433,7 +440,7 @@ export default function TeamDetailsPage() {
                               variant="outline"
                               className="text-xs capitalize"
                             >
-                              {member.member_role.replace("_", " ")}
+                              {member.member_role ? member.member_role.replace("_", " ") : "Unknown Role"}
                             </Badge>
                             {member.participation_type && (
                               <Badge
@@ -571,10 +578,10 @@ export default function TeamDetailsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {team.actual_solution ? (
+              {team.actual_soultion ? (
                 <div className="bg-muted/50 p-4 rounded-md">
                   <p className="text-muted-foreground break-words leading-relaxed">
-                    {team.actual_solution}
+                    {team.actual_soultion}
                   </p>
                 </div>
               ) : (
@@ -655,15 +662,15 @@ export default function TeamDetailsPage() {
                 <span className="text-muted-foreground text-sm sm:text-base">
                   Team Rating
                 </span>
-                {team.team_rating ? (
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <span className="font-semibold">{team.team_rating}</span>
-                  </div>
-                ) : (
+                {team.rank === null ? (
                   <span className="text-muted-foreground italic text-sm">
                     Not rated
                   </span>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    <span className="font-semibold">{team.rank}</span>
+                  </div>
                 )}
               </div>
 
@@ -671,7 +678,7 @@ export default function TeamDetailsPage() {
                 <span className="text-muted-foreground text-sm sm:text-base">
                   Total Score
                 </span>
-                {team.total_score ? (
+                {team.total_score !== null ? (
                   <span className="font-semibold">{team.total_score}</span>
                 ) : (
                   <span className="text-muted-foreground italic text-sm">
@@ -717,19 +724,23 @@ export default function TeamDetailsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {team.mentorship_needed ? (
-                <div className="space-y-3">
-                  <div>
-                    <h3 className="font-semibold break-words">
-                      {team.mentorship_needed.title}
-                    </h3>
-                    {/* <p className="text-sm text-muted-foreground">ID: {team.mentorship_needed.id}</p> */}
-                  </div>
-                  {team.mentorship_needed.extra_field && (
-                    <p className="text-muted-foreground text-sm bg-muted/50 p-3 rounded-md break-words">
-                      {team.mentorship_needed.extra_field}
-                    </p>
-                  )}
+              {team.mentorship_needed && team.mentorship_needed.length > 0 ? (
+                <div className="space-y-4">
+                  {team.mentorship_needed.map((mentorship, index) => (
+                    <div key={mentorship.id || index} className="space-y-3 p-4 border rounded-lg bg-muted/20">
+                      <div>
+                        <h3 className="font-semibold break-words">
+                          {mentorship.title}
+                        </h3>
+                        {/* <p className="text-sm text-muted-foreground">ID: {mentorship.id}</p> */}
+                      </div>
+                      {/* {mentorship.extra_field && (
+                        <p className="text-muted-foreground text-sm bg-muted/50 p-3 rounded-md break-words">
+                          {mentorship.extra_field}
+                        </p>
+                      )} */}
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <p className="text-muted-foreground italic">

@@ -16,6 +16,7 @@ import {
 import React, { useCallback, useState } from "react";
 import { memberColumns } from "./_components/columns";
 import { toast } from "sonner";
+import Error from "@/components/Error/page";
 
 export default function MembersPage() {
   // State for pagination and search
@@ -91,9 +92,7 @@ export default function MembersPage() {
 
   if (membersError) {
     return (
-      <div className="container mx-auto py-6">
-        <div className="text-red-500">Error loading members</div>
-      </div>
+      <Error />
     );
   }
 
