@@ -265,7 +265,7 @@ export default function TeamDetailsPage() {
             {team.status ? (
               <Badge
                 variant={getStatusColor(team.status)}
-                className="px-2 py-1 text-xs sm:px-3 sm:text-sm"
+                className={`px-2 py-1 text-xs sm:px-3 sm:text-sm ${team.status === "accepted" ? "bg-green-500 text-white" : team.status === "rejected" ? "bg-red-500 text-white" : "bg-gray-500 text-white"}`}
               >
                 {team.status}
               </Badge>
@@ -684,6 +684,19 @@ export default function TeamDetailsPage() {
                 ) : (
                   <span className="text-muted-foreground italic text-sm">
                     No score
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm sm:text-base">
+                  Evaluated By
+                </span>
+                {team.created_by?.name ? (
+                  <span className="font-semibold">{team.created_by.name}</span>
+                ) : (
+                  <span className="text-muted-foreground italic text-sm">
+                    Unknown
                   </span>
                 )}
               </div>

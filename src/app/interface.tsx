@@ -15,6 +15,11 @@ export type FieldType =
   | "dynamicArrayField"
   | "radio"; // Add radio type
 
+export interface FieldOption {
+  value: string;
+  label: string;
+}
+
 export interface Field {
   name: string;
   type: FieldType;

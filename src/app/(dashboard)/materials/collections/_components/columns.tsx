@@ -7,7 +7,7 @@ import {
   useDeleteCollectionMutation,
   useGetAllMaterialsQuery,
   useUpdateCollectionMutation,
-} from "@/service/Api/materials";
+} from "@/service/Api/material/materials";
 import {
   Collection,
   CreateCollectionRequest,

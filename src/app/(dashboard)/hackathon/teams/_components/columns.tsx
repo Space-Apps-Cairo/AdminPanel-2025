@@ -38,20 +38,20 @@ export const teamColumns: ColumnDef<Team>[] = [
     cell: ({ row }) => {
       const challenge = row.original.challenge;
       return challenge ? (
-        <span className="text-sm">{challenge.title}</span>
+        <span className="text-sm">{challenge.title.length > 50 ? challenge.title.substring(0, 50) + "..." : challenge.title}</span>
       ) : (
         <span className="text-muted-foreground text-sm">N/A</span>
       );
     },
   },
-    {
+  {
     header: "Total Score",
     accessorKey: "total_score",
     cell: ({ row }) => {
       const score = row.original.total_score;
       return score !== null ? score : "—";
     },
-    size: 100,
+    size: 120,
   },
   {
     header: "Rank",
@@ -76,32 +76,41 @@ export const teamColumns: ColumnDef<Team>[] = [
     cell: ({ row }) => {
       const method = row.original.participation_method;
       return (
-        <div className="w-full flex items-center justify-center">
-          <Badge
-            variant={method?.title === "onsite" ? "default" : "secondary"}
-            className="capitalize px-2.5 py-1"
-          >
-            {method?.title || "N/A"}
-          </Badge>
-        </div>
+        <Badge
+          variant={method?.title === "onsite" ? "default" : "secondary"}
+          className="capitalize px-2.5 py-1"
+        >
+          {method?.title || "N/A"}
+        </Badge>
       );
     },
   },
-    {
+  {
+    header: "Evaluated By",
+    accessorKey: "created_by.name",
+    size: 150,
+    cell: ({ row }) => {
+      const name = row.original.created_by?.name;
+      return (
+        name 
+          ? <span className="text-sm">{name}</span> 
+          : <span className="text-sm opacity-50">Unknown</span>
+      );
+    },
+  },
+  {
     header: "Team Status",
     accessorKey: "status",
     size: 150,
     cell: ({ row }) => {
       const status = row.original.status;
       return (
-        <div className="w-full flex items-center justify-center">
-          <Badge
-            variant={status === "accepted" ? "default" : "secondary"}
-            className="capitalize px-2.5 py-1"
-          >
-            {status || "N/A"}
-          </Badge>
-        </div>
+        <Badge
+          variant={status === "accepted" ? "default" : "secondary"}
+          className="capitalize px-2.5 py-1"
+        >
+          {status || "N/A"}
+        </Badge>
       );
     },
   },

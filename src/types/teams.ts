@@ -59,6 +59,12 @@ export type TeamPhoto = {
   alt?: string;
 };
 
+export type CreatedBy = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 export type Team = {
   id: number;
   uuid: string;
@@ -85,6 +91,7 @@ export type Team = {
   team_photo: TeamPhoto | null;
   created_at: string;
   rank: number | null;
+  created_by: CreatedBy | null;
 };
 
 export type TeamsRes = {
