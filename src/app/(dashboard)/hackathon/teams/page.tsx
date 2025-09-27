@@ -58,8 +58,8 @@ export default function TeamsPage() {
 
   const searchConfig: SearchConfig = {
     enabled: true,
-    placeholder: "Filter by team name, team leader name, uuid",
-    searchKeys: ["team_name", "team_leader.name", "uuid"],
+    placeholder: "Filter by team name, uuid",
+    // searchKeys: ["team_name", "uuid"],
   };
 
   const statusConfig: StatusConfig = {

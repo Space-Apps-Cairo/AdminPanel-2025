@@ -39,6 +39,10 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
+import EvaluationForm from "./_components/evaluation-form";
+import { useSubmitCriteriaRatingMutation } from "@/service/Api/filtretions/criteriaCategories";
+import { toast } from "sonner";
+import { FieldValues } from "react-hook-form";
 
 export default function TeamDetailsPage() {
   const params = useParams();
@@ -46,6 +50,50 @@ export default function TeamDetailsPage() {
   const teamId = params.id as string;
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  // Add the mutation hook
+  const [submitCriteriaRating] = useSubmitCriteriaRatingMutation();
+
+  const handleSubmit = async (data: FieldValues) => {
+    try {
+      // Transform the form data to match the API format
+      const ratingData = {
+        team_id: parseInt(teamId),
+        rate: Object.entries(data)
+          .filter(([key]) => key.startsWith('criteria_'))
+          .map(([key, value]) => ({
+            criteria_id: parseInt(key.replace('criteria_', '')),
+            score: parseInt(value as string)
+          }))
+      };
+
+      console.log("Submitting evaluation:", ratingData);
+      
+      const result = await submitCriteriaRating(ratingData).unwrap();
+      
+      console.log("Evaluation submitted successfully:", result);
+      
+      // Show success toast
+      toast.success("Evaluation submitted successfully!", {
+        description: "The team evaluation has been saved successfully.",
+        duration: 4000,
+      });
+      
+      setIsFormOpen(false);
+      
+    } catch (error: unknown) {
+      console.error("Failed to submit evaluation:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to submit evaluation. Please try again.";
+      
+      // Show error toast
+      toast.error("Failed to submit evaluation", {
+        description: errorMessage,
+        duration: 5000,
+      });
+    }
+  };
 
   const {
     data: teamData,
@@ -160,17 +208,30 @@ export default function TeamDetailsPage() {
   };
 
   return (
+
     <div className="container mx-auto py-4 px-4 sm:py-6 sm:px-5 max-w-7xl">
+
+      <EvaluationForm
+        operation="add"
+        isOpen={isFormOpen}
+        setIsOpen={setIsFormOpen}
+        onSubmit={handleSubmit}
+      />
+
       {/* Header - Responsive */}
       <div className="mb-6 sm:mb-8">
-        <Button
-          variant="outline"
-          className="mb-6"
-          onClick={() => router.back()}
-        >
-          <ChevronLeft />
-          <p>Go Back</p>
-        </Button>
+        <div className="flex justify-between items-center mb-6">
+          <Button
+            variant="outline"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft />
+            <p>Go Back</p>
+          </Button>
+          <Button onClick={() => setIsFormOpen(true)}>
+            Start Evaluation
+          </Button>
+        </div>
 
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="min-w-0 flex-1">

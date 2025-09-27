@@ -11,8 +11,8 @@ import { Eye } from "lucide-react";
 
 export const teamColumns: ColumnDef<Team>[] = [
   {
-    header: "ID",
-    accessorKey: "id",
+    header: "UUID",
+    accessorKey: "uuid",
     size: 80,
     enableHiding: false,
   },

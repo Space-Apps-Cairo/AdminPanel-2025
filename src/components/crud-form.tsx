@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon, ClockIcon } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
@@ -45,9 +45,8 @@ import {
   StepperTrigger,
 } from "./ui/stepper";
 import DynamicArrayField from "./fields/DynamicArrayFields";
-import { DateInput } from "@/components/ui/datefield-rac";
-import { TimeField } from "@/components/ui/datefield-rac";
 import { Textarea } from "./ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function CrudForm(props: {
   operation: "add" | "edit" | "preview";
@@ -167,35 +166,53 @@ export default function CrudForm(props: {
           (field: Field, idx: number) =>
             (!steps || field.step === currentStep) && (
               <Fragment key={idx}>
-                {[
-                  "text",
-                  "email",
-                  "password",
-                  "number",
-                  "tel",
-                  "time",
-                ].includes(field.type) && (
-                  <div className="grid gap-3">
-                    <Label htmlFor={field.name}>{field.label}</Label>
-                    <Input
-                      {...register(`${field.name}`)}
-                      id={field.name}
-                      name={field.name}
-                      type={field.type}
-                      disabled={isDisabled || field.disabled}
-                      placeholder={field.placeholder}
-                      className={
-                        field.type === "time"
-                          ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                          : ""
-                      }
-                    />
-                    {errors[field.name] && (
-                      <p className="text-red-500 text-sm">
-                        {errors[field.name]?.message as string}
+
+                {field.name.startsWith('category_header_') && (
+                  <div className="bg-muted/50 p-4 rounded-lg mb-6">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {field.label}
+                    </h3>
+                    {field.placeholder && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {field.placeholder}
                       </p>
                     )}
                   </div>
+                )}
+
+                {!field.name.startsWith('category_header_') && (
+                  <>
+                    {[
+                      "text",
+                      "email",
+                      "password",
+                      "number",
+                      "tel",
+                      "time",
+                    ].includes(field.type) && (
+                      <div className="grid gap-3">
+                        <Label htmlFor={field.name}>{field.label}</Label>
+                        <Input
+                          {...register(`${field.name}`)}
+                          id={field.name}
+                          name={field.name}
+                          type={field.type}
+                          disabled={isDisabled || field.disabled}
+                          placeholder={field.placeholder}
+                          className={
+                            field.type === "time"
+                              ? "bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                              : ""
+                          }
+                        />
+                        {errors[field.name] && (
+                          <p className="text-red-500 text-sm">
+                            {errors[field.name]?.message as string}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {field.type == "textArea" && (
@@ -428,6 +445,66 @@ export default function CrudForm(props: {
                     disabled={operation == "preview"}
                   />
                 )}
+
+                {field.type === "radio" && (
+                  <fieldset className="space-y-4">
+                    <legend className="text-foreground text-sm leading-none font-medium mb-4">
+                      {field.label}
+                    </legend>
+                    <Controller
+                      name={field.name}
+                      control={control}
+                      render={({ field: fld }) => (
+                        <RadioGroup 
+                          value={fld.value} 
+                          onValueChange={fld.onChange}
+                          className={`flex gap-0 -space-x-px rounded-md shadow-xs ${
+                            field.radioConfig?.orientation === "vertical" 
+                              ? "flex-col space-y-2" 
+                              : "flex-row"
+                          }`}
+                          disabled={isDisabled}
+                        >
+                          {field.options?.map((option: FieldOption, index) => (
+                            <label
+                              key={index}
+                              className={`
+                                border-input has-data-[state=checked]:border-primary/50 has-focus-visible:border-ring has-focus-visible:ring-ring/50
+                                has-data-[state=checked]:bg-secondary/50 has-focus-visible:bg-ring
+                                relative flex cursor-pointer items-center justify-center border text-center text-sm font-medium 
+                                transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px] has-data-disabled:cursor-not-allowed 
+                                has-data-disabled:opacity-50 has-data-[state=checked]:z-10 bg-background hover:bg-muted/50
+                                ${field.radioConfig?.orientation === "vertical"
+                                  ? "w-full p-3 first:rounded-t-md last:rounded-b-md"
+                                  : "flex-1 size-9 first:rounded-s-md last:rounded-e-md"
+                                }`
+                              }
+                            >
+                              <RadioGroupItem
+                                value={option.value}
+                                className="sr-only after:absolute after:inset-0"
+                                disabled={isDisabled}
+                              />
+                              <span className={`${
+                                field.radioConfig?.orientation === "vertical" 
+                                  ? "text-base" 
+                                  : "text-sm font-semibold"
+                              }`}>
+                                {option.label}
+                              </span>
+                            </label>
+                          ))}
+                        </RadioGroup>
+                      )}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {errors[field.name]?.message as string}
+                      </p>
+                    )}
+                  </fieldset>
+                )}
+
               </Fragment>
             )
         )}

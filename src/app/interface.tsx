@@ -1,9 +1,4 @@
-export interface FieldOption {
-  value: string;
-  label: string;
-  searchableText?: string; // For command input filtering
-}
-
+// Enhanced interface.ts - Add radio group support
 export type FieldType =
   | "text"
   | "email"
@@ -16,22 +11,28 @@ export type FieldType =
   | "select"
   | "date"
   | "checkbox"
-  | "command" // New command input type
-  | "dynamicArrayField";
+  | "command"
+  | "dynamicArrayField"
+  | "radio"; // Add radio type
+
 export interface Field {
   name: string;
   type: FieldType;
   label?: string;
   placeholder?: string;
-
   value?: string;
   options?: FieldOption[];
   step?: number;
+  
+  // Add radio-specific properties
+  radioConfig?: {
+    orientation?: "horizontal" | "vertical";
+    inline?: boolean;
+  };
 
-  // لو في dynamic fields (زي array of objects)
   dynamicArrayFieldsConfig?: {
     fields?: Field[];
-    isSimpleArray?: boolean; // [1,2,3] , [{},{}]
+    isSimpleArray?: boolean;
     addButtonLabel?: string;
     itemName?: string;
     minItem?: number;
@@ -39,7 +40,4 @@ export interface Field {
 
   disabled?: boolean;
   defaultValue?: string | number | string[] | boolean | null | any;
-
-  //  إضافات جديدة للتوافق مع columns.tsx
-
 }
