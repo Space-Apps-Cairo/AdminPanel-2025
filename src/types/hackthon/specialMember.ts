@@ -7,4 +7,6 @@ export interface Member {
   reason: string;
   national_id: string;
   team_id: Team | number;
+  national_id_front: string | null;
+  national_id_back: string | null;
 }

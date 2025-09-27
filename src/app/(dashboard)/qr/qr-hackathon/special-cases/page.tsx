@@ -37,6 +37,8 @@ export default function FullFormCard() {
       national_id: "",
       reason: "",
       team_id: "",
+      national_id_front: null, 
+      national_id_back: null, 
     },
   });
   [];
@@ -160,6 +162,48 @@ export default function FullFormCard() {
                   </FormItem>
                 )}
               />
+
+<FormField
+                control={form.control}
+                name="national_id_front"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>National ID Front</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          field.onChange(e.target.files?.[0] || null)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="national_id_back"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>National ID Back</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          field.onChange(e.target.files?.[0] || null)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+
 
               <CardFooter className="flex flex-col gap-2">
                 <Button type="submit" className="w-full">

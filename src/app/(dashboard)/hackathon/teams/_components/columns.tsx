@@ -7,8 +7,17 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
-
+import { Eye, Mail } from "lucide-react";
+import {
+  useGetEmailTemplatesQuery,
+  useSendEmailsMutation,
+} from "@/service/Api/emails/templates";
+import {
+  sendEmailSchema,
+} from "@/validations/emails/templates";
+import { Field, FieldOption } from "@/app/interface";
+import CrudForm from "@/components/crud-form";
+import { useState } from "react";
 export const teamColumns: ColumnDef<Team>[] = [
   {
     header: "UUID",
@@ -23,20 +32,6 @@ export const teamColumns: ColumnDef<Team>[] = [
     enableHiding: false,
   },
   {
-    header: "Team Leader",
-    accessorKey: "team_leader.name",
-    cell: ({ row }) => {
-      const teamLeader = row.original.team_leader;
-      return teamLeader ? (
-        <span className="text-sm">{teamLeader.name}</span>
-      ) : (
-        <span className="text-muted-foreground text-sm">N/A</span>
-      );
-    },
-    size: 200,
-    enableHiding: false,
-  },
-  {
     header: "Challenge Name",
     accessorKey: "challenge.title",
     size: 250,
@@ -47,6 +42,22 @@ export const teamColumns: ColumnDef<Team>[] = [
       ) : (
         <span className="text-muted-foreground text-sm">N/A</span>
       );
+    },
+  },
+    {
+    header: "Total Score",
+    accessorKey: "total_score",
+    cell: ({ row }) => {
+      const score = row.original.total_score;
+      return score !== null ? score : "—";
+    },
+  },
+  {
+    header: "Rank",
+    accessorKey: "rank",
+    cell: ({ row }) => {
+      const rank = row.original.rank;
+      return rank ? `#${rank}` : "—";
     },
   },
   {
@@ -77,9 +88,66 @@ export const teamColumns: ColumnDef<Team>[] = [
 
 function TeamRowActions({ rowData }: { rowData: Team }) {
   const [deleteTeam] = useDeleteTeamMutation();
+const [sendEmail] = useSendEmailsMutation();
+  const { data, isLoading } = useGetEmailTemplatesQuery();
+ const [isOpen, setIsOpen] = useState(false);
+   const templateOptions: FieldOption[] =
+      data?.data?.map((template) => ({
+        value: template.id.toString(),
+        label: template.title,
+      })) ?? [];
+  
+ const fields: Field[] = [
+    {
+      name: "template_id",
+      type: "select",
+      label: "Select Template",
+      options: templateOptions,
+      placeholder: isLoading ? "Loading templates..." : "Choose a template",
+    },
+    {
+      name: "ids",
+      type: "select",
+      label: "Select Teams",
+      options: [{ value: rowData.id.toString(), label: rowData.team_name }],
+      defaultValue: rowData.id.toString(),
+    },
+  ];
+//
+  async function handleEmailSubmit(data) {
+    try {
+      const payload = {
+        template_id: data.template_id,
+        ids: [rowData.id],
+      };
+      await sendEmail(payload).unwrap();
+      toast.success("Email sended successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong on send Email");
+    }
+  }
+
 
   return (
     <div className="flex items-center gap-3">
+ {isOpen && (
+        <CrudForm
+          fields={fields}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          operation={"add"}
+          asDialog={true}
+          validationSchema={sendEmailSchema}
+          onSubmit={handleEmailSubmit}
+        />
+      )}
+      
+      <Button variant={"outline"} size={"sm"} onClick={() => setIsOpen(true)}>
+        <Mail />
+      </Button>
+
+
       <Link href={`/hackathon/teams/${rowData.id}`}>
         <Button variant={"outline"} size={"sm"}>
           <Eye size={16} />

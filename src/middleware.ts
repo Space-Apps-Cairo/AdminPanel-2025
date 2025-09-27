@@ -35,13 +35,7 @@ const getRoutePermissions = () => {
       "/hackathon",
       "/hackathon/dashboard",
       "/hackathon/teams",
-      "/hackathon/teams/All",
-      "/hackathon/teams/onsite",
-      "/hackathon/teams/virtual",
       "/hackathon/members",
-      "/hackathon/members/all-members",
-      "/hackathon/members/onsite",
-      "/hackathon/members/virtual",
       "/hackathon/formDetails",
       "/hackathon",
       "/hackathon/form-options",
@@ -51,7 +45,7 @@ const getRoutePermissions = () => {
       "/hackathon/form-options/mentorship",
       "/hackathon/form-options/memberRole",
       "/hackathon/form-options/actualSolutions",
-      "/hackathon/form-options/study-levels",
+      "/hackathon/form-options/majors",
       "/email-templates",
     ],
 
@@ -125,7 +119,7 @@ const getRoutePermissions = () => {
       "/hackathon/teams",
       "/hackathon/formDetails",
     ],
-    filteration: ["/", "/hackathon", "/hackathon/teams"],
+    filtration: ["/", "/hackathon","/hackathon/teams","hackathon/members" , "/email-templates"],
   };
 };
 

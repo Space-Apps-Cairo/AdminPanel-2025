@@ -84,6 +84,7 @@ export type Team = {
   members_count: number;
   team_photo: TeamPhoto | null;
   created_at: string;
+  rank: number | null;
 };
 
 export type TeamsRes = {

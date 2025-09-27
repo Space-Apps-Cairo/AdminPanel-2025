@@ -163,9 +163,8 @@ const getNavigationItems = (userRole: UserRole) => {
         "Admin",
         "logistics",
         "registeration",
-        "filteration",
+        "filtration",
       ] as UserRole[],
-
       items: [
         {
           title: "Dashboard",
@@ -181,9 +180,13 @@ const getNavigationItems = (userRole: UserRole) => {
         },
 
         {
-          title: " Form Options",
+          title: "Form Options",
           url: "/hackathon/form-options",
           isActive: false,
+          roles: [
+        "Admin",
+      ] as UserRole[],
+
           items: [
             {
               title: "Tshirt Sizes",
@@ -217,14 +220,6 @@ const getNavigationItems = (userRole: UserRole) => {
             //   title: "Actual Solutions",
             //   url: "/hackathon/form-options/actualSolutions",
             // },
-            // {
-            //   title: "Member Roles",
-            //   url: "/hackathon/form-options/memberRole",
-            // },
-            // {
-            //   title: "Actual Solutions",
-            //   url: "/hackathon/form-options/actualSolutions",
-            // },
           ],
         },
       ],
@@ -233,13 +228,29 @@ const getNavigationItems = (userRole: UserRole) => {
       title: "Email Templates",
       url: "/email-templates",
       icon: MailIcon,
-      roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
+      roles: ["Admin", "logistics", "registeration", "material","filtration"] as UserRole[],
     },
   ];
 
   // Filter items based on user role
-  return allItems.filter((item) => item.roles.includes(userRole));
+const canView = (item: any, role: UserRole) => {
+    if (!item.roles) return true; 
+    return item.roles.includes(role);
+  }; 
+
+ const filterItems = (items: any[]): any[] => {
+    return items
+      .filter((item) => canView(item, userRole)) 
+      .map((item) => ({
+        ...item,
+        items: item.items ? filterItems(item.items) : undefined, 
+      }));
+  };
+
+  return filterItems(allItems);
 };
+//   return allItems.filter((item) => item.roles.includes(userRole));
+// };
 
 // Function to get team data based on user role
 const getTeamData = (userRole: UserRole) => {

@@ -38,7 +38,7 @@ export function LoginForm() {
   const onSubmit = async (values: LoginRequest) => {
     try {
       const res = await login(values).unwrap();
-      dispatch(setCredentials({ user: res.user, access_token: res.access_token, role: res.role }));
+      dispatch(setCredentials({ user: res.user, access_token: res.access_token, role: res.user.role }));
       toast.success("Login Successfully");
       router.push("/");
     } catch (err: any) {
