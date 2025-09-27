@@ -119,7 +119,7 @@ const getRoutePermissions = () => {
       "/hackathon/teams",
       "/hackathon/formDetails",
     ],
-    filtration: ["/", "/hackathon","/hackathon/teams","hackathon/members"],
+    filtration: ["/", "/hackathon","/hackathon/teams","hackathon/members" , "/email-templates"],
   };
 };
 

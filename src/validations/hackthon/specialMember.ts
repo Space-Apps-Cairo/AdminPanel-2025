@@ -12,6 +12,8 @@ export const SpecialMemberSchema = z.object({
     .string()
     .length(14, { message: "National ID must be exactly 14 digits." }),
   team_id: z.string().min(2,{ message: "Team ID must be at least 2 characters" }),
+   national_id_front: z.any().nullable(),
+  national_id_back: z.any().nullable(),
 });
 
 export type TeamMemberSchema = z.infer<typeof SpecialMemberSchema>;

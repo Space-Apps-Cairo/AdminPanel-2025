@@ -228,7 +228,7 @@ const getNavigationItems = (userRole: UserRole) => {
       title: "Email Templates",
       url: "/email-templates",
       icon: MailIcon,
-      roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
+      roles: ["Admin", "logistics", "registeration", "material","filtration"] as UserRole[],
     },
   ];
 
