@@ -163,9 +163,8 @@ const getNavigationItems = (userRole: UserRole) => {
         "Admin",
         "logistics",
         "registeration",
-        "filteration",
+        "filtration",
       ] as UserRole[],
-
       items: [
         {
           title: "Dashboard",
@@ -250,6 +249,8 @@ const canView = (item: any, role: UserRole) => {
 
   return filterItems(allItems);
 };
+//   return allItems.filter((item) => item.roles.includes(userRole));
+// };
 
 // Function to get team data based on user role
 const getTeamData = (userRole: UserRole) => {

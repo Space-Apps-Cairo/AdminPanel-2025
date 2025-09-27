@@ -3,7 +3,7 @@ export type UserRole =
   | "material"
   | "logistics"
   | "registeration"
-  | "filteration";
+  | "filtration";
 
 export interface UserType {
   id: number;
