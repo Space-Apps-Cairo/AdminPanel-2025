@@ -81,6 +81,7 @@ export default function TeamsPage() {
     enabled: true,
     showAdd: false, // Since teams are created by participants, not admins
     showDelete: true,
+    showExport:true,
     addButtonText: "Add Team",
   };
 
@@ -137,6 +138,7 @@ export default function TeamsPage() {
           statusConfig={statusConfig}
           actionConfig={actionConfig}
           bulkDeleteMutation={deleteTeam}
+          enableBulkEmail={true}
           backendPagination={backendPagination}
         />
       </div>
