@@ -80,8 +80,8 @@ export default function TeamsPage() {
         queryKey: "status", //any thing
         title: "Status",
         options: [
-          { id: 'accepted', label: "Accepted" },
-          { id: 'rejected', label: "Rejected" },
+          { id: "accepted", label: "Accepted" },
+          { id: "rejected", label: "Rejected" },
           // { id: 3, label: "pending" },
         ],
       },
@@ -92,7 +92,7 @@ export default function TeamsPage() {
     enabled: true,
     showAdd: false, // Since teams are created by participants, not admins
     showDelete: true,
-    showExport:true,
+    showExport: true,
     addButtonText: "Add Team",
   };
 
@@ -127,9 +127,7 @@ export default function TeamsPage() {
   // if (isLoadingTeams) return <Loading />;
 
   if (teamsError) {
-    return (
-      <Error />
-    );
+    return <Error />;
   }
 
   return (
@@ -146,6 +144,7 @@ export default function TeamsPage() {
           bulkDeleteMutation={deleteTeam}
           enableBulkEmail={true}
           backendPagination={backendPagination}
+          emailTemplateType="teams"
         />
       </div>
     </React.Fragment>

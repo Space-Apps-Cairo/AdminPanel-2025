@@ -91,9 +91,7 @@ export default function MembersPage() {
   if (isLoadingMembers) return <Loading />;
 
   if (membersError) {
-    return (
-      <Error />
-    );
+    return <Error />;
   }
 
   return (
@@ -107,7 +105,9 @@ export default function MembersPage() {
         statusConfig={statusConfig}
         actionConfig={actionConfig}
         columnVisibilityConfig={columnVisibilityConfig}
+        enableBulkEmail={true}
         backendPagination={backendPagination}
+        emailTemplateType="members"
         // bulkDeleteMutation={(ids: number[]) =>
         //   Promise.all(ids.map((id) => deleteMember(id).unwrap()))
         //     .then(() => toast.success("Members deleted successfully!"))
