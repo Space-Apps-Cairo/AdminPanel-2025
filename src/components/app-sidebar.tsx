@@ -72,6 +72,10 @@ const getNavigationItems = (userRole: UserRole) => {
             { title: "Special Cases", url: "/qr/qr-hackathon/special-cases" },
           ],
         },
+        {
+          title: "Collections",
+          url: "/qr/collections",
+        }
       ],
     },
     {

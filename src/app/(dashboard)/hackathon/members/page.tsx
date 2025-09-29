@@ -104,6 +104,7 @@ export default function MembersPage() {
         searchConfig={searchConfig}
         statusConfig={statusConfig}
         actionConfig={actionConfig}
+        enableBulkEmail={true}
         columnVisibilityConfig={columnVisibilityConfig}
         enableBulkEmail={true}
         backendPagination={backendPagination}

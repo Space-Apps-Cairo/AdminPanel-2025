@@ -1298,9 +1298,20 @@ export default function DataTable<TData extends DataTableRow>({
             Rows per page
           </Label>
           <Select
-            value={table.getState().pagination.pageSize.toString()}
+            value={
+              backendPagination.enabled
+                ? backendPagination.pageSize === -1
+                  ? "all"
+                  : backendPagination.pageSize.toString()
+                : table.getState().pagination.pageSize.toString()
+            }
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              if (!backendPagination?.onPageSizeChange) return;
+              if (value === "all") {
+                backendPagination.onPageSizeChange(-1);
+              } else {
+                backendPagination.onPageSizeChange(Number(value));
+              }
             }}
             disabled={backendPagination.loading}
           >
@@ -1316,6 +1327,9 @@ export default function DataTable<TData extends DataTableRow>({
                   {size}
                 </SelectItem>
               ))}
+              <SelectItem key="all" value="all">
+                All
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -1339,13 +1353,14 @@ export default function DataTable<TData extends DataTableRow>({
               -
               {backendPagination.enabled && backendPagination.totalCount
                 ? // Backend pagination calculation
-                  Math.min(
-                    table.getState().pagination.pageIndex *
-                      table.getState().pagination.pageSize +
-                      table.getState().pagination.pageSize,
-                    backendPagination.totalCount
-                  )
-                : // Frontend pagination calculation
+                  backendPagination.pageSize === -1
+                  ? backendPagination.totalCount
+                  : backendPagination.pageSize
+                : // Math.min(
+                  //   backendPagination.totalCount,
+                  //   // table.getState().pagination.pageIndex * table.getState().pagination.pageSize + table.getState().pagination.pageSize,
+                  // )
+                  // Frontend pagination calculation
                   Math.min(
                     Math.max(
                       table.getState().pagination.pageIndex *

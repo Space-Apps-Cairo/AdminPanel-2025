@@ -8,7 +8,7 @@ import DataTable from "@/components/table/data-table";
 import Loading from "@/components/loading/loading";
 import CrudForm from "@/components/crud-form";
 
-import { tshirtColumns ,getTShirtFields} from "./columns";
+import { tshirtColumns, getTShirtFields } from "./columns";
 
 import {
   useGetTshirtsQuery,
@@ -28,7 +28,6 @@ export default function Tshirts() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [addTshirt] = useAddTshirtMutation();
-
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -67,9 +66,7 @@ export default function Tshirts() {
 
   if (isLoadingTshirts) return <Loading />;
   if (tshirtsError) {
-    return (
-     <Error/>
-    );
+    return <Error />;
   }
 
   return (
@@ -90,7 +87,7 @@ export default function Tshirts() {
         <h1 className="text-2xl font-bold mb-6">T-shirt Sizes</h1>
 
         <DataTable<TShirtSize>
-           data={tshirtsData?.data ?? []}
+          data={tshirtsData?.data ?? []}
           columns={tshirtColumns}
           searchConfig={searchConfig}
           statusConfig={statusConfig}

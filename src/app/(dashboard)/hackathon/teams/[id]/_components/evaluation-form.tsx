@@ -50,14 +50,6 @@ export default function EvaluationForm(props: EvaluationFormProps) {
     await props.onSubmit(filteredData, formData);
   };
 
-  if (fields.length === 0) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <p>Loading evaluation criteria...</p>
-      </div>
-    );
-  }
-
   return (
     <CrudForm
       operation={props.operation}
