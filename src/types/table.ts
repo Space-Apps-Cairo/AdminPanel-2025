@@ -57,6 +57,7 @@ export interface ColumnVisibilityConfig {
 export interface BackendPaginationConfig {
   enabled: boolean;
   totalCount?: number;
+  pageSize: number
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
   onSearchChange?: (query: string) => void;

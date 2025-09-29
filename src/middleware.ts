@@ -47,6 +47,7 @@ const getRoutePermissions = () => {
       "/hackathon/form-options/actualSolutions",
       "/hackathon/form-options/majors",
       "/email-templates",
+      "/qr/collections",
     ],
 
     material: [

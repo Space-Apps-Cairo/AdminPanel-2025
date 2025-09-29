@@ -90,7 +90,7 @@ export default function Tshirts() {
         <h1 className="text-2xl font-bold mb-6">T-shirt Sizes</h1>
 
         <DataTable<TShirtSize>
-           data={tshirtsData?.data ?? []}
+          data={tshirtsData?.data ?? []}
           columns={tshirtColumns}
           searchConfig={searchConfig}
           statusConfig={statusConfig}

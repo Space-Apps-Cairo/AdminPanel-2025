@@ -35,18 +35,23 @@ export default function TeamsPage() {
       console.log("key", key);
       console.log("values", values);
       if (values.length > 0) {
-        // If multiple values, add each one separately
         values.forEach((value) => {
           params.append(key, value);
         });
       }
     });
 
-    params.append("limit", pageSize.toString());
+    // Handle "all" case - use -1 to represent "all"
+    if (pageSize === -1) {
+      params.append("limit", "all");
+    } else {
+      params.append("limit", pageSize.toString());
+    }
+    
     params.append("page", currentPage.toString());
 
     return params.toString() ? `?${params.toString()}` : "";
-  }, [searchTerm, pageSize, currentPage, activeFilters]); // Add activeFilters to dependencies
+  }, [searchTerm, pageSize, currentPage, activeFilters]);
 
   const {
     data: teamsData,
@@ -92,23 +97,27 @@ export default function TeamsPage() {
     enabled: true,
     showAdd: false, // Since teams are created by participants, not admins
     showDelete: true,
-    showExport:true,
+    showExport: true,
     addButtonText: "Add Team",
   };
 
-  // Backend pagination configuration - updated to include onFilterChange
+  // Backend pagination configuration - updated to handle "all" case
   const backendPagination = {
     enabled: true,
     currentPage: teamsData?.current_page || 1,
     totalPages: teamsData?.total_pages || 1,
-    pageSize: Number(teamsData?.per_page) || 10,
+    pageSize: pageSize, // ← تأكد أن ده بيشير لـ state الـ pageSize
     totalCount: teamsData?.count || 0,
     onPageChange: (page: number) => {
       setCurrentPage(page);
     },
     onPageSizeChange: (size: number) => {
-      setPageSize(size);
-      setCurrentPage(1); // Reset to first page when changing page size
+      if (size === -1) {
+        setPageSize(-1); // ← هنا بيتغير الـ state
+      } else {
+        setPageSize(size); // ← وهنا كمان
+      }
+      setCurrentPage(1);
     },
     onSearchChange: (search: string) => {
       setSearchTerm(search);
@@ -120,7 +129,7 @@ export default function TeamsPage() {
       setCurrentPage(1); // Reset to first page when filtering
     },
     loading: isLoadingTeams,
-  }; // Debug log
+  };
 
   // ====== status ====== //
 

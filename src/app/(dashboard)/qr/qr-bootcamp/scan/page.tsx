@@ -15,16 +15,11 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, QrCode, User } from "lucide-react";
 
 import {
-  useGetAllCollectionsQuery,
-  useAssignCollectionMutation,
-} from "@/service/Api/material/materials";
-import {
   useGetBootcampsQuery,
   useRegisterBootcampAttendeeMutation,
 } from "@/service/Api/bootcamp";
 import { useCheckInWorkshopParticipantMutation } from "@/service/Api/workshops";
 
-import { Collection } from "@/types/material/materials";
 import { BootcampType } from "@/types/bootcamp";
 import Loading from "@/components/loading/loading";
 import Link from "next/link";
@@ -46,7 +41,6 @@ const QrScanner = dynamic(() => import("@/components/scanner/QrScanner"), {
 type ScanType =
   | { type: "bootcamp"; bootcamp: BootcampType }
   | { type: "workshop" }
-  | { type: "collection"; collection: Collection }
   | null;
 
 export default function ScanQrCodePage() {
@@ -58,20 +52,14 @@ export default function ScanQrCodePage() {
   const userRole = useAppSelector((state) => state.auth.role) as UserRole;
 
   // Conditionally fetch data based on user role
-  const shouldFetchCollections = userRole === 'Admin' || userRole === 'material';
   const shouldFetchBootcamps = userRole === 'Admin' || userRole === 'logistics' || userRole === 'registeration';
   const shouldShowWorkshops = userRole === 'Admin' || userRole === 'logistics' || userRole === 'registeration';
 
-  const { data: collectionsData, isLoading: isLoadingCollections } =
-    useGetAllCollectionsQuery(undefined, {
-      skip: !shouldFetchCollections
-    });
   const { data: bootcampsData, isLoading: isLoadingBootcamps } =
     useGetBootcampsQuery(undefined, {
       skip: !shouldFetchBootcamps
     });
 
-  const [assignCollection] = useAssignCollectionMutation();
   const [registerBootcampAttendee] = useRegisterBootcampAttendeeMutation();
   const [checkInWorkshopParticipant] = useCheckInWorkshopParticipantMutation();
 
@@ -84,20 +72,7 @@ export default function ScanQrCodePage() {
 
     try {
       let result;
-      if (scanFor.type === "collection") {
-        result = await assignCollection({
-          user_id: participantUuid,
-          collection_id: scanFor.collection.id,
-        }).unwrap();
-        toast.success(
-          result.success ? "Assigned successfully" : "Assignment completed",
-          {
-            description:
-              result.msg ||
-              `Allowed: ${result.data?.allowed}, Current: ${result.data?.current_quantity}`,
-          }
-        );
-      } else if (scanFor.type === "bootcamp") {
+      if (scanFor.type === "bootcamp") {
         result = await registerBootcampAttendee({
           bootcamp_details_id: Number(scanFor.bootcamp.id),
           bootcamp_participant_uuid: participantUuid,
@@ -121,9 +96,7 @@ export default function ScanQrCodePage() {
         apiErr?.data?.msg || apiErr?.data?.message || `An error occurred.`;
 
       let errorTitle = "Operation failed";
-      if (scanFor?.type === "collection") {
-        errorTitle = "Collection Assignment Failed";
-      } else if (scanFor?.type === "bootcamp") {
+      if (scanFor?.type === "bootcamp") {
         errorTitle = "Bootcamp Registration Failed";
       } else if (scanFor?.type === "workshop") {
         errorTitle = "Workshop Check-in Failed";
@@ -147,13 +120,9 @@ export default function ScanQrCodePage() {
     setShowScanner(true);
   };
 
-  const isLoading = (shouldFetchCollections && isLoadingCollections) || (shouldFetchBootcamps && isLoadingBootcamps);
-
-  if (isLoading) {
+  if (isLoadingBootcamps) {
     return <Loading />;
   }
-
-  const collections = collectionsData?.data ?? [];
 
   return (
     <div className="space-y-6 py-8 px-8">
@@ -227,53 +196,6 @@ export default function ScanQrCodePage() {
                 </Button>
               </CardFooter>
             </Card>
-          </div>
-        </section>
-      )}
-
-      {/* Collections Section - Only for Admin, Material */}
-      {shouldFetchCollections && collectionsData && (
-        <section>
-          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">
-            Collections
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {collections.map((collection, idx) => (
-              <Card key={collection.id}>
-                <CardHeader>
-                  <CardTitle>Collection {idx + 1}</CardTitle>
-                  <CardDescription>{collection.collection_name}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>Total: {collection.total_quantity}</p>
-                  <p>Max Per User: {collection.max_per_user}</p>
-                  <p>Used: {collection.used_quantity}</p>
-                  <p>
-                    Materials:{" "}
-                    {collection.materials.map((m) => m.material_name).join(", ")}
-                  </p>
-                </CardContent>
-                <CardFooter className="grid grid-cols-2 gap-2 max-[450px]:grid-cols-1">
-                  <Button
-                    onClick={() =>
-                      openScanner({ type: "collection", collection })
-                    }
-                  >
-                    <QrCode className="mr-2 h-4 w-4" /> Scan
-                  </Button>
-                  <Link
-                    className="w-full"
-                    href={`/materials/collections/${collection.id}`}
-                  >
-                    <Button className="w-full" variant="outline">
-                      <User className="mr-2 h-4 w-4" />
-                      <p>Registrants</p>
-                      <ChevronRight />
-                    </Button>
-                  </Link>
-                </CardFooter>
-              </Card>
-            ))}
           </div>
         </section>
       )}

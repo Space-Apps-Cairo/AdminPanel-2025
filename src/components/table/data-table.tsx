@@ -1204,9 +1204,14 @@ export default function DataTable<TData extends DataTableRow  >({
             Rows per page
           </Label>
           <Select
-            value={table.getState().pagination.pageSize.toString()}
+            value={backendPagination.pageSize === -1 ? "all" : backendPagination.pageSize.toString()}
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              if (!backendPagination?.onPageSizeChange) return;
+              if (value === "all") {
+                backendPagination.onPageSizeChange(-1);
+              } else {
+                backendPagination.onPageSizeChange(Number(value));
+              }
             }}
             disabled={backendPagination.loading}
           >
@@ -1217,15 +1222,15 @@ export default function DataTable<TData extends DataTableRow  >({
               <SelectValue placeholder="Select number of results" />
             </SelectTrigger>
             <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
-  {[5, 10, 25, 50].map((size) => (
-    <SelectItem key={size} value={size.toString()}>
-      {size}
-    </SelectItem>
-  ))}
-  {/* <SelectItem key="all" value={data.length.toString()}>
-    All
-  </SelectItem> */}
-</SelectContent>
+              {[5, 10, 25, 50].map((size) => (
+                <SelectItem key={size} value={size.toString()}>
+                  {size}
+                </SelectItem>
+              ))}
+              <SelectItem key="all" value="all">
+                All
+              </SelectItem>
+            </SelectContent>
           </Select>
         </div>
 
@@ -1240,14 +1245,16 @@ export default function DataTable<TData extends DataTableRow  >({
                 ? // Backend pagination calculation
                   table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1
                 : // Frontend pagination calculation
-                  table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
+                  table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1
+              }
               -
               {backendPagination.enabled && backendPagination.totalCount
                 ? // Backend pagination calculation
-                  Math.min(
-                    table.getState().pagination.pageIndex * table.getState().pagination.pageSize + table.getState().pagination.pageSize,
-                    backendPagination.totalCount
-                  )
+                  backendPagination.pageSize === -1 ? backendPagination.totalCount :  backendPagination.pageSize
+                  // Math.min(
+                  //   backendPagination.totalCount,
+                  //   // table.getState().pagination.pageIndex * table.getState().pagination.pageSize + table.getState().pagination.pageSize,
+                  // )
                 : // Frontend pagination calculation
                   Math.min(
                     Math.max(
@@ -1255,7 +1262,8 @@ export default function DataTable<TData extends DataTableRow  >({
                       0
                     ),
                     table.getRowCount()
-                  )}
+                  )
+              }
             </span>{" "}
             of{" "}
             <span className="text-foreground">
