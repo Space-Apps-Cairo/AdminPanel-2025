@@ -564,7 +564,7 @@ export default function DataTable<TData extends DataTableRow>({
   const totalCount = backendPagination.enabled
     ? backendPagination.totalCount || 0
     : table.getRowCount();
-  const from = totalCount === 0 ? 0 : currentPageIndex * pageSizeCount + 1;
+  const from = totalCount === 0 ? 0 : currentPageIndex * (pageSizeCount === -1 ? 0 : pageSizeCount) + 1;
   const to =
     pageSizeCount === -1
       ? totalCount
