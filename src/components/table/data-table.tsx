@@ -1204,7 +1204,7 @@ export default function DataTable<TData extends DataTableRow  >({
             Rows per page
           </Label>
           <Select
-            value={backendPagination.pageSize === -1 ? "all" : backendPagination.pageSize.toString()}
+            value={backendPagination.enabled ? (backendPagination.pageSize === -1 ? "all" : backendPagination.pageSize.toString()) : table.getState().pagination.pageSize.toString()}
             onValueChange={(value) => {
               if (!backendPagination?.onPageSizeChange) return;
               if (value === "all") {
