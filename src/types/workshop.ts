@@ -125,5 +125,9 @@ export type WorkshopAttendeesResponse = {
   success: boolean;
   status: number;
   message: string;
+  count?: number
+  per_page?: number
+  total_pages?: number
+  current_page?: number
   data: WorkshopAttendee[];
 };

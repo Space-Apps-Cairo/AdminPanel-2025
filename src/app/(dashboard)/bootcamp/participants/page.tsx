@@ -44,7 +44,13 @@ export default function ParticipantsPage() {
     if (searchTerm) {
       params.append("search", searchTerm);
     }
-    params.append("limit", pageSize.toString());
+
+    if (pageSize === -1) {
+      params.append("limit", "all");
+    } else {
+      params.append("limit", pageSize.toString());
+    }
+
     params.append("page", currentPage.toString());
 
     return params.toString() ? `?${params.toString()}` : "";

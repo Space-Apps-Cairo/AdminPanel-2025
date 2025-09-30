@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useId, useMemo, useState, useEffect } from "react";
-import debounce from 'lodash.debounce';
+import debounce from "lodash.debounce";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -123,10 +123,10 @@ const createStatusFilterFn = <
   };
 };
 
-export default function DataTable<TData extends DataTableRow  >({
+export default function DataTable<TData extends DataTableRow>({
   data,
   columns: baseColumns,
-  
+
   searchConfig = { enabled: false, searchKeys: [] },
   statusConfig = { enabled: false, columnKey: "" },
   actionConfig = { enabled: false },
@@ -141,7 +141,8 @@ export default function DataTable<TData extends DataTableRow  >({
   columnVisibilityConfig,
   enableBulkEmail = false,
   backendPagination = { enabled: false },
-}:DataTableProps<TData>) {
+  emailTemplateType,
+}: DataTableProps<TData>) {
   const id = useId();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -174,12 +175,17 @@ export default function DataTable<TData extends DataTableRow  >({
   const [tempSearchValue, setTempSearchValue] = useState("");
 
   // Add new state for managing multiple filters
-  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>(
+    {}
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Add refs to track previous values
-  const prevPaginationRef = useRef<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const prevPaginationRef = useRef<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const prevGlobalFilterRef = useRef<string>("");
   const prevSortingRef = useRef<SortingState>([]);
   const prevColumnFiltersRef = useRef<ColumnFiltersState>([]);
@@ -202,12 +208,18 @@ export default function DataTable<TData extends DataTableRow  >({
     }
 
     // Handle page size change
-    if (prevPagination.pageSize !== pagination.pageSize && currentBackendPagination.onPageSizeChange) {
+    if (
+      prevPagination.pageSize !== pagination.pageSize &&
+      currentBackendPagination.onPageSizeChange
+    ) {
       currentBackendPagination.onPageSizeChange(pagination.pageSize);
     }
 
     // Handle page index change
-    if (prevPagination.pageIndex !== pagination.pageIndex && currentBackendPagination.onPageChange) {
+    if (
+      prevPagination.pageIndex !== pagination.pageIndex &&
+      currentBackendPagination.onPageChange
+    ) {
       currentBackendPagination.onPageChange(pagination.pageIndex + 1);
     }
 
@@ -217,7 +229,10 @@ export default function DataTable<TData extends DataTableRow  >({
   // Handle backend search changes - modified to use search button
   useEffect(() => {
     const currentBackendPagination = backendPaginationRef.current;
-    if (currentBackendPagination.enabled && currentBackendPagination.onSearchChange) {
+    if (
+      currentBackendPagination.enabled &&
+      currentBackendPagination.onSearchChange
+    ) {
       // Only trigger search when globalFilter changes (not tempSearchValue)
       const prevGlobalFilter = prevGlobalFilterRef.current;
       if (prevGlobalFilter !== globalFilter) {
@@ -230,14 +245,17 @@ export default function DataTable<TData extends DataTableRow  >({
   // Handle backend sorting changes
   useEffect(() => {
     const currentBackendPagination = backendPaginationRef.current;
-    if (currentBackendPagination.enabled && currentBackendPagination.onSortChange) {
+    if (
+      currentBackendPagination.enabled &&
+      currentBackendPagination.onSortChange
+    ) {
       const prevSorting = prevSortingRef.current;
       if (JSON.stringify(prevSorting) !== JSON.stringify(sorting)) {
         if (sorting.length > 0) {
           const sort = sorting[0];
           currentBackendPagination.onSortChange({
             field: sort.id,
-            direction: sort.desc ? 'desc' : 'asc'
+            direction: sort.desc ? "desc" : "asc",
           });
         } else {
           currentBackendPagination.onSortChange(null);
@@ -250,11 +268,14 @@ export default function DataTable<TData extends DataTableRow  >({
   // Handle backend filter changes
   useEffect(() => {
     const currentBackendPagination = backendPaginationRef.current;
-    if (currentBackendPagination.enabled && currentBackendPagination.onFilterChange) {
+    if (
+      currentBackendPagination.enabled &&
+      currentBackendPagination.onFilterChange
+    ) {
       const prevColumnFilters = prevColumnFiltersRef.current;
       if (JSON.stringify(prevColumnFilters) !== JSON.stringify(columnFilters)) {
         const filters: Record<string, unknown> = {};
-        columnFilters.forEach(filter => {
+        columnFilters.forEach((filter) => {
           filters[filter.id] = filter.value;
         });
         currentBackendPagination.onFilterChange(filters);
@@ -265,11 +286,14 @@ export default function DataTable<TData extends DataTableRow  >({
 
   // NEW: Handle custom filter changes for backend
   useEffect(() => {
-    console.log('activeFilters changed:', activeFilters); // Debug log
+    console.log("activeFilters changed:", activeFilters); // Debug log
     const currentBackendPagination = backendPaginationRef.current;
-    if (currentBackendPagination.enabled && currentBackendPagination.onFilterChange) {
+    if (
+      currentBackendPagination.enabled &&
+      currentBackendPagination.onFilterChange
+    ) {
       const prevActiveFilters = prevActiveFiltersRef.current;
-      console.log('prevActiveFilters:', prevActiveFilters); // Debug log
+      console.log("prevActiveFilters:", prevActiveFilters); // Debug log
       if (JSON.stringify(prevActiveFilters) !== JSON.stringify(activeFilters)) {
         // Convert activeFilters to the format expected by backend
         const backendFilters: Record<string, unknown> = {};
@@ -278,7 +302,7 @@ export default function DataTable<TData extends DataTableRow  >({
             backendFilters[queryKey] = values;
           }
         });
-        console.log('Calling onFilterChange with:', backendFilters); // Debug log
+        console.log("Calling onFilterChange with:", backendFilters); // Debug log
         currentBackendPagination.onFilterChange(backendFilters);
       }
     }
@@ -341,19 +365,28 @@ export default function DataTable<TData extends DataTableRow  >({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: backendPagination.enabled ? undefined : getSortedRowModel(),
+    getSortedRowModel: backendPagination.enabled
+      ? undefined
+      : getSortedRowModel(),
     onSortingChange: setSorting,
     enableSortingRemoval: false,
-    getPaginationRowModel: backendPagination.enabled ? undefined : getPaginationRowModel(),
+    getPaginationRowModel: backendPagination.enabled
+      ? undefined
+      : getPaginationRowModel(),
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    getFilteredRowModel: backendPagination.enabled ? undefined : getFilteredRowModel(),
-    getFacetedUniqueValues: backendPagination.enabled ? undefined : getFacetedUniqueValues(),
+    getFilteredRowModel: backendPagination.enabled
+      ? undefined
+      : getFilteredRowModel(),
+    getFacetedUniqueValues: backendPagination.enabled
+      ? undefined
+      : getFacetedUniqueValues(),
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: searchConfig.enabled && !backendPagination.enabled
-      ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
-      : undefined,
+    globalFilterFn:
+      searchConfig.enabled && !backendPagination.enabled
+        ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
+        : undefined,
     enableSorting,
     state: {
       sorting,
@@ -363,29 +396,35 @@ export default function DataTable<TData extends DataTableRow  >({
       globalFilter,
     },
     // Backend pagination configuration
+    // Backend pagination configuration
     manualPagination: backendPagination.enabled,
     manualSorting: backendPagination.enabled,
     manualFiltering: backendPagination.enabled,
-    pageCount: backendPagination.enabled && backendPagination.totalCount 
-      ? Math.ceil(backendPagination.totalCount / pagination.pageSize) 
-      : -1,
+    pageCount:
+      backendPagination.enabled && backendPagination.totalCount != null
+        ? backendPagination.pageSize === -1
+          ? 1
+          : Math.ceil(
+              backendPagination.totalCount /
+                (backendPagination.pageSize ?? pagination.pageSize)
+            )
+        : -1,
   });
 
   const debouncedSearchRef = useRef<ReturnType<typeof debounce> | null>(null);
 
-
   useEffect(() => {
-  const handler = debounce((value: string) => {
-    setGlobalFilter(value);
-    table.setPageIndex(0);
-  }, 500);
+    const handler = debounce((value: string) => {
+      setGlobalFilter(value);
+      table.setPageIndex(0);
+    }, 500);
 
-  debouncedSearchRef.current = handler;
+    debouncedSearchRef.current = handler;
 
-  return () => {
-    handler.cancel(); // ✅ يلغي أي تايمر شغال
-  };
-}, [table]);
+    return () => {
+      handler.cancel(); // ✅ يلغي أي تايمر شغال
+    };
+  }, [table]);
 
   // RTK: templates & send emails
   const {
@@ -398,50 +437,63 @@ export default function DataTable<TData extends DataTableRow  >({
   console.log(isTemplatesError);
   const [sendEmails, { isLoading: isSending }] = useSendEmailsMutation();
 
-  // helper: template options for Select
   const templateOptions = useMemo(() => {
-    return (
-      templatesResp?.data?.map((t: { id: number; title: string; subject: string }) => ({
+    if (!templatesResp?.data) return [];
+
+    return templatesResp.data
+      .filter(
+        (t: {
+          id: number;
+          title: string;
+          subject: string;
+          type?: string | null;
+        }) => {
+          // if type is null => include all
+          if (emailTemplateType == null) return true;
+          return t.type === emailTemplateType;
+        }
+      )
+      .map((t: { id: number; title: string; subject: string }) => ({
         value: String(t.id),
         label: t.title ?? t.subject ?? `Template ${t.id}`,
-      })) ?? []
-    );
-  }, [templatesResp]);
+      }));
+  }, [templatesResp, emailTemplateType]);
 
   //handle Export
   const extractTeamData = (data: any[]) => {
-    return data.map(item => {
-      const onsiteMembersCount = item.members 
-        ? item.members.filter((member: any) => member.participation_type === 1).length
+    return data.map((item) => {
+      const onsiteMembersCount = item.members
+        ? item.members.filter((member: any) => member.participation_type === 1)
+            .length
         : 0;
 
       return {
-        'UUID': item.uuid || 'N/A',
-        'Team Name': item.team_name || 'N/A',
-        'Challenge Name': item.challenge?.title || 'N/A',
-        'Challenge Description': item.challenge?.description || 'N/A',
-        'Team Leader Name': item.team_leader?.name || 'N/A',
-        'Team Leader Email': item.team_leader?.email || 'N/A',
-        'Limited Capacity': item.limited_capacity ? 'Yes' : 'No',
-        'Member Count': item.members_count || 0,
-        'Onsite Members Count': onsiteMembersCount,
-        'Project Proposal': item.project_proposal_url || 'N/A',
-        'Project Video': item.project_video_url || 'N/A',
-        'Team Image': item.team_photo?.url || 'N/A',
-        'Actual Solution': item.actual_solution || 'N/A',
-        'Participation Method': item.participation_method?.title || 'N/A'
+        UUID: item.uuid || "N/A",
+        "Team Name": item.team_name || "N/A",
+        "Challenge Name": item.challenge?.title || "N/A",
+        "Challenge Description": item.challenge?.description || "N/A",
+        "Team Leader Name": item.team_leader?.name || "N/A",
+        "Team Leader Email": item.team_leader?.email || "N/A",
+        "Limited Capacity": item.limited_capacity ? "Yes" : "No",
+        "Member Count": item.members_count || 0,
+        "Onsite Members Count": onsiteMembersCount,
+        "Project Proposal": item.project_proposal_url || "N/A",
+        "Project Video": item.project_video_url || "N/A",
+        "Team Image": item.team_photo?.url || "N/A",
+        "Actual Solution": item.actual_solution || "N/A",
+        "Participation Method": item.participation_method?.title || "N/A",
       };
     });
   };
   // استخدامها في دالة التصدير
   const handleExport = (type: string) => {
-    const exportData = backendPagination.enabled 
+    const exportData = backendPagination.enabled
       ? data
       : table.getFilteredRowModel().rows.map((r) => r.original);
-    
+
     // استخراج البيانات المطلوبة فقط
     const filteredData = extractTeamData(exportData);
-    
+
     if (type === "excel") exportToExcel(filteredData);
     else if (type === "pdf") exportToPDF(filteredData);
     else if (type === "csv") exportToCSV(filteredData);
@@ -503,27 +555,56 @@ export default function DataTable<TData extends DataTableRow  >({
   // };
 
   // Update the filter handling logic
-  const handleFilterChange = (filterKey: string, checked: boolean, value: string) => {
-    console.log('handleFilterChange called:', { filterKey, checked, value }); // Debug log
-    setActiveFilters(prev => {
+
+
+  const currentPageIndex = table.getState().pagination.pageIndex;
+  const pageSizeCount = backendPagination.enabled
+    ? (backendPagination.pageSize || 10)
+    : table.getState().pagination.pageSize;
+  const totalCount = backendPagination.enabled
+    ? backendPagination.totalCount || 0
+    : table.getRowCount();
+  const from = totalCount === 0 ? 0 : currentPageIndex * pageSizeCount + 1;
+  const to =
+    pageSizeCount === -1
+      ? totalCount
+      : Math.min(totalCount, (currentPageIndex + 1) * pageSizeCount);
+
+  const isFirstPage = currentPageIndex === 0;
+  const totalPages =
+    pageSizeCount === -1
+      ? 1
+      : totalCount === 0
+      ? 0
+      : Math.ceil(totalCount / pageSizeCount);
+  const isLastPage = totalPages === 0 ? true : currentPageIndex >= totalPages - 1;
+
+
+  const handleFilterChange = (
+    filterKey: string,
+    checked: boolean,
+    value: string
+  ) => {
+    console.log("handleFilterChange called:", { filterKey, checked, value }); // Debug log
+    setActiveFilters((prev) => {
       const updated = { ...prev };
-      
+
       if (checked) {
         // If checking, set only this value (remove any other values for this filter)
         updated[filterKey] = [value];
       } else {
         // If unchecking, remove this value
         const currentValues = prev[filterKey] || [];
-        const newValues = currentValues.filter(v => v !== value);
-        
+        const newValues = currentValues.filter((v) => v !== value);
+
         if (newValues.length === 0) {
           delete updated[filterKey];
         } else {
           updated[filterKey] = newValues;
         }
       }
-      
-      console.log('Updated activeFilters:', updated); // Debug log
+
+      console.log("Updated activeFilters:", updated); // Debug log
       return updated;
     });
   };
@@ -618,9 +699,15 @@ export default function DataTable<TData extends DataTableRow  >({
                   ref={inputRef}
                   className={cn(
                     "peer min-w-60 ps-9",
-                    Boolean(backendPagination.enabled ? tempSearchValue : globalFilter) && "pe-9"
+                    Boolean(
+                      backendPagination.enabled ? tempSearchValue : globalFilter
+                    ) && "pe-9"
                   )}
-                  value={backendPagination.enabled ? tempSearchValue : (globalFilter ?? "")}
+                  value={
+                    backendPagination.enabled
+                      ? tempSearchValue
+                      : globalFilter ?? ""
+                  }
                   onChange={(e) => {
                     const value = e.target.value;
                     if (backendPagination.enabled) {
@@ -635,12 +722,18 @@ export default function DataTable<TData extends DataTableRow  >({
                   type="text"
                   aria-label={searchConfig.placeholder || "Search"}
                   disabled={backendPagination.loading}
-                  autoFocus={!!(backendPagination.enabled ? tempSearchValue : globalFilter)}
+                  autoFocus={
+                    !!(backendPagination.enabled
+                      ? tempSearchValue
+                      : globalFilter)
+                  }
                 />
                 <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
                   <ListFilterIcon size={16} aria-hidden="true" />
                 </div>
-                {Boolean(backendPagination.enabled ? tempSearchValue : globalFilter) && (
+                {Boolean(
+                  backendPagination.enabled ? tempSearchValue : globalFilter
+                ) && (
                   <button
                     className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                     aria-label="Clear search"
@@ -661,7 +754,7 @@ export default function DataTable<TData extends DataTableRow  >({
                   </button>
                 )}
               </div>
-              
+
               {/* Search button for backend pagination */}
               {/* {backendPagination.enabled && (
                 <Button
@@ -678,12 +771,14 @@ export default function DataTable<TData extends DataTableRow  >({
           )}
 
           <div className="flex flex-wrap items-center gap-3">
-
             {/* Status filter */}
             {statusConfig.enabled && statusConfig.filterOptions && (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" disabled={backendPagination.loading}>
+                  <Button
+                    variant="outline"
+                    disabled={backendPagination.loading}
+                  >
                     <FilterIcon className="-ms-1 opacity-60" size={16} />
                     <p className="opacity-60">Filters</p>
                     {Object.values(activeFilters).flat().length > 0 && (
@@ -696,18 +791,32 @@ export default function DataTable<TData extends DataTableRow  >({
                 <PopoverContent className="w-auto min-w-64 p-3" align="start">
                   <div className="space-y-4">
                     {statusConfig.filterOptions.map((filterOption, index) => (
-                      <div key={`${filterOption.queryKey}-${index}`} className="space-y-2">
+                      <div
+                        key={`${filterOption.queryKey}-${index}`}
+                        className="space-y-2"
+                      >
                         <div className="text-xs font-medium text-muted-foreground">
                           {filterOption.title || filterOption.queryKey}
                         </div>
                         <div className="space-y-2">
                           {filterOption.options.map((option) => (
-                            <div key={option.id} className="flex items-center gap-2">
+                            <div
+                              key={option.id}
+                              className="flex items-center gap-2"
+                            >
                               <Checkbox
                                 id={`${id}-${filterOption.queryKey}-${option.id}`}
-                                checked={activeFilters[filterOption?.queryKey ?? '']?.includes(option.id.toString()) || false}
+                                checked={
+                                  activeFilters[
+                                    filterOption?.queryKey ?? ""
+                                  ]?.includes(option.id.toString()) || false
+                                }
                                 onCheckedChange={(checked: boolean) =>
-                                  handleFilterChange(filterOption.queryKey ?? '', checked, option.id.toString())
+                                  handleFilterChange(
+                                    filterOption.queryKey ?? "",
+                                    checked,
+                                    option.id.toString()
+                                  )
                                 }
                               />
                               <Label
@@ -719,7 +828,8 @@ export default function DataTable<TData extends DataTableRow  >({
                             </div>
                           ))}
                         </div>
-                        {index < (statusConfig.filterOptions?.length ?? 0) - 1 && (
+                        {index <
+                          (statusConfig.filterOptions?.length ?? 0) - 1 && (
                           <div className="border-t mt-4 border-border/50" />
                         )}
                       </div>
@@ -733,7 +843,10 @@ export default function DataTable<TData extends DataTableRow  >({
             {columnVisibilityConfig?.enableColumnVisibility && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" disabled={backendPagination.loading}>
+                  <Button
+                    variant="outline"
+                    disabled={backendPagination.loading}
+                  >
                     <Columns3Icon className="-ms-1 opacity-60" size={16} />
                     View
                   </Button>
@@ -761,15 +874,12 @@ export default function DataTable<TData extends DataTableRow  >({
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-
           </div>
-
         </div>
 
         {/* Actions */}
         {actionConfig.enabled && (
           <div className="flex items-center gap-3">
-
             {/* Delete button */}
 
             {enableSelection &&
@@ -778,7 +888,11 @@ export default function DataTable<TData extends DataTableRow  >({
               table.getSelectedRowModel().rows.length > 0 && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button className="ml-auto" variant="outline" disabled={backendPagination.loading}>
+                    <Button
+                      className="ml-auto"
+                      variant="outline"
+                      disabled={backendPagination.loading}
+                    >
                       <TrashIcon className="-ms-1 opacity-60" size={16} />
                       Delete
                       <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
@@ -889,7 +1003,11 @@ export default function DataTable<TData extends DataTableRow  >({
                       onOpenChange={setBulkDialogOpen}
                     >
                       <AlertDialogTrigger asChild>
-                        <Button variant="outline" className="ml-2" disabled={backendPagination.loading}>
+                        <Button
+                          variant="outline"
+                          className="ml-2"
+                          disabled={backendPagination.loading}
+                        >
                           <MailIcon className="-ms-1 opacity-60" size={16} />
                           Send ({table.getSelectedRowModel().rows.length})
                         </Button>
@@ -954,7 +1072,10 @@ export default function DataTable<TData extends DataTableRow  >({
               {actionConfig?.showExport && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" disabled={backendPagination.loading}>
+                    <Button
+                      variant="outline"
+                      disabled={backendPagination.loading}
+                    >
                       Export
                       <ChevronDownIcon className="ml-2 h-4 w-4" />
                     </Button>
@@ -1117,7 +1238,11 @@ export default function DataTable<TData extends DataTableRow  >({
                       colSpan={columns.length}
                       className="m-auto h-24 text-center"
                     >
-                      {backendPagination.loading ? <Loading className="w-full !top-[93px] h-24 flex items-center justify-center" /> : "No results."}
+                      {backendPagination.loading ? (
+                        <Loading className="w-full !top-[93px] h-24 flex items-center justify-center" />
+                      ) : (
+                        "No results."
+                      )}
                     </TableCell>
                   </TableRow>
                 )}
@@ -1204,8 +1329,25 @@ export default function DataTable<TData extends DataTableRow  >({
             Rows per page
           </Label>
           <Select
-            value={backendPagination.enabled ? (backendPagination.pageSize === -1 ? "all" : backendPagination.pageSize.toString()) : table.getState().pagination.pageSize.toString()}
+            value={
+              backendPagination.enabled && backendPagination.pageSize != null
+                ? backendPagination.pageSize === -1
+                  ? "all"
+                  : backendPagination.pageSize.toString()
+                : table.getState().pagination.pageSize === table.getRowCount()
+                ? "all"
+                : table.getState().pagination.pageSize.toString()
+            }
             onValueChange={(value) => {
+              if (!backendPagination.enabled) {
+                if (value === "all") {
+                  table.setPageIndex(0);
+                  table.setPageSize(table.getRowCount());
+                } else {
+                  table.setPageSize(Number(value));
+                }
+                return;
+              }
               if (!backendPagination?.onPageSizeChange) return;
               if (value === "all") {
                 backendPagination.onPageSizeChange(-1);
@@ -1213,7 +1355,7 @@ export default function DataTable<TData extends DataTableRow  >({
                 backendPagination.onPageSizeChange(Number(value));
               }
             }}
-            disabled={backendPagination.loading}
+            disabled={backendPagination.enabled ? backendPagination.loading : false}
           >
             <SelectTrigger
               id={`${id}-pagesize`}
@@ -1236,41 +1378,12 @@ export default function DataTable<TData extends DataTableRow  >({
 
         {/* Page number information */}
         <div className="text-muted-foreground flex grow justify-end text-sm whitespace-nowrap">
-          <p
-            className="text-muted-foreground text-sm whitespace-nowrap"
-            aria-live="polite"
-          >
+          <p className="text-muted-foreground text-sm whitespace-nowrap" aria-live="polite">
             <span className="text-foreground">
-              {backendPagination.enabled && backendPagination.totalCount
-                ? // Backend pagination calculation
-                  table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1
-                : // Frontend pagination calculation
-                  table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1
-              }
-              -
-              {backendPagination.enabled && backendPagination.totalCount
-                ? // Backend pagination calculation
-                  backendPagination.pageSize === -1 ? backendPagination.totalCount :  backendPagination.pageSize
-                  // Math.min(
-                  //   backendPagination.totalCount,
-                  //   // table.getState().pagination.pageIndex * table.getState().pagination.pageSize + table.getState().pagination.pageSize,
-                  // )
-                : // Frontend pagination calculation
-                  Math.min(
-                    Math.max(
-                      table.getState().pagination.pageIndex * table.getState().pagination.pageSize + table.getState().pagination.pageSize,
-                      0
-                    ),
-                    table.getRowCount()
-                  )
-              }
+              {from} - {to}
             </span>{" "}
             of{" "}
-            <span className="text-foreground">
-              {backendPagination.enabled && backendPagination.totalCount
-                ? backendPagination.totalCount.toString()
-                : table.getRowCount().toString()}
-            </span>
+            <span className="text-foreground">{totalCount}</span>
           </p>
         </div>
 
@@ -1283,8 +1396,14 @@ export default function DataTable<TData extends DataTableRow  >({
                   size="icon"
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
-                  onClick={() => table.firstPage()}
-                  disabled={!table.getCanPreviousPage() || backendPagination.loading}
+                  disabled={isFirstPage || backendPagination.loading}
+                  onClick={() => {
+                    if (backendPagination.enabled && backendPagination.onPageChange) {
+                      backendPagination.onPageChange(0);
+                    } else {
+                      table.setPageIndex(0);
+                    }
+                  }}
                   aria-label="Go to first page"
                 >
                   <ChevronFirstIcon size={16} aria-hidden="true" />
@@ -1296,7 +1415,7 @@ export default function DataTable<TData extends DataTableRow  >({
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage() || backendPagination.loading}
+                  disabled={isFirstPage || backendPagination.loading}
                   aria-label="Go to previous page"
                 >
                   <ChevronLeftIcon size={16} aria-hidden="true" />
@@ -1308,7 +1427,7 @@ export default function DataTable<TData extends DataTableRow  >({
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage() || backendPagination.loading}
+                  disabled={isLastPage || backendPagination.loading}
                   aria-label="Go to next page"
                 >
                   <ChevronRightIcon size={16} aria-hidden="true" />
@@ -1319,8 +1438,12 @@ export default function DataTable<TData extends DataTableRow  >({
                   size="icon"
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
-                  onClick={() => table.lastPage()}
-                  disabled={!table.getCanNextPage() || backendPagination.loading}
+                  onClick={() => {
+                    if (totalPages > 0) {
+                      table.setPageIndex(totalPages - 1);
+                    }
+                  }}
+                  disabled={isLastPage || backendPagination.loading}
                   aria-label="Go to last page"
                 >
                   <ChevronLastIcon size={16} aria-hidden="true" />

@@ -126,12 +126,11 @@ export default function ScanQrCodePage() {
 
   return (
     <div className="space-y-6 py-8 px-8">
-      <h1 className="text-3xl font-bold mb-8">Scan QR Code</h1>
+      <h1 className="text-3xl font-bold mb-8">Bootcmap & Workshops Scan QR</h1>
 
       {/* Bootcamp Section - Only for Admin, Logistics, Registration */}
       {shouldFetchBootcamps && bootcampsData && (
         <section>
-          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Bootcamp</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Bootcamp Card */}
             {bootcampsData?.data.map((bootcamp, idx) => (
@@ -164,38 +163,31 @@ export default function ScanQrCodePage() {
                 </CardFooter>
               </Card>
             ))}
-          </div>
-        </section>
-      )}
-
-      {/* Workshops Section - Only for Admin, Logistics, Registration */}
-      {shouldShowWorkshops && (
-        <section>
-          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Workshops</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Workshop Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Workshop</CardTitle>
-                <CardDescription>
-                  Scan QR code for workshop attendance
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>
-                  Click the button to start scanning participant QR codes for the
-                  workshops.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  onClick={() => openScanner({ type: "workshop" })}
-                >
-                  <QrCode className="mr-2 h-4 w-4" /> Scan
-                </Button>
-              </CardFooter>
-            </Card>
+            {shouldShowWorkshops && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Workshop</CardTitle>
+                  <CardDescription>
+                    Scan QR code for workshop attendance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Click the button to start scanning participant QR codes for the
+                    workshops.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    className="w-full"
+                    onClick={() => openScanner({ type: "workshop" })}
+                  >
+                    <QrCode className="mr-2 h-4 w-4" /> Scan
+                  </Button>
+                </CardFooter>
+              </Card>
+            )}
           </div>
         </section>
       )}

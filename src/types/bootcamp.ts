@@ -60,6 +60,10 @@ export interface BootcampAttendeesResponse {
   success: boolean;
   message: string;
   status: number;
+  count?: number
+  per_page?: number
+  total_pages?: number
+  current_page?: number
   data: BootcampAttendee[];
 }
 

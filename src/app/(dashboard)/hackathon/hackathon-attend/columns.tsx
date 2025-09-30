@@ -1,16 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { Member } from "@/types/hackthon/member";
 
-export type AttendedMember = {
-  id: number;
-  uuid: string;
-  national: string;
-  name: string;
-  email: string;
-  phone_number: string;
-};
-export const attendedMembersColumns: ColumnDef<AttendedMember>[] = [
+export const attendedMembersColumns: ColumnDef<Member>[] = [
   { header: "ID", accessorKey: "id", size: 80 },
-  { header: "UUID", accessorKey: "uuid", size: 120 },
   { header: "National ID", accessorKey: "national", size: 180 },
   { header: "Name", accessorKey: "name", size: 180 },
   { header: "Email", accessorKey: "email", size: 220 },

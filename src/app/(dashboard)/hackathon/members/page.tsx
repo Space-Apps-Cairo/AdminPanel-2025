@@ -1,10 +1,8 @@
 "use client";
 
-import Loading from "@/components/loading/loading";
 import DataTable from "@/components/table/data-table";
 import {
   useGetMembersQuery,
-  useDeleteMemberMutation,
 } from "@/service/Api/hackathon/member";
 import { Member } from "@/types/hackthon/member";
 import {
@@ -15,7 +13,6 @@ import {
 } from "@/types/table";
 import React, { useCallback, useState } from "react";
 import { memberColumns } from "./_components/columns";
-import { toast } from "sonner";
 import Error from "@/components/Error/page";
 
 export default function MembersPage() {
@@ -32,7 +29,12 @@ export default function MembersPage() {
       params.append("search", searchTerm);
     }
 
-    params.append("limit", pageSize.toString());
+    if (pageSize === -1) {
+      params.append("limit", "all");
+    } else {
+      params.append("limit", pageSize.toString());
+    }
+
     params.append("page", currentPage.toString());
 
     return params.toString() ? `?${params.toString()}` : "";
@@ -45,7 +47,6 @@ export default function MembersPage() {
   } = useGetMembersQuery(buildQueryString());
 
   // Delete mutation for bulk operations
-  const [deleteMember] = useDeleteMemberMutation();
 
   const searchConfig: SearchConfig = {
     enabled: true,
@@ -88,12 +89,9 @@ export default function MembersPage() {
     },
     loading: isLoadingMembers,
   };
-  if (isLoadingMembers) return <Loading />;
 
   if (membersError) {
-    return (
-      <Error />
-    );
+    return <Error />;
   }
 
   return (
@@ -109,11 +107,7 @@ export default function MembersPage() {
         enableBulkEmail={true}
         columnVisibilityConfig={columnVisibilityConfig}
         backendPagination={backendPagination}
-        // bulkDeleteMutation={(ids: number[]) =>
-        //   Promise.all(ids.map((id) => deleteMember(id).unwrap()))
-        //     .then(() => toast.success("Members deleted successfully!"))
-        //     .catch(() => toast.error("Failed to delete selected members."))
-        // }
+        emailTemplateType="members"
       />
     </div>
   );

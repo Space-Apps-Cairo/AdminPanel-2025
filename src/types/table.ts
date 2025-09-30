@@ -57,11 +57,13 @@ export interface ColumnVisibilityConfig {
 export interface BackendPaginationConfig {
   enabled: boolean;
   totalCount?: number;
-  pageSize: number
+  pageSize?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
   onSearchChange?: (query: string) => void;
-  onSortChange?: (sort: { field: string; direction: 'asc' | 'desc' } | null) => void;
+  onSortChange?: (
+    sort: { field: string; direction: "asc" | "desc" } | null
+  ) => void;
   onFilterChange?: (filters: Record<string, unknown>) => void;
   loading?: boolean;
 }
@@ -77,7 +79,9 @@ export interface DataTableProps<TData extends DataTableRow> {
   onDeleteRows?: (data: TData[]) => void;
   enableBulkEmail?: boolean;
   // Single delete mutation hook for bulk operations
-  bulkDeleteMutation?: (id: string | number) => { unwrap: () => Promise<unknown> };
+  bulkDeleteMutation?: (id: string | number) => {
+    unwrap: () => Promise<unknown>;
+  };
   error?: string;
   pageSize?: number;
   columnVisibilityConfig?: ColumnVisibilityConfig;
@@ -87,4 +91,5 @@ export interface DataTableProps<TData extends DataTableRow> {
   allowTrigger?: boolean;
   // Backend pagination configuration
   backendPagination?: BackendPaginationConfig;
+  emailTemplateType?: "members" | "teams" | "participants";
 }

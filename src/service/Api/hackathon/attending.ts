@@ -16,9 +16,8 @@ endpoints:(builder)=>({
 }),
 
 //Hackthon Attendees
-  getMembers: builder.query<Member[], void>({
-       query: () => "/hackathon-attended-members",
-       transformResponse: (response: MembersResponse) => response.data ?? [],
+  getMembers: builder.query<MembersResponse, string>({
+       query: (queryString) => `/hackathon-attended-members${queryString}`,
        providesTags: ["HackathonAttend"],
      }),
  //hackathon-pending-members
