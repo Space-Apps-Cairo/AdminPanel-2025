@@ -243,25 +243,8 @@ export default function DataTable<TData extends DataTableRow>({
   }, [globalFilter]);
 
   // Handle backend sorting changes
+  // Disabled: we want client-side sorting only
   useEffect(() => {
-    const currentBackendPagination = backendPaginationRef.current;
-    if (
-      currentBackendPagination.enabled &&
-      currentBackendPagination.onSortChange
-    ) {
-      const prevSorting = prevSortingRef.current;
-      if (JSON.stringify(prevSorting) !== JSON.stringify(sorting)) {
-        if (sorting.length > 0) {
-          const sort = sorting[0];
-          currentBackendPagination.onSortChange({
-            field: sort.id,
-            direction: sort.desc ? "desc" : "asc",
-          });
-        } else {
-          currentBackendPagination.onSortChange(null);
-        }
-      }
-    }
     prevSortingRef.current = sorting;
   }, [sorting]);
 
@@ -361,55 +344,52 @@ export default function DataTable<TData extends DataTableRow>({
     return cols;
   }, [baseColumns, enableSelection, statusConfig]);
 
-  const table = useReactTable<TData>({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: backendPagination.enabled
-      ? undefined
-      : getSortedRowModel(),
-    onSortingChange: setSorting,
-    enableSortingRemoval: false,
-    getPaginationRowModel: backendPagination.enabled
-      ? undefined
-      : getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getFilteredRowModel: backendPagination.enabled
-      ? undefined
-      : getFilteredRowModel(),
-    getFacetedUniqueValues: backendPagination.enabled
-      ? undefined
-      : getFacetedUniqueValues(),
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn:
-      searchConfig.enabled && !backendPagination.enabled
-        ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
-        : undefined,
-    enableSorting,
-    state: {
-      sorting,
-      pagination,
-      columnFilters,
-      columnVisibility,
-      globalFilter,
-    },
-    // Backend pagination configuration
-    // Backend pagination configuration
-    manualPagination: backendPagination.enabled,
-    manualSorting: backendPagination.enabled,
-    manualFiltering: backendPagination.enabled,
-    pageCount:
-      backendPagination.enabled && backendPagination.totalCount != null
-        ? backendPagination.pageSize === -1
-          ? 1
-          : Math.ceil(
-              backendPagination.totalCount /
-                (backendPagination.pageSize ?? pagination.pageSize)
-            )
-        : -1,
-  });
+    const table = useReactTable<TData>({
+      data,
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+      onSortingChange: setSorting,
+      enableSortingRemoval: false,
+      getPaginationRowModel: backendPagination.enabled
+        ? undefined
+        : getPaginationRowModel(),
+      onPaginationChange: setPagination,
+      onColumnFiltersChange: setColumnFilters,
+      onColumnVisibilityChange: setColumnVisibility,
+      getFilteredRowModel: backendPagination.enabled
+        ? undefined
+        : getFilteredRowModel(),
+      getFacetedUniqueValues: backendPagination.enabled
+        ? undefined
+        : getFacetedUniqueValues(),
+      onGlobalFilterChange: setGlobalFilter,
+      globalFilterFn:
+        searchConfig.enabled && !backendPagination.enabled
+          ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
+          : undefined,
+      enableSorting,
+      state: {
+        sorting,
+        pagination,
+        columnFilters,
+        columnVisibility,
+        globalFilter,
+      },
+      // Backend pagination configuration
+      manualPagination: backendPagination.enabled,
+      manualSorting: false,
+      manualFiltering: backendPagination.enabled,
+      pageCount:
+        backendPagination.enabled && backendPagination.totalCount != null
+          ? backendPagination.pageSize === -1
+            ? 1
+            : Math.ceil(
+                backendPagination.totalCount /
+                  (backendPagination.pageSize ?? pagination.pageSize)
+              )
+          : -1,
+    });
 
   const debouncedSearchRef = useRef<ReturnType<typeof debounce> | null>(null);
 

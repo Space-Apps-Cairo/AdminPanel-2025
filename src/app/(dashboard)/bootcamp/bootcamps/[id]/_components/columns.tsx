@@ -21,24 +21,6 @@ export const bootcampAttendeesColumns: ColumnDef<BootcampAttendee>[] = [
         size: 150,
     },
     {
-        header: "Category",
-        accessorKey: "category",
-        size: 100,
-    },
-    {
-        accessorKey: "attendance_status",
-        header: "Status",
-        cell: ({ row }) => (
-            <Badge 
-                variant={row.getValue("attendance_status") === "attended" ? "outline" : "default"} 
-                className="py-1 px-2"
-            >
-                {row.getValue("attendance_status")}
-            </Badge>
-        ),
-        size: 120,
-    },
-    {
         accessorKey: "check_in_time_date",
         header: "Check-In Date",
         cell: ({ row }) => {
