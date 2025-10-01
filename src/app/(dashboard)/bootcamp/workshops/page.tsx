@@ -2,11 +2,7 @@
 
 import { Workshop } from "@/types/workshop";
 import React, { useEffect, useState } from "react";
-import {
-  ActionConfig,
-  SearchConfig,
-  StatusConfig,
-} from "@/types/table";
+import { ActionConfig, SearchConfig, StatusConfig } from "@/types/table";
 import DataTable from "../../../../components/table/data-table";
 import { getWorkshopsFields, workshopColumns } from "./_components/columns";
 import Loading from "../../../../components/loading/loading";
@@ -27,24 +23,24 @@ import QrScanner from "@/components/scanner/QrScanner";
 // Helper function to convert array of strings to HTML
 const descriptionArrayToHtml = (descriptionArray: string[]): string => {
   if (!Array.isArray(descriptionArray) || descriptionArray.length === 0) {
-    return '';
+    return "";
   }
-  
+
   const listItems = descriptionArray
-    .filter(item => item && item.trim())
-    .map(item => {
+    .filter((item) => item && item.trim())
+    .map((item) => {
       // Escape HTML entities
       const escapedItem = item
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-      
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
       return `<li style="margin-bottom:8px;">${escapedItem}</li>`;
     })
-    .join('');
-  
+    .join("");
+
   return `<ul style="margin:10px 0 10px 20px;padding:0;font-size:15px;color:#333;line-height:1.6;">${listItems}</ul>`;
 };
 
@@ -78,9 +74,7 @@ export default function Workshops() {
       }
     } catch (error: any) {
       console.error("Check-in error:", error);
-      toast.error(
-        error?.data?.message || "An error occurred during check-in"
-      );
+      toast.error(error?.data?.message || "An error occurred during check-in");
     }
   };
 
@@ -98,7 +92,7 @@ export default function Workshops() {
     enabled: true,
     showAdd: true,
     showDelete: true,
-      showExport: true,
+    showExport: true,
     addButtonText: "Add workshop",
     onAdd: () => {
       setIsOpen(true);
@@ -137,7 +131,6 @@ export default function Workshops() {
       const result = await addWorkshop(workshopData as Workshop).unwrap();
 
       toast.success(result.message || "Workshop created successfully");
-
     } catch (error) {
       const err = error as any;
       toast.error("Failed to add workshop. Please try again.", {
@@ -160,20 +153,15 @@ export default function Workshops() {
   return (
     <React.Fragment>
       <div className="mx-auto py-6 flex flex-col gap-6 px-7">
-
-        <div className='w-full flex flex-wrap item-center justify-between'>
-
+        <div className="w-full flex flex-wrap item-center justify-between">
           <h1 className="text-2xl font-bold mb-6">Workshops</h1>
 
           <div className="flex items-center gap-2">
-
             <Button onClick={() => setShowScanner(true)}>
-                <QrCode size={16} />
-                Check Attendees
+              <QrCode size={16} />
+              Check Attendees
             </Button>
-
           </div>
-
         </div>
 
         <DataTable<Workshop>
@@ -208,7 +196,9 @@ export default function Workshops() {
               } catch (err: unknown) {
                 const apiErr = err as { data?: { message?: string } };
                 toast.error("Scan error", {
-                  description: apiErr?.data?.message || "An error occurred while checking in the participant.",
+                  description:
+                    apiErr?.data?.message ||
+                    "An error occurred while checking in the participant.",
                 });
               }
             }}
