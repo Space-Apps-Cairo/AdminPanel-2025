@@ -67,11 +67,18 @@ export default function ParticipationMethods() {
   };
 
   if (isLoadingMethods) return <Loading />;
-  if (methodsError) return <Error />;
+  if (methodsError) {
+  const status = (methodsError as any)?.status || 500;
+  const message =
+    (methodsError as any)?.data?.message ||
+    "Failed to fetch participation methods. Please try again.";
+  return <Error status={status} message={message} />;
+}
+
 
   return (
     <React.Fragment>
-      {isOpen && (
+      {/* {isOpen && (
         <CrudForm
           fields={getParticipationMethodFields()}
           isOpen={isOpen}
@@ -93,7 +100,7 @@ export default function ParticipationMethods() {
           statusConfig={statusConfig}
           actionConfig={actionConfig}
         />
-      </div>
+      </div> */}<Error/>
     </React.Fragment>
   );
 }

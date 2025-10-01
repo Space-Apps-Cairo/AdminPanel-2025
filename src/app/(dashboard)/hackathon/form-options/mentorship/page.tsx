@@ -66,11 +66,17 @@ export default function Mentorships() {
   };
 
   if (isLoadingMentorship) return <Loading />;
-  if (mentorshipError) return <Error />;
+  if (mentorshipError) {
+  const status = (mentorshipError as any)?.status || 500;
+  const message =
+    (mentorshipError as any)?.data?.message ||
+    "Failed to fetch mentorships. Please try again.";
+  return <Error status={status} message={message} />;
+}
 
   return (
     <React.Fragment>
-      {isOpen && (
+      {/* {isOpen && (
         <CrudForm
           fields={getMentorshipFields()}
           isOpen={isOpen}
@@ -92,7 +98,7 @@ export default function Mentorships() {
           statusConfig={statusConfig}
           actionConfig={actionConfig}
         />
-      </div>
+      </div> */}<Error/>
     </React.Fragment>
   );
 }

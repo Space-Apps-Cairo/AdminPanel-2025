@@ -67,14 +67,23 @@ export default function StudyLevels() {
     }
   };
 
-  if (isLoadingStudyLevels) return <Loading />;
-  if (studyLevelsError) {
-    return <Error />;
-  }
+if (isLoadingStudyLevels) return <Loading />;
+
+if (studyLevelsError) {
+  const status = (studyLevelsError as any)?.status || 500;
+  const message =
+    (studyLevelsError as any)?.data?.message ||
+    "Failed to fetch study levels. Please try again.";
+
+  return <Error status={status} message={message} />;
+}
+
+
+
 
   return (
     <React.Fragment>
-      {isOpen && (
+      {/* {isOpen && (
         <CrudForm
           fields={getStudyLevelFields()}
           isOpen={isOpen}
@@ -97,7 +106,9 @@ export default function StudyLevels() {
           actionConfig={actionConfig}
           bulkDeleteMutation={deleteStudyLevel}
         />
-      </div>
+      </div> */
+      }
+      <Error/>
     </React.Fragment>
   );
 }

@@ -65,13 +65,20 @@ export default function Tshirts() {
   };
 
   if (isLoadingTshirts) return <Loading />;
-  if (tshirtsError) {
-    return <Error />;
-  }
+
+if (tshirtsError) {
+  const status = (tshirtsError as any)?.status || 500;
+  const message =
+    (tshirtsError as any)?.data?.message ||
+    "Failed to fetch T-shirt sizes. Please try again.";
+
+  return <Error status={status} message={message} />;
+}
+
 
   return (
     <React.Fragment>
-      {isOpen && (
+      {/* {isOpen && (
         <CrudForm
           fields={getTShirtFields()}
           isOpen={isOpen}
@@ -93,7 +100,8 @@ export default function Tshirts() {
           statusConfig={statusConfig}
           actionConfig={actionConfig}
         />
-      </div>
+      </div> */}
+      <Error/>
     </React.Fragment>
   );
 }
