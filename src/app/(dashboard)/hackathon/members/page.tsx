@@ -74,7 +74,7 @@ export default function MembersPage() {
     enabled: true,
     currentPage: membersData?.current_page || 1,
     totalPages: membersData?.total_pages || 1,
-    pageSize: Number(membersData?.per_page) || 10,
+    pageSize: pageSize,
     totalCount: membersData?.count || 0,
     onPageChange: (page: number) => {
       setCurrentPage(page);

@@ -11,7 +11,6 @@ import {
   getParticipantsFields,
   participantColumns,
 } from "./_components/coulmns";
-import Loading from "../../../../components/loading/loading";
 import CrudForm from "../../../../components/crud-form";
 import {
   ParticipantFormValues,
@@ -156,7 +155,7 @@ export default function ParticipantsPage() {
     enabled: true,
     currentPage: participantsData?.current_page || 1,
     totalPages: participantsData?.total_pages || 1,
-    pageSize: Number(participantsData?.per_page) || 10,
+    pageSize: pageSize,
     totalCount: participantsData?.count || 0,
     onPageChange: (page: number) => {
       setCurrentPage(page);

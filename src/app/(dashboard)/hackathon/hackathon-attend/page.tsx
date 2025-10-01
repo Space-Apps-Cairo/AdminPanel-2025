@@ -57,7 +57,7 @@ export default function AttendedMembersPage() {
     enabled: true,
     currentPage: data?.current_page || 1,
     totalPages: data?.total_pages || 1,
-    pageSize: Number(data?.per_page) || 10,
+    pageSize: pageSize,
     totalCount: data?.count || 0,
     onPageChange: (page: number) => {
       setCurrentPage(page);

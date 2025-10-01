@@ -8,22 +8,33 @@ import {
 import {
   useGetEmailTemplatesQuery,
   useSendEmailsMutation,
-  useSendTestEmailMutation,
+  // useSendTestEmailMutation,
 } from "@/service/Api/emails/templates";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { UserPlus } from "lucide-react";
 
 import { Member } from "@/types/hackthon/member";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import { Eye } from "lucide-react";
 import { memberSchema } from "@/validations/hackthon/member";
 import { Field, FieldOption } from "@/app/interface";
 import { sendEmailSchema } from "@/validations/emails/templates";
 import CrudForm from "@/components/crud-form";
 import { useState } from "react";
+import { useRegisterHackathonMemberMutation } from "@/service/Api/hackathon/attending";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 
 export const memberColumns: ColumnDef<Member>[] = [
@@ -55,24 +66,6 @@ export const memberColumns: ColumnDef<Member>[] = [
     accessorKey: "phone_number",
     size: 180,
   },
-  // {
-  //   header: "Age",
-  //   accessorKey: "age",
-  //   size: 80,
-  // },
-  // {
-  //   header: "New?",
-  //   accessorKey: "is_new",
-  //   size: 100,
-  //   cell: ({ row }) => (
-  //     <Badge
-  //       variant={row.original.is_new ? "default" : "secondary"}
-  //       className="capitalize px-2.5 py-1"
-  //     >
-  //       {row.original.is_new ? "Yes" : "No"}
-  //     </Badge>
-  //   ),
-  // },
   {
     header: "Role",
     accessorKey: "member_role",
@@ -88,31 +81,6 @@ export const memberColumns: ColumnDef<Member>[] = [
       </Badge>
     ),
   },
-  // {
-  //   header: "Participation",
-  //   accessorKey: "participation_type",
-  //   size: 150,
-  //   cell: ({ row }) => (
-  //     <Badge
-  //       variant={
-  //         row.original.participant_type === "online" ? "secondary" : "default"
-  //       }
-  //       className="capitalize px-2.5 py-1"
-  //     >
-  //       {row.original.participant_type}
-  //     </Badge>
-  //   ),
-  // },
-  // {
-  //   header: "Organization",
-  //   accessorKey: "organization",
-  //   size: 200,
-  // },
-  // {
-  //   header: "Major",
-  //   accessorKey: "major.title",
-  //   size: 120,
-  // },
   {
     header: "Study Level",
     accessorKey: "study_level.title",
@@ -123,23 +91,10 @@ export const memberColumns: ColumnDef<Member>[] = [
       </Badge>
     ),
   },
-  // {
-  //   header: "Notes",
-  //   accessorKey: "notes",
-  //   size: 200,
-  //   cell: ({ row }) =>
-  //     row.original.notes ? (
-  //       <span className="text-sm text-muted-foreground">
-  //         {row.original.notes}
-  //       </span>
-  //     ) : (
-  //       <span className="text-sm text-muted-foreground">—</span>
-  //     ),
-  // },
   {
     header: "Actions",
     id: "actions",
-    size: 120,
+    size: 170,
     cell: ({ row }) => <MemberRowActions rowData={row.original} />,
   },
 ];
@@ -150,16 +105,14 @@ function MemberRowActions({ rowData }: { rowData: Member }) {
   // const [sendTestEmail] = useSendTestEmailMutation();
   const [sendEmail] = useSendEmailsMutation();
   const [isOpen, setIsOpen] = useState(false);
- const { data, isLoading } = useGetEmailTemplatesQuery();
-const templateOptions: FieldOption[] =
-    data?.data?.map((template) => ({
-      value: template.id.toString(),
-      label: template.title,
-    })) ?? [];
+  const { data, isLoading } = useGetEmailTemplatesQuery();
+  const [registerHackathonMember, { isLoading: isRegistering }] = useRegisterHackathonMemberMutation();
+  const templateOptions: FieldOption[] = data?.data?.map((template) => ({
+    value: template.id.toString(),
+    label: template.title,
+  })) ?? [];
 
-
-
-const fields: Field[] = [
+  const fields: Field[] = [
     {
       name: "template_id",
       type: "select",
@@ -176,7 +129,7 @@ const fields: Field[] = [
       defaultValue: rowData.id.toString(),
     },
   ];
-  
+
   async function handleEmailSubmit(data: any) {
     try {
       const payload = {
@@ -191,12 +144,53 @@ const fields: Field[] = [
       toast.error("Failed to send email");
     }
   }
+  async function handleAttendMember() {
+    try {
+      await registerHackathonMember({ member_id: rowData.uuid }).unwrap();
+      toast.success("Member marked as attended");
+    } catch (err: any) {
+      const description = err?.data?.msg || err?.data?.message || "Registration failed";
+      toast.error("Failed to mark as attended", { description });
+    }
+  }
 
   return (
     <div className="flex items-center gap-3">
+
       <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
         <Mail className="w-4 h-4" />
       </Button>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isRegistering}
+            title="Mark as attended"
+          >
+            <UserPlus className="w-4 h-4" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Attendance Registration</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to mark "{rowData.name}" as attended?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isRegistering}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isRegistering}
+              onClick={handleAttendMember}
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {isOpen && (
         <CrudForm
           fields={fields}
@@ -208,12 +202,13 @@ const fields: Field[] = [
           onSubmit={handleEmailSubmit}
         />
       )}
+
       <RowsActions
         rowData={rowData}
         isDelete={true}
         isUpdate={false}
         isPreview={false}
-       fields={[
+        fields={[
           { name: "name", label: "Name", type: "text" },
           { name: "email", label: "Email", type: "email" },
           { name: "phone_number", label: "Phone Number", type: "text" },
@@ -254,6 +249,7 @@ const fields: Field[] = [
           );
         }}
       />
+
     </div>
   );
 }

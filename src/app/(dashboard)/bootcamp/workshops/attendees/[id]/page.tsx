@@ -63,7 +63,7 @@ export default function Attendees() {
         enabled: true,
         currentPage: attendeesData?.current_page || 1,
         totalPages: attendeesData?.total_pages || 1,
-        pageSize: Number(attendeesData?.per_page) || 10,
+        pageSize: pageSize,
         totalCount: attendeesData?.count || 0,
         onPageChange: (page: number) => {
         setCurrentPage(page);

@@ -2,6 +2,7 @@
 export interface Member {
   id: number; // assuming each member has an ID
   national: string;
+  uuid: string | number;
   name: string;
   email: string;
   phone_number: string;
