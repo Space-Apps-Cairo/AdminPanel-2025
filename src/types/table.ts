@@ -77,7 +77,7 @@ export interface DataTableProps<TData extends DataTableRow> {
   searchConfig?: SearchConfig;
   statusConfig?: StatusConfig;
   actionConfig?: ActionConfig;
-  
+
   // Legacy callback for backward compatibility
   onDeleteRows?: (data: TData[]) => void;
   enableBulkEmail?: boolean;
@@ -94,5 +94,13 @@ export interface DataTableProps<TData extends DataTableRow> {
   allowTrigger?: boolean;
   // Backend pagination configuration
   backendPagination?: BackendPaginationConfig;
-  emailTemplateType?: "members" | "teams" | "participants";
+  emailTemplateType?:
+    | "members"
+    | "teams"
+    | "participants"
+    | "volunteers"
+    | "judges"
+    | "mentors"
+    | "vips"
+    | "guest";
 }
