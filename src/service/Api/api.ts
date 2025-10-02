@@ -57,6 +57,8 @@ export const api = createApi({
     "HackathonAttend",
     "HackathonDashboard",
     "CriteriaCategories",
+    "Vips",
+    "Mentors"
     "Guest",
     "Judge",
   ],

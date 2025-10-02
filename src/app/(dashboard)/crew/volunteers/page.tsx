@@ -29,7 +29,7 @@ export default function Volunteers() {
     const params = new URLSearchParams();
 
     if (searchTerm) {
-      params.append("search", searchTerm);
+      
     }
 
     // Handle "all" case - use -1 to represent "all"
@@ -103,7 +103,7 @@ export default function Volunteers() {
     loading: isLoadingVolunteers,
   };
 
-  // ====== CSV Upload Functions ====== //
+  // ====== Upload File Functions ====== //
 
   function formatVolunteersPayload(rows: Record<string, unknown>[]) {
     return {
@@ -111,24 +111,20 @@ export default function Volunteers() {
         full_name: (row.full_name as string) ?? "N/A",
         email: (row.email as string) ?? "N/A",
         phone: (row.phone as string) ?? "N/A",
-        team: (row.team as string) ?? "",
+        team: (row.team as string) ?? "N/A",
         volunteering_year: Number(
           (row.volunteering_year as string) ??
             new Date().getFullYear().toString() ??
             "N/A"
         ),
+        tshirt_size: (row.tshirt_size as string) ?? "N/A",
       })),
     };
   }
 
-  async function submitVolunteers(
-    payload: ReturnType<typeof formatVolunteersPayload>
-  ) {
-    const res = await importVolunteers(payload).unwrap();
-    toast.success(res.msg || "Volunteers imported successfully!");
+  async function submitVolunteers(payload: ReturnType<typeof formatVolunteersPayload>) {
+    await importVolunteers(payload).unwrap();
   }
-
-  // ... inside the header actions where you had the upload button:
 
   // ====== add-volunteer ====== //
 
@@ -184,7 +180,7 @@ export default function Volunteers() {
     }
   };
 
-  if (VolunteersError) return <Error />;
+  if (VolunteersError) return <Error status={404} message="Error on get volunteers data" />;
 
   return (
     <React.Fragment>
