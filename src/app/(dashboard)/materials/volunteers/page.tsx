@@ -460,6 +460,7 @@ export default function Volunteers() {
                     statusConfig={statusConfig}
                     actionConfig={actionConfig}
                     bulkDeleteMutation={deleteVolunteer}
+                    enableBulkEmail={true}
                 />
             </div>
         </React.Fragment>

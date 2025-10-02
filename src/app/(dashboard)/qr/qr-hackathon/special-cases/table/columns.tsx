@@ -12,16 +12,10 @@ export const getSpecialCasesColumns = (teamsData: { id: number; name: string }[]
 };
   const columns = [
     { header: "Name", accessorKey: "name", size: 180 },
-    { header: "Email", accessorKey: "email", size: 200 },
+    // { header: "Email", accessorKey: "email", size: 200 },
     { header: "Phone", accessorKey: "phone", size: 150 },
     { header: "Reason", accessorKey: "reason", size: 220 },
-    { header: "National ID", accessorKey: "national_id", size: 180 },
-    {
-      header: "Team",
-      accessorKey: "team_id",
-      cell: ({ row }: any) => getTeamName(row.original.team_id),
-      size: 180,
-    },
+    { header: "National ID", accessorKey: "national_id ", size: 180 },
     {
       id: "actions",
       header: () => <span>Actions</span>,

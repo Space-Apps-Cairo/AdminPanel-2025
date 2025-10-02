@@ -1,11 +1,21 @@
-import { Field } from "@/app/interface";
+import { Field, FieldOption } from "@/app/interface";
 import RowsActions from "@/components/table/rows-actions";
 import { useDeleteVolunteerMutation, useUpdateVolunteerMutation } from "@/service/Api/material/materials";
 import { Volunteer } from "@/types/material/materials";
 import { volunteerValidationSchema } from "@/validations/material/volunteer";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from 'sonner';
-
+import {
+  useGetEmailTemplatesQuery,
+  useSendEmailsMutation,
+} from "@/service/Api/emails/templates";
+import {
+  sendEmailSchema,
+} from "@/validations/emails/templates";
+import { useState } from "react";
+import CrudForm from "@/components/crud-form";
+import { Button } from "@/components/ui/button";
+import { Mail } from "lucide-react";
 export const getVolunteerFields = (volunteerData?: Volunteer): Field[] => [
 
     {
@@ -93,13 +103,71 @@ export const volunteerColumns: ColumnDef<Volunteer>[] = [
 function VolunteerRowActions({ rowData }: { rowData: Volunteer }) {
     const [updateVolunteer] = useUpdateVolunteerMutation();
     const [deleteVolunteer] = useDeleteVolunteerMutation();
+  const [sendEmail] = useSendEmailsMutation();
+  const { data, isLoading } = useGetEmailTemplatesQuery();
+  const templateOptions: FieldOption[] =
+      data?.data?.map((template) => ({
+        value: template.id.toString(),
+        label: template.title, 
+      })) ?? [];
+  
+    const [isOpen, setIsOpen] = useState(false);
+
+  const fields: Field[] = [
+    {
+      name: "template_id",
+      type: "select",
+      label: "Select Template",
+      options: templateOptions,
+      placeholder: isLoading ? "Loading templates..." : "Choose a template",
+    },
+    {
+      name: "ids",
+      type: "select",
+      label: "Select Participants",
+      options: [{ value: rowData.id.toString(), label: rowData.full_name }],
+      defaultValue: rowData.id.toString(),
+    },
+  ];
+//
+  async function handleEmailSubmit(data) {
+    try {
+      const payload = {
+        template_id: data.template_id,
+        ids: [rowData.id],
+      };
+      await sendEmail(payload).unwrap();
+      toast.success("Email sended successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong on send Email");
+    }
+  }
 
     return (
+
+ <div className="flex items-center gap-3">
+      {isOpen && (
+        <CrudForm
+          fields={fields}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          operation={"add"}
+          asDialog={true}
+          validationSchema={sendEmailSchema}
+          onSubmit={handleEmailSubmit}
+        />
+      )}
+      
+      <Button variant={"outline"} size={"sm"} onClick={() => setIsOpen(true)}>
+        <Mail />
+      </Button>
+
         <RowsActions
             rowData={rowData}
             isDelete={true}
             isUpdate={true}
-            isPreview={true}
+            isPreview={false}
             fields={getVolunteerFields(rowData)}
             validationSchema={volunteerValidationSchema}
             updateMutation={(data: Volunteer) => updateVolunteer({ id: rowData.id, data })}
@@ -121,5 +189,6 @@ function VolunteerRowActions({ rowData }: { rowData: Volunteer }) {
                 toast.error(error.data?.msg || "Failed to delete volunteer. Please try again.");
             }}
         />
+        </div>
     );
 }

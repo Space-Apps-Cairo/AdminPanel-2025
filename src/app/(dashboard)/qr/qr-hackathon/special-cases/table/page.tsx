@@ -20,8 +20,8 @@ export default function SpecialCase() {
     isLoading: isLoadingMemeber,
     isError: MemberError,
   } = useGetSpecialCasesQuery();
-const { data: teamsResponse } = useGetAllTeamsQuery();
-const teamsData = teamsResponse?.data ?? [];
+// const { data: teamsResponse } = useGetAllTeamsQuery();
+// const teamsData = teamsResponse?.data ?? [];
   const searchConfig: SearchConfig = {
     enabled: true,
     placeholder: "Filter by title",
@@ -53,7 +53,7 @@ const teamsData = teamsResponse?.data ?? [];
 
         <DataTable<Member>
           data={memberData ?? []}
-          columns={getSpecialCasesColumns(teamsData)} 
+          columns={getSpecialCasesColumns()} 
           searchConfig={searchConfig}
           statusConfig={statusConfig}
           actionConfig={actionConfig}
