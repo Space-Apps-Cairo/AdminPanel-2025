@@ -26,6 +26,7 @@ import {
   Trophy,
   MailIcon,
   Filter,
+  Users,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { toast } from "sonner";
@@ -41,7 +42,6 @@ const getNavigationItems = (userRole: UserRole) => {
       isActive: true,
       roles: ["Admin", "logistics", "registeration", "material"] as UserRole[],
     },
-
     {
       title: "Qr Code",
       url: "/qr",
@@ -75,7 +75,25 @@ const getNavigationItems = (userRole: UserRole) => {
         {
           title: "Collections",
           url: "/qr/collections",
-        }
+        },
+      ],
+    },
+    {
+      title: "Crew Management",
+      icon: Users,
+      roles: [
+        "Admin",
+        "logistics",
+        "registeration",
+        "material",
+        "filtration",
+      ] as UserRole[],
+      items: [
+        { title: "Volunteers", url: "/crew/volunteers" },
+        { title: "Mentors", url: "/crew/mentors" },
+        { title: "Judges", url: "/crew/judges" },
+        { title: "Guests", url: "/crew/guests" },
+        { title: "Vips", url: "/crew/vips" },
       ],
     },
     {
@@ -187,10 +205,7 @@ const getNavigationItems = (userRole: UserRole) => {
           title: "Form Options",
           url: "/hackathon/form-options",
           isActive: false,
-          roles: [
-        "Admin",
-      ] as UserRole[],
-
+          roles: ["Admin"] as UserRole[],
           items: [
             {
               title: "Tshirt Sizes",
@@ -220,26 +235,33 @@ const getNavigationItems = (userRole: UserRole) => {
         },
       ],
     },
+
     {
       title: "Email Templates",
       url: "/email-templates",
       icon: MailIcon,
-      roles: ["Admin", "logistics", "registeration", "material","filtration"] as UserRole[],
+      roles: [
+        "Admin",
+        "logistics",
+        "registeration",
+        "material",
+        "filtration",
+      ] as UserRole[],
     },
   ];
 
   // Filter items based on user role
-const canView = (item: any, role: UserRole) => {
-    if (!item.roles) return true; 
+  const canView = (item: any, role: UserRole) => {
+    if (!item.roles) return true;
     return item.roles.includes(role);
-  }; 
+  };
 
- const filterItems = (items: any[]): any[] => {
+  const filterItems = (items: any[]): any[] => {
     return items
-      .filter((item) => canView(item, userRole)) 
+      .filter((item) => canView(item, userRole))
       .map((item) => ({
         ...item,
-        items: item.items ? filterItems(item.items) : undefined, 
+        items: item.items ? filterItems(item.items) : undefined,
       }));
   };
 
