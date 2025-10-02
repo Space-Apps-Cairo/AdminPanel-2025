@@ -11,6 +11,7 @@ export interface SearchConfig {
   enabled: boolean;
   placeholder?: string;
   searchKeys?: string[];
+  className?: string;
 }
 
 // Filter option interface
@@ -43,6 +44,7 @@ export interface ActionConfig {
   showDelete?: boolean;
   showExport?: boolean;
   addButtonText?: string;
+  className?: string;
   onAdd?: () => void;
   onExport?: (type: "pdf" | "excel" | "csv") => void;
   customActions?: React.ReactNode;
@@ -75,6 +77,7 @@ export interface DataTableProps<TData extends DataTableRow> {
   searchConfig?: SearchConfig;
   statusConfig?: StatusConfig;
   actionConfig?: ActionConfig;
+  
   // Legacy callback for backward compatibility
   onDeleteRows?: (data: TData[]) => void;
   enableBulkEmail?: boolean;

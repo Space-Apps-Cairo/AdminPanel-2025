@@ -33,6 +33,7 @@ export default function Tshirts() {
     enabled: true,
     placeholder: "Filter by title ",
     searchKeys: ["title"],
+    className: "sm:w-64 mb-9 sm:mb-9"
   };
 
   const statusConfig: StatusConfig = {
@@ -43,6 +44,7 @@ export default function Tshirts() {
     enabled: true,
     showAdd: true,
     showDelete: true,
+    className:"mt-5",
     addButtonText: "Add T-shirt Size",
     onAdd: () => {
       setIsOpen(true);
@@ -78,7 +80,7 @@ if (tshirtsError) {
 
   return (
     <React.Fragment>
-      {/* {isOpen && (
+      {isOpen && (
         <CrudForm
           fields={getTShirtFields()}
           isOpen={isOpen}
@@ -90,8 +92,8 @@ if (tshirtsError) {
         />
       )}
 
-      <div className="container mx-auto py-6 px-8">
-        <h1 className="text-2xl font-bold mb-6">T-shirt Sizes</h1>
+      <div className="px-3 py-2 sm:px-5 sm:py-9">
+        <h1 className="text-2xl font-bold mb-4">T-shirt Sizes</h1>
 
         <DataTable<TShirtSize>
           data={tshirtsData?.data ?? []}
@@ -100,8 +102,8 @@ if (tshirtsError) {
           statusConfig={statusConfig}
           actionConfig={actionConfig}
         />
-      </div> */}
-      <Error/>
+      </div>
+      
     </React.Fragment>
   );
 }
