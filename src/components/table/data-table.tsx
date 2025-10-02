@@ -440,31 +440,49 @@ export default function DataTable<TData extends DataTableRow>({
   }, [templatesResp, emailTemplateType]);
 
   //handle Export
-  const extractTeamData = (data: any[]) => {
-    return data.map((item) => {
-      const onsiteMembersCount = item.members
-        ? item.members.filter((member: any) => member.participation_type === 1)
-            .length
-        : 0;
+  // const extractMemberData = (data: any[]) => {
+  //   return data.map((item) => {
+  //     const onsiteMembersCount = item.members
+  //       ? item.members.filter((member: any) => member.participation_type === 1)
+  //           .length
+  //       : 0;
 
+  //     return {
+  //       UUID: item.uuid || "N/A",
+  //       "Team Name": item.team_name || "N/A",
+  //       "Challenge Name": item.challenge?.title || "N/A",
+  //       "Challenge Description": item.challenge?.description || "N/A",
+  //       "Team Leader Name": item.team_leader?.name || "N/A",
+  //       "Team Leader Email": item.team_leader?.email || "N/A",
+  //       "Limited Capacity": item.limited_capacity ? "Yes" : "No",
+  //       "Member Count": item.members_count || 0,
+  //       "Onsite Members Count": onsiteMembersCount,
+  //       "Project Proposal": item.project_proposal_url || "N/A",
+  //       "Project Video": item.project_video_url || "N/A",
+  //       "Team Image": item.team_photo?.url || "N/A",
+  //       "Actual Solution": item.actual_solution || "N/A",
+  //       "Participation Method": item.participation_method?.title || "N/A",
+  //     };
+  //   });
+  // };
+
+  const extractMemberDetails = (members: any[]) => {
+    return members.map((member) => {
       return {
-        UUID: item.uuid || "N/A",
-        "Team Name": item.team_name || "N/A",
-        "Challenge Name": item.challenge?.title || "N/A",
-        "Challenge Description": item.challenge?.description || "N/A",
-        "Team Leader Name": item.team_leader?.name || "N/A",
-        "Team Leader Email": item.team_leader?.email || "N/A",
-        "Limited Capacity": item.limited_capacity ? "Yes" : "No",
-        "Member Count": item.members_count || 0,
-        "Onsite Members Count": onsiteMembersCount,
-        "Project Proposal": item.project_proposal_url || "N/A",
-        "Project Video": item.project_video_url || "N/A",
-        "Team Image": item.team_photo?.url || "N/A",
-        "Actual Solution": item.actual_solution || "N/A",
-        "Participation Method": item.participation_method?.title || "N/A",
+        UUID: member.uuid || "N/A",
+        "Name": member.name || "N/A",
+        "Email": member.email || "N/A",
+        "Phone Number": member.phone_number || "N/A",
+        "Age": member.age || "N/A",
+        "Gender": member.gender || "N/A",
+        "Address": member.address || "N/A",
+        "Participation Type": member.participation_type === 1 ? "onsite" : member.participation_type === 2 ? "virtual" : "N/A",
+        "National ID / Passport ID": member.national || "N/A",
       };
     });
   };
+
+
   // استخدامها في دالة التصدير
   const handleExport = (type: string) => {
     const exportData = backendPagination.enabled
@@ -472,7 +490,7 @@ export default function DataTable<TData extends DataTableRow>({
       : table.getFilteredRowModel().rows.map((r) => r.original);
 
     // استخراج البيانات المطلوبة فقط
-    const filteredData = extractTeamData(exportData);
+    const filteredData = extractMemberDetails(exportData);
 
     if (type === "excel") exportToExcel(filteredData);
     else if (type === "pdf") exportToPDF(filteredData);

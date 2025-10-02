@@ -10,7 +10,7 @@ import {
   useSendEmailsMutation,
   // useSendTestEmailMutation,
 } from "@/service/Api/emails/templates";
-import { Mail } from "lucide-react";
+import { Crown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 
@@ -52,7 +52,15 @@ export const memberColumns: ColumnDef<Member>[] = [
   {
     header: "Name",
     accessorKey: "name",
-    size: 200,
+    size: 250,
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <p>{row.original.name}</p>
+        {row.original.member_role === "team_lead" && <Badge variant="outline" className="px-1 py-0.5 rounded-4xl">
+          <Crown size={12} className="text-yellow-500" />
+        </Badge>}
+      </div>
+    ),
     enableHiding: false,
   },
   {
@@ -60,6 +68,9 @@ export const memberColumns: ColumnDef<Member>[] = [
     accessorKey: "email",
     size: 220,
     enableHiding: false,
+    cell: ({ row }) => (
+      <p className="break-all">{row.original.email}</p>
+    ),
   },
   {
     header: "Phone",
@@ -67,20 +78,50 @@ export const memberColumns: ColumnDef<Member>[] = [
     size: 180,
   },
   {
-    header: "Role",
-    accessorKey: "member_role",
+    header: "Participation Type",
+    accessorKey: "participation_type",
     size: 150,
     cell: ({ row }) => (
       <Badge
         variant={
-          row.original.member_role === "team_lead" ? "default" : "secondary"
+          row.original.participation_type === 1 ? "default" : "secondary"
         }
         className="capitalize px-2.5 py-0.5"
       >
-        {row.original.member_role}
+        {row.original.participation_type === 1 ? "Onsite" : "Virtual"}
       </Badge>
     ),
   },
+  {
+    header: "Team Status",
+    accessorKey: "teams_status",
+    size: 150,
+    cell: ({ row }) => (
+      <Badge
+        variant={
+          row.original.teams_status === 'accepted' ? "default" : "secondary"
+        }
+        className="capitalize px-2.5 py-0.5"
+      >
+        {row.original.teams_status}
+      </Badge>
+    ),
+  },
+  // {
+  //   header: "Role",
+  //   accessorKey: "member_role",
+  //   size: 150,
+  //   cell: ({ row }) => (
+  //     <Badge
+  //       variant={
+  //         row.original.member_role === "team_lead" ? "default" : "secondary"
+  //       }
+  //       className="capitalize px-2.5 py-0.5"
+  //     >
+  //       {row.original.member_role === "team_lead" ? "Team Lead" : "Member"}
+  //     </Badge>
+  //   ),
+  // },
   {
     header: "Study Level",
     accessorKey: "study_level.title",

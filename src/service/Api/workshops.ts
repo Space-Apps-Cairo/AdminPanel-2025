@@ -124,7 +124,7 @@ export const workshopsApi = api.injectEndpoints({
 
     // ====== workshop attendees ====== //
     getWorkshopAttendees: build.query<WorkshopAttendeesResponse, string>({
-      query: (scheduleId) => `/workshop-schedules/${scheduleId}/checked-in-participants`,
+      query: (scheduleId) => `/workshop-schedules/checked-in-participants/${scheduleId}`,
       providesTags: (result, error, scheduleId) => [
         { type: "Workshop", id: scheduleId },
       ],

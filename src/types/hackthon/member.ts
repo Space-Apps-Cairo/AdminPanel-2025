@@ -21,7 +21,7 @@ export interface Member {
   notes?: string;
   created_at: string;
   created_by_id: number;
-  address?: string;
+  teams_status: string;
   [key: string]: unknown;
 }
 

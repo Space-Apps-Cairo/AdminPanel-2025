@@ -1,11 +1,10 @@
 "use client"
 
-import Loading from '@/components/loading/loading';
 import DataTable from '@/components/table/data-table';
 import { useAddVolunteerMutation, useGetAllVolunteersQuery, useImportVolunteersFileMutation, useDeleteVolunteerMutation } from '@/service/Api/material/materials';
 import { Volunteer } from '@/types/material/materials';
 import { ActionConfig, SearchConfig, StatusConfig } from '@/types/table';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { getVolunteerFields, volunteerColumns } from './_components/columns';
 import { FieldValues } from 'react-hook-form';
 import CrudForm from '@/components/crud-form';
@@ -21,14 +20,40 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from 'sonner';
+import Error from '@/components/Error/page';
 
 export default function Volunteers() {
+
+    // State for pagination and search
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Build query string
+    const buildQueryString = useCallback(() => {
+        const params = new URLSearchParams();
+
+        if (searchTerm) {
+            params.append("search", searchTerm);
+        }
+
+        // Handle "all" case - use -1 to represent "all"
+        if (pageSize === -1) {
+            params.append("limit", "all");
+        } else {
+            params.append("limit", pageSize.toString());
+        }
+        
+        params.append("page", currentPage.toString());
+
+        return params.toString() ? `?${params.toString()}` : "";
+    }, [searchTerm, pageSize, currentPage]);
 
     const {
         data: volunteersData,
         isLoading: isLoadingVolunteers,
         error: VolunteersError,
-    } = useGetAllVolunteersQuery();
+    } = useGetAllVolunteersQuery(buildQueryString());
 
     const [isOpen, setIsOpen] = useState(false);
     
@@ -51,7 +76,6 @@ export default function Volunteers() {
     // Delete mutation for bulk operations
     const [deleteVolunteer] = useDeleteVolunteerMutation();
 
-
     const searchConfig: SearchConfig = {
         enabled: true,
         placeholder: "Filter by name and email",
@@ -70,6 +94,31 @@ export default function Volunteers() {
         onAdd: () => {
             setIsOpen(true);
         },
+    };
+
+    // Backend pagination configuration
+    const backendPagination = {
+        enabled: true,
+        currentPage: volunteersData?.current_page || 1,
+        totalPages: volunteersData?.total_pages || 1,
+        pageSize: pageSize,
+        totalCount: volunteersData?.count || 0,
+        onPageChange: (page: number) => {
+            setCurrentPage(page);
+        },
+        onPageSizeChange: (size: number) => {
+            if (size === -1) {
+                setPageSize(-1);
+            } else {
+                setPageSize(size);
+            }
+            setCurrentPage(1);
+        },
+        onSearchChange: (search: string) => {
+            setSearchTerm(search);
+            setCurrentPage(1); // Reset to first page when searching
+        },
+        loading: isLoadingVolunteers,
     };
 
     // ====== CSV Upload Functions ====== //
@@ -280,7 +329,7 @@ export default function Volunteers() {
 
     };
 
-    if(isLoadingVolunteers) return <Loading />
+    if(VolunteersError) return <Error />
 
     const isProcessing = isUploading || isImportLoading;
     const finalError = uploadError || getAPIErrorMessage();
@@ -460,6 +509,7 @@ export default function Volunteers() {
                     statusConfig={statusConfig}
                     actionConfig={actionConfig}
                     bulkDeleteMutation={deleteVolunteer}
+                    backendPagination={backendPagination}
                 />
             </div>
         </React.Fragment>
