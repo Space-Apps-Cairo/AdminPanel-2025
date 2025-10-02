@@ -48,6 +48,9 @@ const getRoutePermissions = () => {
       "/hackathon/form-options/majors",
       "/email-templates",
       "/qr/collections",
+      "/crew/volunteers",
+      "/crew/mentors",
+      "/crew/vips"
     ],
 
     material: [
@@ -92,6 +95,9 @@ const getRoutePermissions = () => {
       "/hackathon/form-options/study-levels",
       "/hackathon/form-options/memberRole",
       "/hackathon/form-options/actualSolutions",
+      "/crew/volunteers",
+      "/crew/mentors",
+      "/crew/vips"
     ],
 
     registeration: [
@@ -119,6 +125,9 @@ const getRoutePermissions = () => {
       "/hackathon",
       "/hackathon/teams",
       "/hackathon/formDetails",
+      "/crew/volunteers",
+      "/crew/mentors",
+      "/crew/vips"
     ],
     filtration: ["/", "/hackathon","/hackathon/teams","hackathon/members" , "/email-templates"],
   };

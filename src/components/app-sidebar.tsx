@@ -80,6 +80,7 @@ const getNavigationItems = (userRole: UserRole) => {
     },
     {
       title: "Crew Management",
+      url: '/crew',
       icon: Users,
       roles: [
         "Admin",
