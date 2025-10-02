@@ -33,6 +33,7 @@ export default function Tshirts() {
     enabled: true,
     placeholder: "Filter by title ",
     searchKeys: ["title"],
+    className: "sm:w-64 mb-9 sm:mb-9"
   };
 
   const statusConfig: StatusConfig = {
@@ -43,6 +44,7 @@ export default function Tshirts() {
     enabled: true,
     showAdd: true,
     showDelete: true,
+    className:"mt-5",
     addButtonText: "Add T-shirt Size",
     onAdd: () => {
       setIsOpen(true);
@@ -65,9 +67,16 @@ export default function Tshirts() {
   };
 
   if (isLoadingTshirts) return <Loading />;
-  if (tshirtsError) {
-    return <Error />;
-  }
+
+if (tshirtsError) {
+  const status = (tshirtsError as any)?.status || 500;
+  const message =
+    (tshirtsError as any)?.data?.message ||
+    "Failed to fetch T-shirt sizes. Please try again.";
+
+  return <Error status={status} message={message} />;
+}
+
 
   return (
     <React.Fragment>
@@ -83,8 +92,8 @@ export default function Tshirts() {
         />
       )}
 
-      <div className="container mx-auto py-6 px-8">
-        <h1 className="text-2xl font-bold mb-6">T-shirt Sizes</h1>
+      <div className="px-3 py-2 sm:px-5 sm:py-9">
+        <h1 className="text-2xl font-bold mb-4">T-shirt Sizes</h1>
 
         <DataTable<TShirtSize>
           data={tshirtsData?.data ?? []}
@@ -94,6 +103,7 @@ export default function Tshirts() {
           actionConfig={actionConfig}
         />
       </div>
+      
     </React.Fragment>
   );
 }

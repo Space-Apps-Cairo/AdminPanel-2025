@@ -402,7 +402,7 @@ export default function DataTable<TData extends DataTableRow>({
     debouncedSearchRef.current = handler;
 
     return () => {
-      handler.cancel(); // ✅ يلغي أي تايمر شغال
+      handler.cancel(); //  يلغي أي تايمر شغال
     };
   }, [table]);
 

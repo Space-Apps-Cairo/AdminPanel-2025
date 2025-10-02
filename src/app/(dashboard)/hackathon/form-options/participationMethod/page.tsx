@@ -35,6 +35,7 @@ export default function ParticipationMethods() {
     enabled: true,
     placeholder: "Filter by title",
     searchKeys: ["title"],
+    className: "sm:w-64 mb-9 sm:mb-9"
   };
 
   const statusConfig: StatusConfig = {
@@ -67,7 +68,14 @@ export default function ParticipationMethods() {
   };
 
   if (isLoadingMethods) return <Loading />;
-  if (methodsError) return <Error />;
+  if (methodsError) {
+  const status = (methodsError as any)?.status || 500;
+  const message =
+    (methodsError as any)?.data?.message ||
+    "Failed to fetch participation methods. Please try again.";
+  return <Error status={status} message={message} />;
+}
+
 
   return (
     <React.Fragment>
@@ -83,8 +91,8 @@ export default function ParticipationMethods() {
         />
       )}
 
-      <div className="container mx-auto py-6 px-8">
-        <h1 className="text-2xl font-bold mb-6">Participation Methods</h1>
+        <div className="px-3 py-2 sm:px-5 sm:py-9">
+        <h1 className="text-2xl font-bold mb-4">Participation Methods</h1>
 
         <DataTable<ParticipationMethod>
           data={methodsData?.data ?? []}

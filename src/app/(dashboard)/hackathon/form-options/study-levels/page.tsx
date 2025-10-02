@@ -34,6 +34,9 @@ export default function StudyLevels() {
     enabled: true,
     placeholder: "Filter by title",
     searchKeys: ["title"],
+  className: "sm:w-64 mb-9 sm:mb-9"
+    
+     
   };
 
   const statusConfig: StatusConfig = {
@@ -67,14 +70,23 @@ export default function StudyLevels() {
     }
   };
 
-  if (isLoadingStudyLevels) return <Loading />;
-  if (studyLevelsError) {
-    return <Error />;
-  }
+if (isLoadingStudyLevels) return <Loading />;
+
+if (studyLevelsError) {
+  const status = (studyLevelsError as any)?.status || 500;
+  const message =
+    (studyLevelsError as any)?.data?.message ||
+    "Failed to fetch study levels. Please try again.";
+
+  return <Error status={status} message={message} />;
+}
+
+
+
 
   return (
     <React.Fragment>
-      {isOpen && (
+       {isOpen && (
         <CrudForm
           fields={getStudyLevelFields()}
           isOpen={isOpen}
@@ -86,8 +98,8 @@ export default function StudyLevels() {
         />
       )}
 
-      <div className="container mx-auto py-6 px-8">
-        <h1 className="text-2xl font-bold mb-6">Study Levels</h1>
+      <div className="px-3 py-2 sm:px-5 sm:py-9">
+        <h1 className="text-2xl font-bold mb-4">Study Levels</h1>
 
         <DataTable<StudyLevel>
           data={studyLevelsData?.data ?? []}
@@ -98,6 +110,8 @@ export default function StudyLevels() {
           bulkDeleteMutation={deleteStudyLevel}
         />
       </div>
+      
+      
     </React.Fragment>
   );
 }
