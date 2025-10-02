@@ -55,3 +55,7 @@ export function minifyHTML(html: string) {
     .replace(/>\s+</g, "><") // remove spaces between tags
     .trim();
 }
+
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}

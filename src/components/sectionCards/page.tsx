@@ -5,7 +5,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export interface SectionCardData {
   title: string;
-  value: string;
+  value: string | number;
   description?: string;
   icon: React.ReactNode;
   color: string;
@@ -23,7 +23,7 @@ export function SectionCards({ data }: SectionCardsProps) {
           <SummaryCard
             key={idx}
             title={card.title}
-            value={card.value}
+            value={card.value.toString()}
             icon={card.icon}
             color={card.color}
           />

@@ -193,6 +193,10 @@ const getNavigationItems = (userRole: UserRole) => {
           url: "/hackathon/dashboard",
         },
         {
+          title: "Attendance",
+          url: "/hackathon/attendance",
+        },
+        {
           title: "Teams",
           url: "/hackathon/teams",
         },

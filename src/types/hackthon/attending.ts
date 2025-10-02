@@ -1,5 +1,5 @@
 export interface RegisterHackathonMemberRequest {
-  member_id: number | string;
+  uuid: number | string;
 }
 export interface RegisterHackathonMemberResponse {
   status: number;
