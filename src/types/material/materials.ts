@@ -14,6 +14,9 @@ export type Volunteer = {
 export type VolunteersRes = {
 	success: boolean
 	msg: string
+	current_page?: number
+	total_pages?: number
+	count?: number
 	data: Volunteer[]
 }
 

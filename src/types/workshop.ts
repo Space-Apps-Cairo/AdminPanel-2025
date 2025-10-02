@@ -119,6 +119,7 @@ export type WorkshopAttendee = {
     id: number;
     name: string;
   };
+  workshop_schedule_participant_workshop_assignments: any[];
 };
 
 export type WorkshopAttendeesResponse = {

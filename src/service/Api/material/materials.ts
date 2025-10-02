@@ -19,8 +19,8 @@ export const materialsApi = api.injectEndpoints({
 
 		// ====== volunteers ====== //
 
-		getAllVolunteers: build.query<VolunteersRes, void>({
-			query: () => '/volunteers',
+		getAllVolunteers: build.query<VolunteersRes, string>({
+			query: (queryString) => `/volunteers${queryString}`,
 			providesTags: ['Volunteers'],
 		}),
 
