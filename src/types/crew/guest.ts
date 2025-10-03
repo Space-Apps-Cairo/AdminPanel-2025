@@ -1,16 +1,16 @@
 export type Guest = {
   id: number
-  fullName: string
+  full_name: string
   organization?: string | null
-  nationality: string
-  freeSpace?: string | null
+  national: string
+  free_space?: string | null
 }
 
 export type GuestRequest ={
-  fullName: string;
+  full_name: string;
   organization?: string | null;
-  nationality: string;
-  freeSpace?: string | null;
+  national: string;
+  free_space?: string | null;
 }
 
 export type GuestResponse ={

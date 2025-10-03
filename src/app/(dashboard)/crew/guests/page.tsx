@@ -56,10 +56,10 @@ export default function Guests() {
   function formatGuestsPayload(rows: Record<string, unknown>[]) {
     return {
       guests: rows.map((row) => ({
-        fullName: (row.fullName as string) ?? "N/A",
+        full_name: (row.full_name as string) ?? "N/A",
         organization: (row.organization as string) ?? null,
-        nationality: (row.nationality as string) ?? "N/A",
-        freeSpace: (row.freeSpace as string) ?? null,
+        national: (row.national as string) ?? "N/A",
+        free_space: (row.free_space as string) ?? null,
       })),
     };
   }
@@ -96,10 +96,10 @@ export default function Guests() {
     try {
       console.log("Submitting guest data:", data);
       const guestData: Omit<Guest, "id" | "created_at" | "updated_at"> = {
-        fullName: data.fullName,
+        full_name: data.full_name,
         organization: data.organization || null,
-        nationality: data.nationality,
-        freeSpace: data.freeSpace || null,
+        national: data.national,
+        free_space: data.free_space || null,
       };
 
       const result = await addGuest(guestData as Guest).unwrap();

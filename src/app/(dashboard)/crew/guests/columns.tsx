@@ -8,11 +8,11 @@ import { useDeleteGuestMutation, useUpdateGuestMutation } from "@/service/Api/cr
 
 export const getGuestFields = (rowData?: Guest): Field[] => [
   {
-    name: "fullName",
+    name: "full_name",
     label: "Full Name",
    type: "text",
     placeholder: "Enter full name",
-    defaultValue: rowData?.fullName || "",
+    defaultValue: rowData?.full_name || "",
    
   },
   {
@@ -24,19 +24,19 @@ export const getGuestFields = (rowData?: Guest): Field[] => [
    
   },
   {
-    name: "nationality",
+    name: "national",
     label: "National ID",
     type: "text",
     placeholder: "Enter national ID",
-    defaultValue: rowData?.nationality || "",
+    defaultValue: rowData?.national || "",
    
   },
   {
-    name: "freeSpace",
+    name: "free_space",
     label: "Free Space",
     type: "textArea",
     placeholder: "Optional free notes",
-    defaultValue: rowData?.freeSpace || "",
+    defaultValue: rowData?.free_space || "",
   },
 ]
 export const guestColumns: ColumnDef<Guest>[] = [
@@ -48,8 +48,8 @@ export const guestColumns: ColumnDef<Guest>[] = [
   },
   {
   header: "Full Name",
-  accessorFn: (row) => row.fullName ?? "-",
-  id: "fullName",
+  accessorFn: (row) => row.full_name ?? "-",
+  id: "full_name",
 },
 {
   header: "Organization",
@@ -58,13 +58,13 @@ export const guestColumns: ColumnDef<Guest>[] = [
 },
 {
   header: "National ID",
-  accessorFn: (row) => row.nationality ?? "-",
-  id: "nationality",
+  accessorFn: (row) => row.national ?? "-",
+  id: "national",
 },
   {
     header: "Free Space",
-    accessorFn: (row) => row.freeSpace ?? "-",
-    id: "freeSpace",
+    accessorFn: (row) => row.free_space ?? "-",
+    id: "free_space",
   },
  {
         id: "actions",
