@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import AttendeeTablePage from "./_components/AttendeeTablePage";
 import { attendedMembersColumns } from "./_components/columns/columns";
 import { useGetAttendedMembersQuery } from "@/service/Api/hackathon/attending";
@@ -56,7 +56,8 @@ const tabs = [
   },
 ];
 
-export default function Attendence() {
+// Component that uses useSearchParams
+function AttendenceContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -156,6 +157,33 @@ export default function Attendence() {
         ))}
       </Tabs>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function LoadingFallback() {
+  return (
+    <div className="container mx-auto py-6 px-8">
+      <div className="animate-pulse">
+        <div className="h-10 bg-gray-200 rounded mb-6"></div>
+        <div className="grid grid-cols-6 gap-4 mb-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-20 bg-gray-200 rounded"></div>
+          ))}
+        </div>
+        <div className="h-10 bg-gray-200 rounded mb-4"></div>
+        <div className="h-96 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function Attendence() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <AttendenceContent />
+    </Suspense>
   );
 }
 

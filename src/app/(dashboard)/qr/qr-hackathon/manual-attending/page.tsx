@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,7 +58,20 @@ const tabs = [
   },
 ];
 
-export default function ManualMemberAttendingPage() {
+// Loading component for Suspense fallback
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+// Component that uses useSearchParams - wrapped in Suspense
+function ManualMemberAttendingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -103,6 +116,15 @@ export default function ManualMemberAttendingPage() {
         </Tabs>
       </div>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function ManualMemberAttendingPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ManualMemberAttendingContent />
+    </Suspense>
   );
 }
 
