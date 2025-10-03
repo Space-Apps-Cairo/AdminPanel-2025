@@ -89,35 +89,41 @@ function AttendenceContent() {
       </Button>
 
       <SectionCards
+        isLoading={isLoadingInsights}
         data={[
           {
             title: "Members",
-            value: 120,
+            value: data?.data?.totalMembers,
             color: "bg-blue-500",
             icon: <Users />,
           },
           {
             title: "Volunteers",
-            value: 45,
+            value: data?.data?.attendeesVolunteers,
             color: "bg-purple-500",
             icon: <UserCheck />,
           },
           {
             title: "Judges",
-            value: 12,
+            value: data?.data?.attendeesJudges,
             color: "bg-red-500",
             icon: <UserCog />,
           },
           {
             title: "Mentors",
-            value: 20,
+            value: data?.data?.attendeesMentors,
             color: "bg-green-500",
             icon: <Star />,
           },
-          { title: "VIP", value: 8, color: "bg-yellow-500", icon: <Crown /> },
+          {
+            title: "VIP",
+            value: data?.data?.attendeesVips,
+            color: "bg-yellow-500",
+            icon: <Crown />,
+          },
           {
             title: "Guests",
-            value: 30,
+            value: data?.data?.attendeesGuests,
             color: "bg-pink-500",
             icon: <UserPlus />,
           },
@@ -162,6 +168,10 @@ function AttendenceContent() {
               activeTab={activeTab}
               value={tab.value}
               showQuickInsights={true}
+              maleCnt={data?.data?.totalMembersMale}
+              femaleCnt={data?.data?.totalMembersFemale}
+              attendeesMembersFirstDay={data?.data?.attendeesMembersFirstDay}
+              attendeesMembersSecondDay={data?.data?.attendeesMembersSecondDay}
             />
           </TabsContent>
         ))}

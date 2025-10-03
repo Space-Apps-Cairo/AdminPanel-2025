@@ -27,6 +27,10 @@ interface AttendeeTablePageProps<T> {
   activeTab: string;
   value: string;
   showQuickInsights?: boolean;
+  maleCnt?: number;
+  femaleCnt?: number;
+  attendeesMembersFirstDay?: number;
+  attendeesMembersSecondDay?: number;
 }
 
 export default function AttendeeTablePage<T>({
@@ -37,6 +41,10 @@ export default function AttendeeTablePage<T>({
   activeTab,
   value,
   showQuickInsights = false,
+  maleCnt,
+  femaleCnt,
+  attendeesMembersFirstDay,
+  attendeesMembersSecondDay,
 }: AttendeeTablePageProps<T>) {
   const router = useRouter();
 
@@ -136,23 +144,25 @@ export default function AttendeeTablePage<T>({
                   </div>
 
                   {/* {data.insights.male_attended !== undefined && ( */}
+
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground text-sm sm:text-base">
-                      Male Attended
+                      Male Members
                     </span>
                     {/* <span className="font-semibold">{data.insights.male_attended}</span> */}
-                    <span className="font-semibold">0</span>
+                    <span className="font-semibold">{maleCnt || 0}</span>
                   </div>
                   {/* )} */}
 
                   {/* {data.insights.female_attended !== undefined && ( */}
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground text-sm sm:text-base">
-                      Female Attended
+                      Female Members
                     </span>
                     {/* <span className="font-semibold">{data.insights.female_attended}</span> */}
-                    <span className="font-semibold">0</span>
+                    <span className="font-semibold">{femaleCnt || 0}</span>
                   </div>
+
                   {/* )} */}
 
                   {/* {data.insights.day1_attendees !== undefined && ( */}
@@ -161,7 +171,9 @@ export default function AttendeeTablePage<T>({
                       Total Day1 Attendees
                     </span>
                     {/* <span className="font-semibold">{data.insights.day1_attendees}</span> */}
-                    <span className="font-semibold">0</span>
+                    <span className="font-semibold">
+                      {attendeesMembersFirstDay || 0}
+                    </span>
                   </div>
                   {/* )} */}
 
@@ -171,7 +183,9 @@ export default function AttendeeTablePage<T>({
                       Total Day2 Attendees
                     </span>
                     {/* <span className="font-semibold">{data.insights.day2_attendees}</span> */}
-                    <span className="font-semibold">0</span>
+                    <span className="font-semibold">
+                      {attendeesMembersSecondDay || 0}
+                    </span>
                   </div>
                   {/* )} */}
 

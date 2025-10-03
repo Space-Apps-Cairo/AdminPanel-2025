@@ -13,26 +13,37 @@ export interface SectionCardData {
 
 interface SectionCardsProps {
   data: SectionCardData[];
+  isLoading?: boolean;
 }
 
-export function SectionCards({ data }: SectionCardsProps) {
+export function SectionCards({ data, isLoading }: SectionCardsProps) {
   return (
     <div className="grid md:grid-cols-3 w-full gap-4 py-2">
-      {data.map((card, idx) => {
-        return (
-          <SummaryCard
-            key={idx}
-            title={card.title}
-            value={card.value.toString()}
-            icon={card.icon}
-            color={card.color}
-          />
-        );
-      })}
+      {isLoading
+        ? // Render skeletons when loading
+          Array.from({ length: 6 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="p-4 rounded-xl border bg-card shadow-sm flex flex-col items-center justify-center gap-3"
+            >
+              <Skeleton className="h-8 w-8 rounded-full" />
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-6 w-16" />
+            </div>
+          ))
+        : // Render real data when not loading
+          data.map((card, idx) => (
+            <SummaryCard
+              key={idx}
+              title={card.title}
+              value={card.value.toString()}
+              icon={card.icon}
+              color={card.color}
+            />
+          ))}
     </div>
   );
 }
-
 function SummaryCard({
   title,
   value,
