@@ -7,8 +7,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import AttendeeTablePage from "./_components/AttendeeTablePage";
 import {
+  attendedGuestColumns,
+  attendedJudgesColumns,
   attendedMembersColumns,
   attendedMentorColumns,
+  attendedVipColumns,
 } from "./_components/columns/columns";
 import {
   useGetAttendedVolunteerQuery,
@@ -41,7 +44,7 @@ const tabs = [
     label: "Judges",
     value: "judge",
     title: "Attended Judges",
-    columnsSchema: attendedMembersColumns,
+    columnsSchema: attendedJudgesColumns,
     useQuery: useGetAttendedJudgeQuery,
   },
   {
@@ -55,14 +58,14 @@ const tabs = [
     label: "Vips",
     value: "vip",
     title: "Attended VIPs",
-    columnsSchema: attendedMembersColumns,
+    columnsSchema: attendedVipColumns,
     useQuery: useGetAttendedVipQuery,
   },
   {
     label: "Guests",
     value: "guest",
     title: "Attended Guests",
-    columnsSchema: attendedMembersColumns,
+    columnsSchema: attendedGuestColumns,
     useQuery: useGetAttendedGuestQuery,
   },
 ];
@@ -96,7 +99,7 @@ function AttendenceContent() {
         data={[
           {
             title: "Members",
-            value: data?.data?.totalMembers,
+            value: data?.data?.attendeesMembers,
             color: "bg-blue-500",
             icon: <Users />,
           },
