@@ -105,7 +105,7 @@ export default function AttendeeTablePage<T>({
         <div className={showQuickInsights ? "grid grid-cols-10 gap-5" : ""}>
           <div className={showQuickInsights ? "col-span-7" : ""}>
             <DataTable<T>
-              data={data?.data ?? []}
+              data={data?.data?.data ?? []}
               columns={columns}
               searchConfig={searchConfig}
               statusConfig={statusConfig}

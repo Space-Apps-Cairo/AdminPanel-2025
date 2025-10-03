@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import AttendeeTablePage from "./_components/AttendeeTablePage";
 import { attendedMembersColumns } from "./_components/columns/columns";
-import { useGetAttendedMembersQuery } from "@/service/Api/hackathon/attending";
+import { useGetAttendedMembersQuery, useGetAttendedVipQuery } from "@/service/Api/hackathon/attending";
 import { SectionCards } from "@/components/sectionCards/page";
 import { Users, UserCheck, Star, UserCog, Crown, UserPlus } from "lucide-react";
 
@@ -17,7 +17,7 @@ const tabs = [
     value: "member",
     title: "Attended Members",
     columnsSchema: attendedMembersColumns,
-    useQuery: useGetAttendedMembersQuery,
+    useQuery:  useGetAttendedMembersQuery,
   },
   {
     label: "Volunteers",
@@ -45,7 +45,7 @@ const tabs = [
     value: "vip",
     title: "Attended VIPs",
     columnsSchema: attendedMembersColumns,
-    useQuery: useGetAttendedMembersQuery,
+    useQuery: useGetAttendedVipQuery,
   },
   {
     label: "Guests",

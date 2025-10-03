@@ -85,6 +85,12 @@ export const HackathonAttend = api.injectEndpoints({
       providesTags: ["HackathonAttend"],
     }),
 
+    //Vip Attendees
+    getAttendedVip: builder.query<MembersResponse, string>({
+      query: (queryString) => `/vip-attendee${queryString}`,
+      providesTags: ["HackathonAttend"],
+    }),
+
     //hackathon-pending-members
     getpendingmembers: builder.query<Member[], void>({
       query: () => "/hackathon-pending-members",
@@ -101,4 +107,5 @@ export const {
   useRegisterHackathonJudgeMutation,
   useRegisterHackathonGuestMutation,
   useRegisterHackathonVolunteerMutation,
+  useGetAttendedVipQuery
 } = HackathonAttend;
