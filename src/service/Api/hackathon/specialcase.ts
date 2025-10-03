@@ -1,15 +1,13 @@
 import { Member } from "@/types/hackthon/specialMember";
-import { api } from "../api"
+import { api } from "../api";
 
 export const HackathonSpecialCasesApi = api.injectEndpoints({
   endpoints: (build) => ({
-    
     getSpecialCases: build.query<Member, void>({
       query: () => "/hackathon-special-cases",
       providesTags: ["SpecialCases"],
     }),
 
-   
     addSpecialCase: build.mutation<Member, Partial<Member>>({
       query: (data) => ({
         url: "/hackathon-special-cases",
@@ -26,7 +24,6 @@ export const HackathonSpecialCasesApi = api.injectEndpoints({
       }),
       invalidatesTags: ["SpecialCases"],
     }),
-
   }),
 });
 

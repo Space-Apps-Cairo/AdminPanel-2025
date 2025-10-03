@@ -150,7 +150,7 @@ export default function HackathonScanPage() {
 
                 <Link
                   className="w-full"
-                  href={`/hackathon/attendance?b=${type}`}
+                  href={`/hackathon/attendance?tab=${type}`}
                 >
                   <Button className="w-full" variant="outline">
                     <User className="mr-2 h-4 w-4" />

@@ -105,7 +105,7 @@ export default function AttendeeTablePage<T>({
         <div className={showQuickInsights ? "grid grid-cols-10 gap-5" : ""}>
           <div className={showQuickInsights ? "col-span-7" : ""}>
             <DataTable<T>
-              data={data?.data?.data ?? []}
+              data={data?.data ?? []}
               columns={columns}
               searchConfig={searchConfig}
               statusConfig={statusConfig}
@@ -127,49 +127,52 @@ export default function AttendeeTablePage<T>({
                     <span className="text-muted-foreground text-sm sm:text-base">
                       Total Attendees
                     </span>
-                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                    <Badge
+                      variant="secondary"
+                      className="text-xs px-1.5 py-0.5"
+                    >
                       {data?.count || 0} Members
                     </Badge>
                   </div>
 
                   {/* {data.insights.male_attended !== undefined && ( */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-sm sm:text-base">
-                        Male Attended
-                      </span>
-                      {/* <span className="font-semibold">{data.insights.male_attended}</span> */}
-                      <span className="font-semibold">0</span>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground text-sm sm:text-base">
+                      Male Attended
+                    </span>
+                    {/* <span className="font-semibold">{data.insights.male_attended}</span> */}
+                    <span className="font-semibold">0</span>
+                  </div>
                   {/* )} */}
 
                   {/* {data.insights.female_attended !== undefined && ( */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-sm sm:text-base">
-                        Female Attended
-                      </span>
-                      {/* <span className="font-semibold">{data.insights.female_attended}</span> */}
-                      <span className="font-semibold">0</span>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground text-sm sm:text-base">
+                      Female Attended
+                    </span>
+                    {/* <span className="font-semibold">{data.insights.female_attended}</span> */}
+                    <span className="font-semibold">0</span>
+                  </div>
                   {/* )} */}
 
                   {/* {data.insights.day1_attendees !== undefined && ( */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-sm sm:text-base">
-                        Total Day1 Attendees
-                      </span>
-                      {/* <span className="font-semibold">{data.insights.day1_attendees}</span> */}
-                      <span className="font-semibold">0</span>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground text-sm sm:text-base">
+                      Total Day1 Attendees
+                    </span>
+                    {/* <span className="font-semibold">{data.insights.day1_attendees}</span> */}
+                    <span className="font-semibold">0</span>
+                  </div>
                   {/* )} */}
 
                   {/* {data.insights.day2_attendees !== undefined && ( */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-sm sm:text-base">
-                        Total Day2 Attendees
-                      </span>
-                      {/* <span className="font-semibold">{data.insights.day2_attendees}</span> */}
-                      <span className="font-semibold">0</span>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground text-sm sm:text-base">
+                      Total Day2 Attendees
+                    </span>
+                    {/* <span className="font-semibold">{data.insights.day2_attendees}</span> */}
+                    <span className="font-semibold">0</span>
+                  </div>
                   {/* )} */}
 
                   {/* عرض insights إضافية إذا كانت موجودة */}
@@ -194,7 +197,6 @@ export default function AttendeeTablePage<T>({
           )}
         </div>
       )}
-
     </div>
   );
 }

@@ -91,10 +91,35 @@ export const HackathonAttend = api.injectEndpoints({
       providesTags: ["HackathonAttend"],
     }),
 
+    getAttendedMentor: builder.query<MembersResponse, string>({
+      query: (queryString) => `/mentor-attendee${queryString}`,
+      providesTags: ["HackathonAttend"],
+    }),
+
+    getAttendedJudge: builder.query<MembersResponse, string>({
+      query: (queryString) => `/judge-attendee${queryString}`,
+      providesTags: ["HackathonAttend"],
+    }),
+
+    getAttendedVolunteer: builder.query<MembersResponse, string>({
+      query: (queryString) => `/volunteer-attendee${queryString}`,
+      providesTags: ["HackathonAttend"],
+    }),
+
+    getAttendedGuest: builder.query<MembersResponse, string>({
+      query: (queryString) => `/guest-attendee${queryString}`,
+      providesTags: ["HackathonAttend"],
+    }),
+
     //hackathon-pending-members
     getpendingmembers: builder.query<Member[], void>({
       query: () => "/hackathon-pending-members",
       transformResponse: (response: MembersResponse) => response.data ?? [],
+      providesTags: ["HackathonAttend"],
+    }),
+    //hackathon-attendee
+    getHackathonAttendeeInsights: builder.query<MembersResponse, void>({
+      query: () => `/hackathon-attendee`,
       providesTags: ["HackathonAttend"],
     }),
   }),
@@ -107,5 +132,10 @@ export const {
   useRegisterHackathonJudgeMutation,
   useRegisterHackathonGuestMutation,
   useRegisterHackathonVolunteerMutation,
-  useGetAttendedVipQuery
+  useGetAttendedVipQuery,
+  useGetAttendedGuestQuery,
+  useGetAttendedJudgeQuery,
+  useGetAttendedMentorQuery,
+  useGetAttendedVolunteerQuery,
+  useGetHackathonAttendeeInsightsQuery,
 } = HackathonAttend;

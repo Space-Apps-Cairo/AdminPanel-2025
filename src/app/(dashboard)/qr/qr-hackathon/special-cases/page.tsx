@@ -24,7 +24,13 @@ import { SpecialMemberSchema } from "@/validations/hackthon/specialMember";
 import { useAddSpecialCaseMutation } from "@/service/Api/hackathon/specialcase";
 import { toast } from "sonner";
 import { useGetAllTeamsQuery } from "@/service/Api/teams";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FormData = z.infer<typeof SpecialMemberSchema>;
 
@@ -39,51 +45,42 @@ export default function FullFormCard() {
       reason: "",
       email: "",
       team_id: "",
-      national_id_front: null,
-      national_id_back: null,
     },
   });
 
   const [addSpecialCase] = useAddSpecialCaseMutation();
   const [searchTerm, setSearchTerm] = useState("");
-const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(5);
 
+  const buildQueryString = useCallback(() => {
+    const params = new URLSearchParams();
+    if (searchTerm) params.append("search", searchTerm);
+    return params.toString() ? `?${params.toString()}` : "";
+  }, [searchTerm]);
 
-const buildQueryString = useCallback(() => {
-  const params = new URLSearchParams();
-  if (searchTerm) params.append("search", searchTerm);
-  return params.toString() ? `?${params.toString()}` : "";
-}, [searchTerm]);
-
-
-
-const { data: teamsData, isLoading: isLoadingTeams } = useGetAllTeamsQuery(buildQueryString());
+  const { data: teamsData, isLoading: isLoadingTeams } = useGetAllTeamsQuery(
+    buildQueryString()
+  );
 
   const onSubmit = async (data: FormData) => {
-  try {
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    formData.append("name", data.name);
-    formData.append("phone", data.phone);
-    formData.append("national_id", data.national_id);
-    formData.append("reason", data.reason);
-     formData.append("team_id", data.team_id);
+      formData.append("name", data.name);
+      formData.append("phone", data.phone);
+      formData.append("national_id", data.national_id);
+      formData.append("reason", data.reason);
+      formData.append("team_id", data.team_id);
       formData.append("email", data.email);
-    if (data.national_id_front) {
-      formData.append("national_id_front", data.national_id_front);
-    }
-    if (data.national_id_back) {
-      formData.append("national_id_back", data.national_id_back);
-    }
 
-    await addSpecialCase(formData).unwrap();
-    toast.success("Special case submitted successfully");
-    form.reset();
-  } catch (error: any) {
-    console.error(error);
-    toast.error(error?.data?.message || "Failed to submit special case");
-  }
-};
+      await addSpecialCase(formData).unwrap();
+      toast.success("Special case submitted successfully");
+      form.reset();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.data?.message || "Failed to submit special case");
+    }
+  };
 
   return (
     <div className="w-full max-w-lg mx-auto mt-10 mb-10 space-y-6">
@@ -139,7 +136,7 @@ const { data: teamsData, isLoading: isLoadingTeams } = useGetAllTeamsQuery(build
                 )}
               />
 
-<FormField
+              <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
@@ -153,49 +150,52 @@ const { data: teamsData, isLoading: isLoadingTeams } = useGetAllTeamsQuery(build
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="team_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Team Name</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Search and select a team" />
+                        </SelectTrigger>
 
-
-<FormField
-  control={form.control}
-  name="team_id"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Team Name</FormLabel>
-      <FormControl>
-        <Select
-          onValueChange={field.onChange}
-          value={field.value}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Search and select a team" />
-          </SelectTrigger>
-         
-          <SelectContent>
-            <div className="p-2">
-              <Input
-                placeholder="Search team..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                        <SelectContent>
+                          <div className="p-2">
+                            <Input
+                              placeholder="Search team..."
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                          </div>
+                          {isLoadingTeams ? (
+                            <div className="p-2 text-sm text-gray-500">
+                              Loading...
+                            </div>
+                          ) : (
+                            teamsData?.data
+                              ?.slice(0, limit)
+                              .map((team: any) => (
+                                <SelectItem
+                                  key={team.id}
+                                  value={team.id.toString()}
+                                >
+                                  {team.team_name}
+                                </SelectItem>
+                              ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            {isLoadingTeams ? (
-              <div className="p-2 text-sm text-gray-500">Loading...</div>
-            ) : (
-              teamsData?.data?.slice(0, limit).map((team: any) => (
-                <SelectItem key={team.id} value={team.id.toString()}>
-                  {team.team_name}
-                </SelectItem>
-              ))
-            )}
-          </SelectContent>
-        </Select>
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-
-
 
               <FormField
                 control={form.control}
@@ -205,46 +205,6 @@ const { data: teamsData, isLoading: isLoadingTeams } = useGetAllTeamsQuery(build
                     <FormLabel>Reason</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter Reason" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="national_id_front"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>National ID Front</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          field.onChange(e.target.files?.[0] || null)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="national_id_back"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>National ID Back</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          field.onChange(e.target.files?.[0] || null)
-                        }
-                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -273,4 +233,3 @@ const { data: teamsData, isLoading: isLoadingTeams } = useGetAllTeamsQuery(build
     </div>
   );
 }
-

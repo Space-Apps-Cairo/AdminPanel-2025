@@ -7,7 +7,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import AttendeeTablePage from "./_components/AttendeeTablePage";
 import { attendedMembersColumns } from "./_components/columns/columns";
-import { useGetAttendedMembersQuery, useGetAttendedVipQuery } from "@/service/Api/hackathon/attending";
+import {
+  useGetAttendedVolunteerQuery,
+  useGetAttendedMembersQuery,
+  useGetAttendedVipQuery,
+  useGetAttendedJudgeQuery,
+  useGetAttendedMentorQuery,
+  useGetAttendedGuestQuery,
+  useGetHackathonAttendeeInsightsQuery,
+} from "@/service/Api/hackathon/attending";
 import { SectionCards } from "@/components/sectionCards/page";
 import { Users, UserCheck, Star, UserCog, Crown, UserPlus } from "lucide-react";
 
@@ -17,28 +25,28 @@ const tabs = [
     value: "member",
     title: "Attended Members",
     columnsSchema: attendedMembersColumns,
-    useQuery:  useGetAttendedMembersQuery,
+    useQuery: useGetAttendedMembersQuery,
   },
   {
     label: "Volunteers",
     value: "volunteer",
     title: "Attended Volunteers",
     columnsSchema: attendedMembersColumns,
-    useQuery: useGetAttendedMembersQuery,
+    useQuery: useGetAttendedVolunteerQuery,
   },
   {
     label: "Judges",
     value: "judge",
     title: "Attended Judges",
     columnsSchema: attendedMembersColumns,
-    useQuery: useGetAttendedMembersQuery,
+    useQuery: useGetAttendedJudgeQuery,
   },
   {
     label: "Mentors",
     value: "mentor",
     title: "Attended Mentors",
     columnsSchema: attendedMembersColumns,
-    useQuery: useGetAttendedMembersQuery,
+    useQuery: useGetAttendedMentorQuery,
   },
   {
     label: "Vips",
@@ -52,7 +60,7 @@ const tabs = [
     value: "guest",
     title: "Attended Guests",
     columnsSchema: attendedMembersColumns,
-    useQuery: useGetAttendedMembersQuery,
+    useQuery: useGetAttendedGuestQuery,
   },
 ];
 
@@ -64,6 +72,8 @@ function AttendenceContent() {
   const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState(tabParam || "member");
 
+  const { data, isLoading: isLoadingInsights } =
+    useGetHackathonAttendeeInsightsQuery();
   // 👇 Change active tab when there's a hash
   useEffect(() => {
     if (tabParam) {
@@ -186,4 +196,3 @@ export default function Attendence() {
     </Suspense>
   );
 }
-

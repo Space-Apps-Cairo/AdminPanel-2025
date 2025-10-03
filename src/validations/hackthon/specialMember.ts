@@ -6,14 +6,14 @@ export const SpecialMemberSchema = z.object({
     .string()
     .min(10, { message: "Phone must be at least 10 digits." })
     .max(15, { message: "Phone must not exceed 15 digits." }),
-  reason: z.string().min(5, { message: "Reason must be at least 5 characters." }),
+  reason: z
+    .string()
+    .min(5, { message: "Reason must be at least 5 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   national_id: z
     .string()
     .length(14, { message: "National ID must be exactly 14 digits." }),
-    team_id: z.string().min(1),
-   national_id_front: z.any().nullable(),
-  national_id_back: z.any().nullable(),
+  team_id: z.string().optional(),
 });
 
 export type TeamMemberSchema = z.infer<typeof SpecialMemberSchema>;
