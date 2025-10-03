@@ -36,8 +36,10 @@ export default function MentorsPage() {
 
     // filters
     if (orgFilters.length) params.append("organization", orgFilters.join(","));
-    if (expFilters.length) params.append("level_of_experience", expFilters.join(","));
-    if (expertiseFilters.length) params.append("area_of_expertise", expertiseFilters.join(","));
+    if (expFilters.length)
+      params.append("level_of_experience", expFilters.join(","));
+    if (expertiseFilters.length)
+      params.append("area_of_expertise", expertiseFilters.join(","));
 
     if (pageSize === -1) {
       params.append("limit", "all");
@@ -47,7 +49,14 @@ export default function MentorsPage() {
     params.append("page", currentPage.toString());
 
     return params.toString() ? `?${params.toString()}` : "";
-  }, [searchTerm, orgFilters, expFilters, expertiseFilters, pageSize, currentPage]);
+  }, [
+    searchTerm,
+    orgFilters,
+    expFilters,
+    expertiseFilters,
+    pageSize,
+    currentPage,
+  ]);
 
   const {
     data: mentorsRes,
@@ -76,8 +85,7 @@ export default function MentorsPage() {
       if (m.level_of_experience) exp.add(m.level_of_experience);
       if (m.area_of_expertise) expertise.add(m.area_of_expertise);
     });
-    const toOpts = (arr: string[]) =>
-      arr.map((label, i) => ({ id: i, label }));
+    const toOpts = (arr: string[]) => arr.map((label, i) => ({ id: i, label }));
     return {
       orgOptions: toOpts(Array.from(org)),
       expOptions: toOpts(Array.from(exp)),
@@ -89,8 +97,16 @@ export default function MentorsPage() {
     enabled: false,
     filterOptions: [
       { title: "Organization", queryKey: "organization", options: orgOptions },
-      { title: "Experience", queryKey: "level_of_experience", options: expOptions },
-      { title: "Expertise", queryKey: "area_of_expertise", options: expertiseOptions },
+      {
+        title: "Experience",
+        queryKey: "level_of_experience",
+        options: expOptions,
+      },
+      {
+        title: "Expertise",
+        queryKey: "area_of_expertise",
+        options: expertiseOptions,
+      },
     ],
   };
 
@@ -129,39 +145,39 @@ export default function MentorsPage() {
   function formatMentorsPayload(rows: Record<string, unknown>[]) {
     // const safeBool = (v: unknown) => String(v).toLowerCase() === "true";
     const data = rows.map((r) => ({
+      name: (r.name as string) ?? "N/A",
+      email: (r.email as string) ?? "N/A",
+      phone_number: (r.phone_number as string) ?? "N/A",
+      job_title: (r.job_title as string) ?? "N/A",
+      organization: (r.organization as string) ?? "N/A",
+      tshirt_size: (r.tshirt_size as string) ?? "N/A",
+      area_of_expertise: (r.area_of_expertise as string) ?? "N/A",
+      level_of_experience: (r.level_of_experience as string) ?? "N/A",
 
-        name: (r.name as string) ?? "N/A",
-        email: (r.email as string) ?? "N/A",
-        phone_number: (r.phone_number as string) ?? "N/A",
-        job_title: (r.job_title as string) ?? "N/A",
-        organization: (r.organization as string) ?? "N/A",
-        tshirt_size: (r.tshirt_size as string) ?? "N/A",
-        area_of_expertise: (r.area_of_expertise as string) ?? "N/A",
-        level_of_experience: (r.level_of_experience as string) ?? "N/A",
-
-        // brief_professional_bio: (r.brief_professional_bio as string) ?? "",
-        // additional_comments: (r.additional_comments as string) ?? "",
-        // was_part_of_nasa_space_apps: safeBool(r.was_part_of_nasa_space_apps),
-        // available_for_full_support: safeBool(r.available_for_full_support),
-        // available_during_hackathon_all_times: safeBool(r.available_during_hackathon_all_times),
-        // willing_to_stay_overnight: safeBool(r.willing_to_stay_overnight),
-        // linkedin_profile_url: (r.linkedin_profile_url as string) ?? "",
-        // personal_photo_path: (r.personal_photo_path as string) ?? "",
-        // national_id_front_path: (r.national_id_front_path as string) ?? "",
-        // national_id_back_path: (r.national_id_front_path as string) ?? "",
-        // space_apps_year: (r.space_apps_year as string) ?? "",
-        // timing_concerns: (r.timing_concerns as string) ?? "",
-
+      // brief_professional_bio: (r.brief_professional_bio as string) ?? "",
+      // additional_comments: (r.additional_comments as string) ?? "",
+      // was_part_of_nasa_space_apps: safeBool(r.was_part_of_nasa_space_apps),
+      // available_for_full_support: safeBool(r.available_for_full_support),
+      // available_during_hackathon_all_times: safeBool(r.available_during_hackathon_all_times),
+      // willing_to_stay_overnight: safeBool(r.willing_to_stay_overnight),
+      // linkedin_profile_url: (r.linkedin_profile_url as string) ?? "",
+      // personal_photo_path: (r.personal_photo_path as string) ?? "",
+      // national_id_front_path: (r.national_id_front_path as string) ?? "",
+      // national_id_back_path: (r.national_id_front_path as string) ?? "",
+      // space_apps_year: (r.space_apps_year as string) ?? "",
+      // timing_concerns: (r.timing_concerns as string) ?? "",
     }));
 
-    console.log('data', data)
+    console.log("data", data);
 
     return {
-      data
+      data,
     };
   }
 
-  async function submitMentors(payload: ReturnType<typeof formatMentorsPayload>) {
+  async function submitMentors(
+    payload: ReturnType<typeof formatMentorsPayload>
+  ) {
     await importMentors(payload).unwrap();
   }
 
@@ -178,10 +194,18 @@ export default function MentorsPage() {
         level_of_experience: data.level_of_experience,
         tshirt_size: data.tshirt_size,
         additional_comments: data.additional_comments,
-        was_part_of_nasa_space_apps: String(data.was_part_of_nasa_space_apps) === "true" || data.was_part_of_nasa_space_apps === true,
-        available_for_full_support: String(data.available_for_full_support) === "true" || data.available_for_full_support === true,
-        available_during_hackathon_all_times: String(data.available_during_hackathon_all_times) === "true" || data.available_during_hackathon_all_times === true,
-        willing_to_stay_overnight: String(data.willing_to_stay_overnight) === "true" || data.willing_to_stay_overnight === true,
+        was_part_of_nasa_space_apps:
+          String(data.was_part_of_nasa_space_apps) === "true" ||
+          data.was_part_of_nasa_space_apps === true,
+        available_for_full_support:
+          String(data.available_for_full_support) === "true" ||
+          data.available_for_full_support === true,
+        available_during_hackathon_all_times:
+          String(data.available_during_hackathon_all_times) === "true" ||
+          data.available_during_hackathon_all_times === true,
+        willing_to_stay_overnight:
+          String(data.willing_to_stay_overnight) === "true" ||
+          data.willing_to_stay_overnight === true,
         linkedin_profile_url: data.linkedin_profile_url,
         personal_photo_path: data.personal_photo_path,
         national_id_front_path: data.national_id_front_path,
@@ -239,7 +263,7 @@ export default function MentorsPage() {
           bulkDeleteMutation={deleteMentor}
           backendPagination={backendPagination}
           emailTemplateType="mentors"
-          enableBulkEmail={false}
+          enableBulkEmail={true}
         />
       </div>
     </React.Fragment>
