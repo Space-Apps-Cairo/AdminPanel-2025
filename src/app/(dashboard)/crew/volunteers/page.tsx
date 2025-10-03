@@ -106,19 +106,21 @@ export default function Volunteers() {
   // ====== Upload File Functions ====== //
 
   function formatVolunteersPayload(rows: Record<string, unknown>[]) {
+    const data = rows.map((row) => ({
+      full_name: (row.full_name as string) ?? "N/A",
+      email: (row.email as string) ?? "N/A",
+      phone: (row.phone as string) ?? "N/A",
+      team: (row.team as string) ?? "N/A",
+      volunteering_year: Number(
+        (row.volunteering_year as string) ??
+          new Date().getFullYear().toString() ??
+          "N/A"
+      ),
+      tshirt_size: (row.tshirt_size as string) ?? "N/A",
+    }));
+    console.log('data', data)
     return {
-      volunteers: rows.map((row) => ({
-        full_name: (row.full_name as string) ?? "N/A",
-        email: (row.email as string) ?? "N/A",
-        phone: (row.phone as string) ?? "N/A",
-        team: (row.team as string) ?? "N/A",
-        volunteering_year: Number(
-          (row.volunteering_year as string) ??
-            new Date().getFullYear().toString() ??
-            "N/A"
-        ),
-        tshirt_size: (row.tshirt_size as string) ?? "N/A",
-      })),
+      data
     };
   }
 

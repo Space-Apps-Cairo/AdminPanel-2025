@@ -35,6 +35,13 @@ type ApiResponse<T> = {
   total_pages?: number;
   current_page?: number;
   per_page?: string | number;
+  insights?: {
+    male_attended?: number;
+    female_attended?: number;
+    day1_attendees?: number;
+    day2_attendees?: number;
+    [key: string]: any; // للسماح بـ insights إضافية
+  };
 };
 
 // Request type (omit auto-generated fields)

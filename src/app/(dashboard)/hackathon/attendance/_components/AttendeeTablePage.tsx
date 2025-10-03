@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Layout } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useCallback } from "react";
 import Loading from "@/components/loading/loading";
@@ -9,6 +9,8 @@ import Error from "@/components/Error/page";
 import DataTable from "@/components/table/data-table";
 import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import { DataTableSkeleton } from "@/components/skeletons/datatable";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface AttendeeTablePageProps<T> {
   title: string;
@@ -24,6 +26,7 @@ interface AttendeeTablePageProps<T> {
   searchPlaceholder?: string;
   activeTab: string;
   value: string;
+  showQuickInsights?: boolean;
 }
 
 export default function AttendeeTablePage<T>({
@@ -33,6 +36,7 @@ export default function AttendeeTablePage<T>({
   searchPlaceholder = "Search for attendee",
   activeTab,
   value,
+  showQuickInsights = false,
 }: AttendeeTablePageProps<T>) {
   const router = useRouter();
 
@@ -93,23 +97,104 @@ export default function AttendeeTablePage<T>({
 
   return (
     <div className="mx-auto py-7">
-      {/* <Button variant="outline" className="mb-6" onClick={() => router.back()}>
-        <ChevronLeft />
-        <p>Go Back</p>
-      </Button> */}
       <h1 className="text-2xl font-bold mb-6">{title}</h1>
+
       {isLoading ? (
         <DataTableSkeleton rows={10} columns={5} />
       ) : (
-        <DataTable<T>
-          data={data?.data ?? []}
-          columns={columns}
-          searchConfig={searchConfig}
-          statusConfig={statusConfig}
-          actionConfig={actionConfig}
-          backendPagination={backendPagination}
-        />
+        <div className={showQuickInsights ? "grid grid-cols-10 gap-5" : ""}>
+          <div className={showQuickInsights ? "col-span-7" : ""}>
+            <DataTable<T>
+              data={data?.data ?? []}
+              columns={columns}
+              searchConfig={searchConfig}
+              statusConfig={statusConfig}
+              actionConfig={actionConfig}
+              backendPagination={backendPagination}
+            />
+          </div>
+          {showQuickInsights && (
+            <div className="col-span-3">
+              <Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                    <Layout className="w-5 h-5 text-primary flex-shrink-0" />
+                    Quick Insights
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground text-sm sm:text-base">
+                      Total Attendees
+                    </span>
+                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                      {data?.count || 0} Members
+                    </Badge>
+                  </div>
+
+                  {/* {data.insights.male_attended !== undefined && ( */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground text-sm sm:text-base">
+                        Male Attended
+                      </span>
+                      {/* <span className="font-semibold">{data.insights.male_attended}</span> */}
+                      <span className="font-semibold">0</span>
+                    </div>
+                  {/* )} */}
+
+                  {/* {data.insights.female_attended !== undefined && ( */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground text-sm sm:text-base">
+                        Female Attended
+                      </span>
+                      {/* <span className="font-semibold">{data.insights.female_attended}</span> */}
+                      <span className="font-semibold">0</span>
+                    </div>
+                  {/* )} */}
+
+                  {/* {data.insights.day1_attendees !== undefined && ( */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground text-sm sm:text-base">
+                        Total Day1 Attendees
+                      </span>
+                      {/* <span className="font-semibold">{data.insights.day1_attendees}</span> */}
+                      <span className="font-semibold">0</span>
+                    </div>
+                  {/* )} */}
+
+                  {/* {data.insights.day2_attendees !== undefined && ( */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground text-sm sm:text-base">
+                        Total Day2 Attendees
+                      </span>
+                      {/* <span className="font-semibold">{data.insights.day2_attendees}</span> */}
+                      <span className="font-semibold">0</span>
+                    </div>
+                  {/* )} */}
+
+                  {/* عرض insights إضافية إذا كانت موجودة */}
+                  {/* {Object.entries(data.insights).map(([key, value]) => {
+                    // تجاهل الحقول التي تم عرضها بالفعل
+                    if (['male_attended', 'female_attended', 'day1_attendees', 'day2_attendees'].includes(key)) {
+                      return null;
+                    }
+                    
+                    return (
+                      <div key={key} className="flex items-center justify-between">
+                        <span className="text-muted-foreground text-sm sm:text-base capitalize">
+                          {key.replace(/_/g, ' ')}
+                        </span>
+                        <span className="font-semibold">{value}</span>
+                      </div>
+                    );
+                  })} */}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
       )}
+
     </div>
   );
 }

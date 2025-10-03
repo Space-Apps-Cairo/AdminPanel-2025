@@ -150,6 +150,7 @@ export default function Attendence() {
               useQuery={tab.useQuery}
               activeTab={activeTab}
               value={tab.value}
+              showQuickInsights={true}
             />
           </TabsContent>
         ))}
