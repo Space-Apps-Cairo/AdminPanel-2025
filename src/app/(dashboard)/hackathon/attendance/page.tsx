@@ -6,7 +6,10 @@ import { ChevronLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import AttendeeTablePage from "./_components/AttendeeTablePage";
-import { attendedMembersColumns } from "./_components/columns/columns";
+import {
+  attendedMembersColumns,
+  attendedMentorColumns,
+} from "./_components/columns/columns";
 import {
   useGetAttendedVolunteerQuery,
   useGetAttendedMembersQuery,
@@ -45,7 +48,7 @@ const tabs = [
     label: "Mentors",
     value: "mentor",
     title: "Attended Mentors",
-    columnsSchema: attendedMembersColumns,
+    columnsSchema: attendedMentorColumns,
     useQuery: useGetAttendedMentorQuery,
   },
   {

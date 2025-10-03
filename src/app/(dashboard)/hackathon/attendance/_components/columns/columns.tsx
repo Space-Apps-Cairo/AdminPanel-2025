@@ -9,3 +9,11 @@ export const attendedMembersColumns: ColumnDef<Member>[] = [
   { header: "Phone Number", accessorKey: "member.phone_number", size: 150 },
   { header: "Attended On", accessorKey: "attended_on", size: 150 },
 ];
+export const attendedMentorColumns: ColumnDef<Member>[] = [
+  { header: "UUID", accessorKey: "mentor.uuid", size: 80 },
+  { header: "National ID", accessorKey: "mentor.national", size: 180 },
+  { header: "Name", accessorKey: "mentor.name", size: 180 },
+  { header: "Email", accessorKey: "mentor.email", size: 220 },
+  { header: "Phone Number", accessorKey: "mentor.phone_number", size: 150 },
+  { header: "Attended On", accessorKey: "attended_on", size: 150 },
+];
