@@ -33,6 +33,27 @@ const tabs = [
     columnsSchema: attendedMembersColumns,
     showQuickInsights: true,
     useQuery: useGetAttendedMembersQuery,
+    // filterOptions: [
+    //   {
+    //     // columnKey: "participation_method.title",
+    //     queryKey: "participation_method_id", //any thing
+    //     title: "Participation Method",
+    //     options: [
+    //       { id: 1, label: "Onsite" },
+    //       { id: 2, label: "Virtual" },
+    //     ],
+    //   },
+    //   {
+    //     // columnKey: "participation_method.title",
+    //     queryKey: "status", //any thing
+    //     title: "Status",
+    //     options: [
+    //       { id: "accepted", label: "Accepted" },
+    //       { id: "rejected", label: "Rejected" },
+    //       // { id: 3, label: "pending" },
+    //     ],
+    //   },
+    // ],
   },
   {
     label: "Volunteers",
@@ -181,6 +202,7 @@ function AttendenceContent() {
               value={tab.value}
               showQuickInsights={tab.showQuickInsights}
               memberInsights={data?.data}
+              filterOptions={tab?.filterOptions}
             />
           </TabsContent>
         ))}

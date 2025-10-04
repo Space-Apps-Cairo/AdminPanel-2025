@@ -12,6 +12,7 @@ import { DataTableSkeleton } from "@/components/skeletons/datatable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HackathonInsightsData } from "@/types/hackthon/insights";
+import { FilterGroup } from "@/types/hackthon/form-options/filterOptions";
 
 interface AttendeeTablePageProps<T> {
   title: string;
@@ -29,6 +30,7 @@ interface AttendeeTablePageProps<T> {
   value: string;
   showQuickInsights?: boolean;
   memberInsights?: HackathonInsightsData;
+  filterOptions?: FilterGroup[];
 }
 
 export default function AttendeeTablePage<T>({
@@ -40,6 +42,7 @@ export default function AttendeeTablePage<T>({
   value,
   showQuickInsights = false,
   memberInsights,
+  filterOptions,
 }: AttendeeTablePageProps<T>) {
   const router = useRouter();
 
@@ -72,7 +75,10 @@ export default function AttendeeTablePage<T>({
     searchKeys: ["name", "email", "national"],
   };
 
-  const statusConfig: StatusConfig = { enabled: false };
+  const statusConfig: StatusConfig = {
+    enabled: filterOptions != null,
+    filterOptions: filterOptions,
+  };
 
   const actionConfig: ActionConfig = {
     enabled: true,
