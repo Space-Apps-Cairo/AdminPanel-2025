@@ -344,52 +344,52 @@ export default function DataTable<TData extends DataTableRow>({
     return cols;
   }, [baseColumns, enableSelection, statusConfig]);
 
-    const table = useReactTable<TData>({
-      data,
-      columns,
-      getCoreRowModel: getCoreRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      onSortingChange: setSorting,
-      enableSortingRemoval: false,
-      getPaginationRowModel: backendPagination.enabled
-        ? undefined
-        : getPaginationRowModel(),
-      onPaginationChange: setPagination,
-      onColumnFiltersChange: setColumnFilters,
-      onColumnVisibilityChange: setColumnVisibility,
-      getFilteredRowModel: backendPagination.enabled
-        ? undefined
-        : getFilteredRowModel(),
-      getFacetedUniqueValues: backendPagination.enabled
-        ? undefined
-        : getFacetedUniqueValues(),
-      onGlobalFilterChange: setGlobalFilter,
-      globalFilterFn:
-        searchConfig.enabled && !backendPagination.enabled
-          ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
-          : undefined,
-      enableSorting,
-      state: {
-        sorting,
-        pagination,
-        columnFilters,
-        columnVisibility,
-        globalFilter,
-      },
-      // Backend pagination configuration
-      manualPagination: backendPagination.enabled,
-      manualSorting: false,
-      manualFiltering: backendPagination.enabled,
-      pageCount:
-        backendPagination.enabled && backendPagination.totalCount != null
-          ? backendPagination.pageSize === -1
-            ? 1
-            : Math.ceil(
-                backendPagination.totalCount /
-                  (backendPagination.pageSize ?? pagination.pageSize)
-              )
-          : -1,
-    });
+  const table = useReactTable<TData>({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    enableSortingRemoval: false,
+    getPaginationRowModel: backendPagination.enabled
+      ? undefined
+      : getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    getFilteredRowModel: backendPagination.enabled
+      ? undefined
+      : getFilteredRowModel(),
+    getFacetedUniqueValues: backendPagination.enabled
+      ? undefined
+      : getFacetedUniqueValues(),
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn:
+      searchConfig.enabled && !backendPagination.enabled
+        ? createGlobalFilterFn(searchConfig.searchKeys ?? [])
+        : undefined,
+    enableSorting,
+    state: {
+      sorting,
+      pagination,
+      columnFilters,
+      columnVisibility,
+      globalFilter,
+    },
+    // Backend pagination configuration
+    manualPagination: backendPagination.enabled,
+    manualSorting: false,
+    manualFiltering: backendPagination.enabled,
+    pageCount:
+      backendPagination.enabled && backendPagination.totalCount != null
+        ? backendPagination.pageSize === -1
+          ? 1
+          : Math.ceil(
+              backendPagination.totalCount /
+                (backendPagination.pageSize ?? pagination.pageSize)
+            )
+        : -1,
+  });
 
   const debouncedSearchRef = useRef<ReturnType<typeof debounce> | null>(null);
 
@@ -466,22 +466,47 @@ export default function DataTable<TData extends DataTableRow>({
   //   });
   // };
 
+  // const extractMemberDetails = (members: any[]) => {
+  //   return members.map((member) => {
+  //     return {
+  //       UUID: member.member.uuid || "N/A",
+  //       "Full Name": member.member.name || "N/A",
+  //       Email: member.member.email || "N/A",
+  //       "Phone Number": member.member.phone_number || "N/A",
+  //       Age: member.member.age || "N/A",
+  //       Gender: member.member.gender || "N/A",
+  //       Address: member.member.address || "N/A",
+  //       "Participation Type":
+  //         member.member.participation_type === 1
+  //           ? "onsite"
+  //           : member.member.participation_type === 2
+  //           ? "virtual"
+  //           : "N/A",
+  //       "National ID / Passport ID": member.member.national || "N/A",
+  //       "Attended At": `${member.created_at.split("T")[0]} (${member.created_at.split("T")[1].split(".")[0]})` || "N/A",
+  //     };
+  //   });
+  // };
+
   const extractMemberDetails = (members: any[]) => {
     return members.map((member) => {
       return {
-        UUID: member.uuid || "N/A",
-        "Name": member.name || "N/A",
-        "Email": member.email || "N/A",
-        "Phone Number": member.phone_number || "N/A",
-        "Age": member.age || "N/A",
-        "Gender": member.gender || "N/A",
-        "Address": member.address || "N/A",
-        "Participation Type": member.participation_type === 1 ? "onsite" : member.participation_type === 2 ? "virtual" : "N/A",
-        "National ID / Passport ID": member.national || "N/A",
+        UUID: member?.uuid || "N/A",
+        "Tam Name": member?.team_name || "N/A",
+        "Members Count": member?.members_count || "N/A",
+        "Challenge Name": member.challenge?.title || "N/A",
+        "Challenge Description": member?.challenge?.description || "N/A",
+        "Team Leader UUID": member?.team_leader?.uuid || 0,
+        "Team Leader Name": member?.team_leader?.name || "N/A",
+        "Team Leader Email": member?.team_leader?.email || "N/A",
+        "Limited Capacity": member?.limited_capacity === 1 ? "Yes" : "No",
+        "Member Count": member?.members_count || 0,
+        "Project Proposal": member?.project_proposal_url || "N/A",
+        "Project Video": member?.project_video_url || "N/A",
+        "Project Image": member?.team_photo?.original_url || "N/A",
       };
     });
   };
-
 
   // استخدامها في دالة التصدير
   const handleExport = (type: string) => {
@@ -554,15 +579,17 @@ export default function DataTable<TData extends DataTableRow>({
 
   // Update the filter handling logic
 
-
   const currentPageIndex = table.getState().pagination.pageIndex;
   const pageSizeCount = backendPagination.enabled
-    ? (backendPagination.pageSize || 10)
+    ? backendPagination.pageSize || 10
     : table.getState().pagination.pageSize;
   const totalCount = backendPagination.enabled
     ? backendPagination.totalCount || 0
     : table.getRowCount();
-  const from = totalCount === 0 ? 0 : currentPageIndex * (pageSizeCount === -1 ? 0 : pageSizeCount) + 1;
+  const from =
+    totalCount === 0
+      ? 0
+      : currentPageIndex * (pageSizeCount === -1 ? 0 : pageSizeCount) + 1;
   const to =
     pageSizeCount === -1
       ? totalCount
@@ -575,8 +602,8 @@ export default function DataTable<TData extends DataTableRow>({
       : totalCount === 0
       ? 0
       : Math.ceil(totalCount / pageSizeCount);
-  const isLastPage = totalPages === 0 ? true : currentPageIndex >= totalPages - 1;
-
+  const isLastPage =
+    totalPages === 0 ? true : currentPageIndex >= totalPages - 1;
 
   const handleFilterChange = (
     filterKey: string,
@@ -1353,7 +1380,9 @@ export default function DataTable<TData extends DataTableRow>({
                 backendPagination.onPageSizeChange(Number(value));
               }
             }}
-            disabled={backendPagination.enabled ? backendPagination.loading : false}
+            disabled={
+              backendPagination.enabled ? backendPagination.loading : false
+            }
           >
             <SelectTrigger
               id={`${id}-pagesize`}
@@ -1376,12 +1405,14 @@ export default function DataTable<TData extends DataTableRow>({
 
         {/* Page number information */}
         <div className="text-muted-foreground flex grow justify-end text-sm whitespace-nowrap">
-          <p className="text-muted-foreground text-sm whitespace-nowrap" aria-live="polite">
+          <p
+            className="text-muted-foreground text-sm whitespace-nowrap"
+            aria-live="polite"
+          >
             <span className="text-foreground">
               {from} - {to}
             </span>{" "}
-            of{" "}
-            <span className="text-foreground">{totalCount}</span>
+            of <span className="text-foreground">{totalCount}</span>
           </p>
         </div>
 
@@ -1396,7 +1427,10 @@ export default function DataTable<TData extends DataTableRow>({
                   className="disabled:pointer-events-none disabled:opacity-50"
                   disabled={isFirstPage || backendPagination.loading}
                   onClick={() => {
-                    if (backendPagination.enabled && backendPagination.onPageChange) {
+                    if (
+                      backendPagination.enabled &&
+                      backendPagination.onPageChange
+                    ) {
                       backendPagination.onPageChange(0);
                     } else {
                       table.setPageIndex(0);
