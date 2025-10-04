@@ -16,8 +16,8 @@ export const attendedMembersColumns: ColumnDef<Member>[] = [
       console.log("Method:", row?.original);
       const participantType = row?.original?.member?.participation_type;
       return (
-        <Badge variant={participantType ? "default" : "secondary"}>
-          {participantType ? "Onsite" : "Virtual"}
+        <Badge variant={participantType === 1 ? "default" : "secondary"}>
+          {participantType === 1 ? "Onsite" : "Virtual"}
         </Badge>
       );
     },
