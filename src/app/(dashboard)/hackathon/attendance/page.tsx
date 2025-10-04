@@ -31,6 +31,7 @@ const tabs = [
     value: "member",
     title: "Attended Members",
     columnsSchema: attendedMembersColumns,
+    showQuickInsights: true,
     useQuery: useGetAttendedMembersQuery,
   },
   {
@@ -38,6 +39,7 @@ const tabs = [
     value: "volunteer",
     title: "Attended Volunteers",
     columnsSchema: attendedMembersColumns,
+    showQuickInsights: false,
     useQuery: useGetAttendedVolunteerQuery,
   },
   {
@@ -45,6 +47,7 @@ const tabs = [
     value: "judge",
     title: "Attended Judges",
     columnsSchema: attendedJudgesColumns,
+    showQuickInsights: false,
     useQuery: useGetAttendedJudgeQuery,
   },
   {
@@ -52,6 +55,7 @@ const tabs = [
     value: "mentor",
     title: "Attended Mentors",
     columnsSchema: attendedMentorColumns,
+    showQuickInsights: false,
     useQuery: useGetAttendedMentorQuery,
   },
   {
@@ -59,6 +63,7 @@ const tabs = [
     value: "vip",
     title: "Attended VIPs",
     columnsSchema: attendedVipColumns,
+    showQuickInsights: false,
     useQuery: useGetAttendedVipQuery,
   },
   {
@@ -66,6 +71,7 @@ const tabs = [
     value: "guest",
     title: "Attended Guests",
     columnsSchema: attendedGuestColumns,
+    showQuickInsights: false,
     useQuery: useGetAttendedGuestQuery,
   },
 ];
@@ -173,7 +179,7 @@ function AttendenceContent() {
               useQuery={tab.useQuery}
               activeTab={activeTab}
               value={tab.value}
-              showQuickInsights={true}
+              showQuickInsights={tab.showQuickInsights}
               memberInsights={data?.data}
             />
           </TabsContent>
