@@ -50,11 +50,23 @@ export default function AttendeeTablePage<T>({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>(
+    {}
+  );
 
   // Build query string
   const buildQueryString = useCallback(() => {
     const params = new URLSearchParams();
     if (searchTerm) params.append("search", searchTerm);
+    Object.entries(activeFilters).forEach(([key, values]) => {
+      console.log("key", key);
+      console.log("values", values);
+      if (values.length > 0) {
+        values.forEach((value) => {
+          params.append(key, value);
+        });
+      }
+    });
     if (pageSize === -1) {
       params.append("limit", "all");
     } else {
@@ -62,7 +74,7 @@ export default function AttendeeTablePage<T>({
     }
     params.append("page", currentPage.toString());
     return `?${params.toString()}`;
-  }, [searchTerm, pageSize, currentPage]);
+  }, [searchTerm, pageSize, currentPage, activeFilters]);
 
   // Fetch data via passed hook
   const { data, isLoading, isError } = useQuery(buildQueryString(), {
@@ -101,6 +113,10 @@ export default function AttendeeTablePage<T>({
     onSearchChange: (search: string) => {
       setSearchTerm(search);
       setCurrentPage(1);
+    },
+    onFilterChange: (filters: Record<string, unknown>) => {
+      setActiveFilters(filters as Record<string, string[]>);
+      setCurrentPage(1); // Reset to first page when filtering
     },
     loading: isLoading,
   };

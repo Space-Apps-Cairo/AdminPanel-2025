@@ -33,27 +33,19 @@ const tabs = [
     columnsSchema: attendedMembersColumns,
     showQuickInsights: true,
     useQuery: useGetAttendedMembersQuery,
-    // filterOptions: [
-    //   {
-    //     // columnKey: "participation_method.title",
-    //     queryKey: "participation_method_id", //any thing
-    //     title: "Participation Method",
-    //     options: [
-    //       { id: 1, label: "Onsite" },
-    //       { id: 2, label: "Virtual" },
-    //     ],
-    //   },
-    //   {
-    //     // columnKey: "participation_method.title",
-    //     queryKey: "status", //any thing
-    //     title: "Status",
-    //     options: [
-    //       { id: "accepted", label: "Accepted" },
-    //       { id: "rejected", label: "Rejected" },
-    //       // { id: 3, label: "pending" },
-    //     ],
-    //   },
-    // ],
+    filterOptions: [
+      {
+        // columnKey: "participation_method.title",
+        queryKey: "attended_on", //any thing
+        title: "Attended On",
+        options: [
+          { id: '2025-10-03', label: "Day 1" },
+          { id: '2025-10-04', label: "Day 2" },
+          // { id: 1, label: "Day 1" },
+          // { id: 2, label: "Day 2" },
+        ],
+      },
+    ],
   },
   {
     label: "Volunteers",
