@@ -11,6 +11,7 @@ import { SearchConfig, StatusConfig, ActionConfig } from "@/types/table";
 import { DataTableSkeleton } from "@/components/skeletons/datatable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { HackathonInsightsData } from "@/types/hackthon/insights";
 
 interface AttendeeTablePageProps<T> {
   title: string;
@@ -27,10 +28,7 @@ interface AttendeeTablePageProps<T> {
   activeTab: string;
   value: string;
   showQuickInsights?: boolean;
-  maleCnt?: number;
-  femaleCnt?: number;
-  attendeesMembersFirstDay?: number;
-  attendeesMembersSecondDay?: number;
+  memberInsights?: HackathonInsightsData;
 }
 
 export default function AttendeeTablePage<T>({
@@ -41,10 +39,7 @@ export default function AttendeeTablePage<T>({
   activeTab,
   value,
   showQuickInsights = false,
-  maleCnt,
-  femaleCnt,
-  attendeesMembersFirstDay,
-  attendeesMembersSecondDay,
+  memberInsights,
 }: AttendeeTablePageProps<T>) {
   const router = useRouter();
 
@@ -135,80 +130,45 @@ export default function AttendeeTablePage<T>({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col items-start gap-2.5">
                     <span className="text-muted-foreground text-sm sm:text-base">
-                      Total Attendees
+                      Day 1 Attendees
                     </span>
-                    <Badge
-                      variant="secondary"
-                      className="text-xs px-1.5 py-0.5"
-                    >
-                      {data?.count || 0} Members
-                    </Badge>
+                    <div className="flex gap-3 items-center flex-wrap">
+                      <Badge className="text-xs px-2 py-0.5 bg-gray-100 text-gray-800 border border-gray-200">
+                        {memberInsights?.attendeesMembersFirstDay || 0} Total
+                      </Badge>
+                      <Badge className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 border border-blue-200">
+                        {memberInsights?.day1Male || 0} Male
+                      </Badge>
+                      <Badge className="text-xs px-2 py-0.5 bg-pink-100 text-pink-800 border border-pink-200">
+                        {memberInsights?.day1Female || 0} Female
+                      </Badge>
+                    </div>
                   </div>
 
-                  {/* {data.insights.male_attended !== undefined && ( */}
-
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col items-start gap-2.5">
                     <span className="text-muted-foreground text-sm sm:text-base">
-                      Male Members
+                      Day 2 Attendees
                     </span>
-                    {/* <span className="font-semibold">{data.insights.male_attended}</span> */}
-                    <span className="font-semibold">{maleCnt || 0}</span>
+                    <div className="flex gap-3 items-center flex-wrap">
+                      <Badge className="text-xs px-2 py-0.5 bg-gray-100 text-gray-800 border border-gray-200">
+                        {memberInsights?.attendeesMembersSecondDay || 0} Total
+                      </Badge>
+                      <Badge className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 border border-blue-200">
+                        {memberInsights?.day2Male || 0} Male
+                      </Badge>
+                      <Badge className="text-xs px-2 py-0.5 bg-pink-100 text-pink-800 border border-pink-200">
+                        {memberInsights?.day2Female || 0} Female
+                      </Badge>
+                      <Badge className="text-xs px-2 py-0.5 bg-green-100 text-green-800 border border-green-200">
+                        {memberInsights?.day2Onsite || 0} Onsite
+                      </Badge>
+                      <Badge className="text-xs px-2 py-0.5 bg-purple-100 text-purple-800 border border-purple-200">
+                        {memberInsights?.day2Virtual || 0} Virtual
+                      </Badge>
+                    </div>
                   </div>
-                  {/* )} */}
-
-                  {/* {data.insights.female_attended !== undefined && ( */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-sm sm:text-base">
-                      Female Members
-                    </span>
-                    {/* <span className="font-semibold">{data.insights.female_attended}</span> */}
-                    <span className="font-semibold">{femaleCnt || 0}</span>
-                  </div>
-
-                  {/* )} */}
-
-                  {/* {data.insights.day1_attendees !== undefined && ( */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-sm sm:text-base">
-                      Total Day1 Attendees
-                    </span>
-                    {/* <span className="font-semibold">{data.insights.day1_attendees}</span> */}
-                    <span className="font-semibold">
-                      {attendeesMembersFirstDay || 0}
-                    </span>
-                  </div>
-                  {/* )} */}
-
-                  {/* {data.insights.day2_attendees !== undefined && ( */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-sm sm:text-base">
-                      Total Day2 Attendees
-                    </span>
-                    {/* <span className="font-semibold">{data.insights.day2_attendees}</span> */}
-                    <span className="font-semibold">
-                      {attendeesMembersSecondDay || 0}
-                    </span>
-                  </div>
-                  {/* )} */}
-
-                  {/* عرض insights إضافية إذا كانت موجودة */}
-                  {/* {Object.entries(data.insights).map(([key, value]) => {
-                    // تجاهل الحقول التي تم عرضها بالفعل
-                    if (['male_attended', 'female_attended', 'day1_attendees', 'day2_attendees'].includes(key)) {
-                      return null;
-                    }
-                    
-                    return (
-                      <div key={key} className="flex items-center justify-between">
-                        <span className="text-muted-foreground text-sm sm:text-base capitalize">
-                          {key.replace(/_/g, ' ')}
-                        </span>
-                        <span className="font-semibold">{value}</span>
-                      </div>
-                    );
-                  })} */}
                 </CardContent>
               </Card>
             </div>

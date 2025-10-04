@@ -174,10 +174,7 @@ function AttendenceContent() {
               activeTab={activeTab}
               value={tab.value}
               showQuickInsights={true}
-              maleCnt={data?.data?.totalMembersMale}
-              femaleCnt={data?.data?.totalMembersFemale}
-              attendeesMembersFirstDay={data?.data?.attendeesMembersFirstDay}
-              attendeesMembersSecondDay={data?.data?.attendeesMembersSecondDay}
+              memberInsights={data?.data}
             />
           </TabsContent>
         ))}

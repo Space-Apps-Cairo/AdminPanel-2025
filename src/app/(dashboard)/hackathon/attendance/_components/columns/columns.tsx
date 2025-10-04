@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Member } from "@/types/hackthon/member";
+import { Badge } from "@/components/ui/badge";
 
 export const attendedMembersColumns: ColumnDef<Member>[] = [
   { header: "UUID", accessorKey: "member.uuid", size: 80 },
@@ -8,6 +9,20 @@ export const attendedMembersColumns: ColumnDef<Member>[] = [
   { header: "Email", accessorKey: "member.email", size: 220 },
   { header: "Phone Number", accessorKey: "member.phone_number", size: 150 },
   { header: "Attended On", accessorKey: "attended_on", size: 150 },
+  {
+    header: "Participation Type",
+    accessorKey: "member.participation_type",
+    cell: ({ row }) => {
+      console.log("Method:", row?.original);
+      const participantType = row?.original?.member?.participation_type;
+      return (
+        <Badge variant={participantType ? "default" : "secondary"}>
+          {participantType ? "Onsite" : "Virtual"}
+        </Badge>
+      );
+    },
+    size: 150,
+  },
 ];
 export const attendedMentorColumns: ColumnDef<Member>[] = [
   { header: "UUID", accessorKey: "mentor.uuid", size: 80 },

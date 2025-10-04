@@ -4,6 +4,7 @@ import {
   RegisterHackathonMemberRequest,
   RegisterHackathonMemberResponse,
 } from "@/types/hackthon/attending";
+import { HackathonInsightsResponse } from "@/types/hackthon/insights";
 
 export const HackathonAttend = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -118,7 +119,7 @@ export const HackathonAttend = api.injectEndpoints({
       providesTags: ["HackathonAttend"],
     }),
     //hackathon-attendee
-    getHackathonAttendeeInsights: builder.query<MembersResponse, void>({
+    getHackathonAttendeeInsights: builder.query<HackathonInsightsResponse, void>({
       query: () => `/hackathon-attendee`,
       providesTags: ["HackathonAttend"],
     }),

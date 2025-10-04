@@ -14,7 +14,7 @@ export interface Member {
   major_id: number;
   major: any;
   organization: string;
-  participant_type: "online" | "offline" | "hybrid"; // extend as needed
+  participant_type: number // extend as needed
   study_level_id: number;
   study_level: any;
   extra_field?: string;
