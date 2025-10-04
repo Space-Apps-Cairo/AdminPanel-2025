@@ -88,7 +88,7 @@ function AttendenceContent() {
   }, [tabParam]);
 
   return (
-    <div className="container mx-auto py-6 px-8">
+    <div className="mx-auto py-6 px-8">
       <Button variant="outline" className="mb-6" onClick={() => router.back()}>
         <ChevronLeft />
         <p>Go Back</p>
